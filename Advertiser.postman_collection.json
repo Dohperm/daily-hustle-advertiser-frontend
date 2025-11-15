@@ -1,0 +1,2111 @@
+{
+	"info": {
+		"_postman_id": "68199961-dee2-44d0-a399-bce0f964478e",
+		"name": "Advertiser",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45007581"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Test\",\r\n    \"last_name\": \"Advertiser\",\r\n    \"username\": \"testadv1\",\r\n    \"phone\": \"08076543268\",\r\n    \"email\": \"test.advertiser1@yopmail.com\",\r\n    \"password\": \"Password123$\",\r\n    \"referral_code\": \"1CC4B7B688\",\r\n    \"country\": \"Nigeria\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auths/advertisers/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auths",
+								"advertisers",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"first_name\": \"Isaac\",\r\n    \"last_name\": \"Newton\",\r\n    \"username\": \"isaac_new03\",\r\n    \"phone\": \"08076543258\",\r\n    \"email\": \"isaacnewton@yopmail.com\",\r\n    \"password\": \"Password123$\",\r\n    \"referral_code\": \"1CC4B7B688\",\r\n    \"country\": \"Nigeria\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auths/advertisers/register",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auths",
+										"advertisers",
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "38"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"26-DLiNYkJhD+50wg0Aor+/7JI+DfU\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 02 Nov 2025 22:28:23 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 201,\n    \"message\": \"Successful.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Extract token from response and set as collection variable 'jwt'",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData && jsonData.data && jsonData.data.token) {",
+									"        pm.collectionVariables.set('jwt', jsonData.data.token);",
+									"        pm.test('Token extracted and set as collection variable', function () {",
+									"            pm.expect(jsonData.data.token).to.be.a('string').and.not.empty;",
+									"        });",
+									"    } else {",
+									"        pm.test('Token not found in response', function () {",
+									"            pm.expect.fail('Token property missing in response data');",
+									"        });",
+									"    }",
+									"} else {",
+									"    pm.test('Login failed - status code not 200', function () {",
+									"        pm.expect(pm.response.code).to.eql(200);",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"identifier\": \"jerry11671\", // email or username would login\r\n    \"password\": \"@Jeremiah2001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auths/advertisers/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auths",
+								"advertisers",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"identifier\": \"johndoe123\", // email or username would login\r\n    \"password\": \"Password123$\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auths/users/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auths",
+										"users",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "Content-Length",
+									"value": "390"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"186-mf0LDlyE4EzfpL0UFHy5qXJWoUY\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 17 Oct 2025 16:56:29 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Login successful\",\n    \"data\": {\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXJyZW50VXNlciI6eyJfaWQiOiI2OGYyNjljM2I2NTE1ZmZmYmNlMDAzNTgiLCJlbWFpbCI6Impvc2VwaC5kb2VAeW9wbWFpbC5jb20iLCJwaG9uZSI6IisyMzQ5MDg3NTkwOTc4Iiwic3RhdHVzIjp0cnVlLCJ0eXBlIjoiVXNlciIsInJvbGUiOiJVc2VyIn0sImlhdCI6MTc2MDcyMDE4OSwiZXhwIjoxNzYzMzEyMTg5fQ.yXT9Yx5Lgq4dfxZ4MwsODtkVtJ4fTLLhJtTgcxWKbPs\"\n    }\n}"
+						},
+						{
+							"name": "failed",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"identifier\": \"johndoe123\", // email or username would login\r\n    \"password\": \"Password123$#\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auths/users/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auths",
+										"users",
+										"login"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "83"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"53-eq3C2uw4xGdHHfPeYby3JgrsHq4\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 17 Oct 2025 16:57:27 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"message\": \"Incorrect login credentials. Please check and try again.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "ValidateRegistrationToken",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"verification_code\": \"984002\",\r\n    \"email\": \"test.advertiser1@yopmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auths/advertisers/register/validate-token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auths",
+								"advertisers",
+								"register",
+								"validate-token"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"verification_code\": \"166481\",\r\n    \"email\": \"isaacnewton@yopmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auths/advertisers/register/validate-token",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auths",
+										"advertisers",
+										"register",
+										"validate-token"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "394"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"18a-l89CSggW+TV0Dev70uRasjmkMQk\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 02 Nov 2025 22:30:04 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Successful.\",\n    \"data\": {\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXJyZW50VXNlciI6eyJfaWQiOiI2OTA3ZGI2OTYzM2Q1Nzg0MThjZTQ3YjEiLCJlbWFpbCI6ImlzYWFjbmV3dG9uQHlvcG1haWwuY29tIiwicGhvbmUiOiIrMjM0ODA3NjU0MzI1OCIsInN0YXR1cyI6dHJ1ZSwidHlwZSI6IkFkdmVydGlzZXIiLCJyb2xlIjoiVXNlciJ9LCJpYXQiOjE3NjIxMjI2MDQsImV4cCI6MTc2NDcxNDYwNH0.6rHeT2ieGZtua-R5JYStikr8xyHrKP1w683RWLmSSmE\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Task",
+			"item": [
+				{
+					"name": "Submissions",
+					"item": [
+						{
+							"name": "ListSubmissions",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/task-proof?task_id=6917513f2dd044b1f399ed69",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"task-proof"
+									],
+									"query": [
+										{
+											"key": "task_id",
+											"value": "6917513f2dd044b1f399ed69"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/task-proof?task_id=68feaf4ffc4c1ac245487cf1",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"task-proof"
+											],
+											"query": [
+												{
+													"key": "task_id",
+													"value": "68feaf4ffc4c1ac245487cf1"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"1073-gYGJim9zL0znXvLrH6vtaYSSW3A\""
+										},
+										{
+											"key": "Vary",
+											"value": "Accept-Encoding"
+										},
+										{
+											"key": "Content-Encoding",
+											"value": "br"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 03 Nov 2025 19:14:08 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": 200,\n    \"message\": \"taskProofs retrieved successfully\",\n    \"data\": {\n        \"metadata\": {\n            \"total\": 8,\n            \"page\": 1,\n            \"limit\": 10,\n            \"pages\": 1\n        },\n        \"data\": [\n            {\n                \"_id\": \"6908fa62a88ebec3ee7959f7\",\n                \"user_id\": \"68feaaea36524d672e4443e3\",\n                \"is_approved\": false,\n                \"task\": {\n                    \"_id\": \"68feaf4ffc4c1ac245487cf1\",\n                    \"is_archived\": false,\n                    \"title\": \"TikTok Post Task\",\n                    \"description\": \"Create and upload a short promotional TikTok video.\",\n                    \"status\": true,\n                    \"category\": \"ENGAGEMENT\",\n                    \"reward\": {\n                        \"amount\": 1200,\n                        \"currency\": \"NGN\"\n                    },\n                    \"slots\": {\n                        \"max\": 50,\n                        \"used\": 5\n                    },\n                    \"task_site\": \"https://tiktok.com\",\n                    \"createdAt\": \"2025-10-26T23:31:27.903Z\",\n                    \"updatedAt\": \"2025-11-03T18:54:26.778Z\",\n                    \"__v\": 0\n                },\n                \"date\": \"2025-11-03T18:54:26.604Z\"\n            },\n            {\n                \"_id\": \"6908f7eaebb7063aa94e98b5\",\n                \"user_id\": \"68feaaea36524d672e4443e3\",\n                \"is_approved\": false,\n                \"task\": {\n                    \"_id\": \"68feaf4ffc4c1ac245487cf1\",\n                    \"is_archived\": false,\n                    \"title\": \"TikTok Post Task\",\n                    \"description\": \"Create and upload a short promotional TikTok video.\",\n                    \"status\": true,\n                    \"category\": \"ENGAGEMENT\",\n                    \"reward\": {\n                        \"amount\": 1200,\n                        \"currency\": \"NGN\"\n                    },\n                    \"slots\": {\n                        \"max\": 50,\n                        \"used\": 5\n                    },\n                    \"task_site\": \"https://tiktok.com\",\n                    \"createdAt\": \"2025-10-26T23:31:27.903Z\",\n                    \"updatedAt\": \"2025-11-03T18:54:26.778Z\",\n                    \"__v\": 0\n                },\n                \"date\": \"2025-11-03T18:43:54.335Z\"\n            },\n            {\n                \"_id\": \"6908f6ffb680cf7611796957\",\n                \"user_id\": \"68feaaea36524d672e4443e3\",\n                \"is_approved\": false,\n                \"task\": {\n                    \"_id\": \"68feaf4ffc4c1ac245487cf1\",\n                    \"is_archived\": false,\n                    \"title\": \"TikTok Post Task\",\n                    \"description\": \"Create and upload a short promotional TikTok video.\",\n                    \"status\": true,\n                    \"category\": \"ENGAGEMENT\",\n                    \"reward\": {\n                        \"amount\": 1200,\n                        \"currency\": \"NGN\"\n                    },\n                    \"slots\": {\n                        \"max\": 50,\n                        \"used\": 5\n                    },\n                    \"task_site\": \"https://tiktok.com\",\n                    \"createdAt\": \"2025-10-26T23:31:27.903Z\",\n                    \"updatedAt\": \"2025-11-03T18:54:26.778Z\",\n                    \"__v\": 0\n                },\n                \"date\": \"2025-11-03T18:39:59.492Z\"\n            },\n            {\n                \"_id\": \"6908f67cb680cf7611796953\",\n                \"user_id\": \"68feaaea36524d672e4443e3\",\n                \"is_approved\": false,\n                \"task\": {\n                    \"_id\": \"68feaf4ffc4c1ac245487cf1\",\n                    \"is_archived\": false,\n                    \"title\": \"TikTok Post Task\",\n                    \"description\": \"Create and upload a short promotional TikTok video.\",\n                    \"status\": true,\n                    \"category\": \"ENGAGEMENT\",\n                    \"reward\": {\n                        \"amount\": 1200,\n                        \"currency\": \"NGN\"\n                    },\n                    \"slots\": {\n                        \"max\": 50,\n                        \"used\": 5\n                    },\n                    \"task_site\": \"https://tiktok.com\",\n                    \"createdAt\": \"2025-10-26T23:31:27.903Z\",\n                    \"updatedAt\": \"2025-11-03T18:54:26.778Z\",\n                    \"__v\": 0\n                },\n                \"date\": \"2025-11-03T18:37:48.924Z\"\n            },\n            {\n                \"_id\": \"6908e44c16b7393473f7562f\",\n                \"user_id\": \"6904a88a8bbeab4445448a85\",\n                \"is_approved\": false,\n                \"task\": {\n                    \"_id\": \"68feaf4ffc4c1ac245487cf1\",\n                    \"is_archived\": false,\n                    \"title\": \"TikTok Post Task\",\n                    \"description\": \"Create and upload a short promotional TikTok video.\",\n                    \"status\": true,\n                    \"category\": \"ENGAGEMENT\",\n                    \"reward\": {\n                        \"amount\": 1200,\n                        \"currency\": \"NGN\"\n                    },\n                    \"slots\": {\n                        \"max\": 50,\n                        \"used\": 5\n                    },\n                    \"task_site\": \"https://tiktok.com\",\n                    \"createdAt\": \"2025-10-26T23:31:27.903Z\",\n                    \"updatedAt\": \"2025-11-03T18:54:26.778Z\",\n                    \"__v\": 0\n                },\n                \"date\": \"2025-11-03T17:20:12.188Z\"\n            },\n            {\n                \"_id\": \"6908e1ee16b7393473f7561c\",\n                \"user_id\": \"6904a88a8bbeab4445448a85\",\n                \"is_approved\": false,\n                \"task\": {\n                    \"_id\": \"68feaf4ffc4c1ac245487cf1\",\n                    \"is_archived\": false,\n                    \"title\": \"TikTok Post Task\",\n                    \"description\": \"Create and upload a short promotional TikTok video.\",\n                    \"status\": true,\n                    \"category\": \"ENGAGEMENT\",\n                    \"reward\": {\n                        \"amount\": 1200,\n                        \"currency\": \"NGN\"\n                    },\n                    \"slots\": {\n                        \"max\": 50,\n                        \"used\": 5\n                    },\n                    \"task_site\": \"https://tiktok.com\",\n                    \"createdAt\": \"2025-10-26T23:31:27.903Z\",\n                    \"updatedAt\": \"2025-11-03T18:54:26.778Z\",\n                    \"__v\": 0\n                },\n                \"date\": \"2025-11-03T17:10:06.242Z\"\n            },\n            {\n                \"_id\": \"6908e1e716b7393473f75615\",\n                \"user_id\": \"6904a88a8bbeab4445448a85\",\n                \"is_approved\": false,\n                \"task\": {\n                    \"_id\": \"68feaf4ffc4c1ac245487cf1\",\n                    \"is_archived\": false,\n                    \"title\": \"TikTok Post Task\",\n                    \"description\": \"Create and upload a short promotional TikTok video.\",\n                    \"status\": true,\n                    \"category\": \"ENGAGEMENT\",\n                    \"reward\": {\n                        \"amount\": 1200,\n                        \"currency\": \"NGN\"\n                    },\n                    \"slots\": {\n                        \"max\": 50,\n                        \"used\": 5\n                    },\n                    \"task_site\": \"https://tiktok.com\",\n                    \"createdAt\": \"2025-10-26T23:31:27.903Z\",\n                    \"updatedAt\": \"2025-11-03T18:54:26.778Z\",\n                    \"__v\": 0\n                },\n                \"date\": \"2025-11-03T17:09:59.513Z\"\n            },\n            {\n                \"_id\": \"6908e0cd16b7393473f7560e\",\n                \"user_id\": \"6904a88a8bbeab4445448a85\",\n                \"is_approved\": false,\n                \"task\": {\n                    \"_id\": \"68feaf4ffc4c1ac245487cf1\",\n                    \"is_archived\": false,\n                    \"title\": \"TikTok Post Task\",\n                    \"description\": \"Create and upload a short promotional TikTok video.\",\n                    \"status\": true,\n                    \"category\": \"ENGAGEMENT\",\n                    \"reward\": {\n                        \"amount\": 1200,\n                        \"currency\": \"NGN\"\n                    },\n                    \"slots\": {\n                        \"max\": 50,\n                        \"used\": 5\n                    },\n                    \"task_site\": \"https://tiktok.com\",\n                    \"createdAt\": \"2025-10-26T23:31:27.903Z\",\n                    \"updatedAt\": \"2025-11-03T18:54:26.778Z\",\n                    \"__v\": 0\n                },\n                \"date\": \"2025-11-03T17:05:17.691Z\"\n            }\n        ]\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Submission Stats",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/task-proof/submission-stats?task_id=68feb15323c8688423b7e0e2",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"task-proof",
+										"submission-stats"
+									],
+									"query": [
+										{
+											"key": "task_id",
+											"value": "68feb15323c8688423b7e0e2"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/task-proof/submission-stats?task_id=68feb15323c8688423b7e0e2",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"task-proof",
+												"submission-stats"
+											],
+											"query": [
+												{
+													"key": "task_id",
+													"value": "68feb15323c8688423b7e0e2"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "123"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"7b-vWwCd6LCHeXJZbHZY3fXJ+bfTP8\""
+										},
+										{
+											"key": "Vary",
+											"value": "Accept-Encoding"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 04 Nov 2025 04:29:48 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": 200,\n    \"message\": \"Successfully.\",\n    \"data\": {\n        \"pending_submissions\": 1,\n        \"approved_submissions\": 0,\n        \"rejected_submissions\": 0\n    }\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Complete Product Review\",\r\n    \"description\": \"Write a detailed review for the new product launch.\",\r\n    \"category\": \"Product Feedback\",\r\n    \"sub_category\": \"Electronics\",\r\n    \"instructions\": \"Please provide honest feedback focusing on usability and design.\",\r\n    \"country\": \"Nigeria\",\r\n    \"review_type\": \"Closed\",\r\n    \"review_text\": \"Make sure it is well\",\r\n    \"closed_review_options\": [\r\n        \"This is the best app ever\",\r\n        \"I so much love this app\",\r\n        \"I won't change it for anything\"\r\n    ],\r\n    \"reward\": {\r\n        \"currency\": \"NGN\",\r\n        \"amount\": 450,\r\n        \"amount_per_worker\": 50\r\n    },\r\n    \"slots\": {\r\n        \"max\": 3\r\n    },\r\n    \"is_screenshot_required\": true,\r\n    \"approval\": {\r\n        \"num_days\": 3,\r\n        \"mode\": \"Self\"\r\n    },\r\n    \"attachment\": \"https://example.com/instructions.pdf\",\r\n    \"task_site\": \"https://taskplatform.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Complete Product Review\",\r\n    \"description\": \"Write a detailed review for the new product launch.\",\r\n    \"category\": \"Product Feedback\",\r\n    \"sub_category\": \"Electronics\",\r\n    \"instructions\": \"Please provide honest feedback focusing on usability and design.\",\r\n    \"country\": \"Nigeria\",\r\n    \"review_type\": \"Open\", // 'Open' or 'Closed'\r\n    \"reward\": {\r\n        \"currency\": \"NGN\",\r\n        \"amount\": 450, // the total amount\r\n        \"amount_per_worker\": 50\r\n    },\r\n    \"slots\": {\r\n        \"max\": 5 // the number of workers needed\r\n    },\r\n    \"is_screenshot_required\": true,\r\n    \"approval\": {\r\n        \"num_days\": 3,\r\n        \"mode\": \"Self\" // 'Self' or 'Platform'\r\n    },\r\n    \"attachment\": \"https://example.com/instructions.pdf\",\r\n    \"task_site\": \"https://taskplatform.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/tasks",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "40"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"28-KpysSSkV58hpA+d3K1HnOYh5c5c\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 03 Nov 2025 04:18:15 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 201,\n    \"message\": \"Successfully.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "ListTasks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tasks/advertisers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"advertisers"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tasks",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"5a6-5MwudSgzkO2LNNd1UT0BDbzxv30\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 26 Oct 2025 23:40:25 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Successfully.\",\n    \"data\": {\n        \"metadata\": {\n            \"total\": 4,\n            \"page\": 1,\n            \"limit\": 10,\n            \"pages\": 1\n        },\n        \"data\": [\n            {\n                \"_id\": \"68feac0be3d7f9f769385b1c\",\n                \"title\": \"Retweet Our Campaign Tweet\",\n                \"description\": \"Share the official campaign tweet on your Twitter/X profile.\",\n                \"status\": true,\n                \"category\": \"SOCIAL MEDIA\",\n                \"slots\": {\n                    \"max\": 20,\n                    \"used\": 0\n                },\n                \"task_site\": \"https://twitter.com/YourCampaign\",\n                \"reward\": {\n                    \"currency\": \"NGN\",\n                    \"amount\": 250\n                },\n                \"date\": \"2025-10-26T23:17:31.337Z\"\n            },\n            {\n                \"_id\": \"68feace7e3d7f9f769385b1f\",\n                \"title\": \"Join Telegram Community\",\n                \"description\": \"Join our Telegram community and stay active in discussions.\",\n                \"status\": true,\n                \"category\": \"COMMUNITY\",\n                \"slots\": {\n                    \"max\": 15,\n                    \"used\": 0\n                },\n                \"task_site\": \"https://t.me/ourCommunity\",\n                \"reward\": {\n                    \"currency\": \"NGN\",\n                    \"amount\": 500\n                },\n                \"date\": \"2025-10-26T23:21:11.042Z\"\n            },\n            {\n                \"_id\": \"68feaf4ffc4c1ac245487cf1\",\n                \"title\": \"TikTok Post Task\",\n                \"description\": \"Create and upload a short promotional TikTok video.\",\n                \"status\": true,\n                \"category\": \"ENGAGEMENT\",\n                \"reward\": {\n                    \"amount\": 1200,\n                    \"currency\": \"NGN\"\n                },\n                \"slots\": {\n                    \"max\": 50,\n                    \"used\": 0\n                },\n                \"task_site\": \"https://tiktok.com\",\n                \"date\": \"2025-10-26T23:31:27.903Z\"\n            },\n            {\n                \"_id\": \"68feb15323c8688423b7e0e2\",\n                \"title\": \"Share Product Promo on Facebook\",\n                \"description\": \"Share our promotional banner on your Facebook feed and keep it live for 48 hours.\",\n                \"status\": true,\n                \"category\": \"PROMOTION\",\n                \"reward\": {\n                    \"currency\": \"NGN\",\n                    \"amount\": 100\n                },\n                \"slots\": {\n                    \"max\": 25,\n                    \"used\": 0\n                },\n                \"task_site\": \"https://facebook.com/ourOfficialPage\",\n                \"date\": \"2025-10-26T23:40:03.565Z\"\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "View Single Task",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tasks/{{task_id}}/advertisers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"advertisers"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tasks/{{task_id}}/advertisers",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks",
+										"{{task_id}}",
+										"advertisers"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"8de-9LNHHgzukEbipdiYCl0Oa58Olng\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 04 Nov 2025 04:09:13 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Successfully.\",\n    \"data\": {\n        \"metadata\": {\n            \"total\": 6,\n            \"page\": 1,\n            \"limit\": 10,\n            \"pages\": 1\n        },\n        \"data\": [\n            {\n                \"_id\": \"69092f011eaa8a7c9b538775\",\n                \"title\": \"Complete Product Review\",\n                \"description\": \"Write a detailed review for the new product launch.\",\n                \"status\": true,\n                \"completion_status\": \"Completed\",\n                \"category\": \"Product Feedback\",\n                \"review_type\": \"Open\",\n                \"reward\": {\n                    \"currency\": \"NGN\",\n                    \"amount\": 450,\n                    \"amount_per_worker\": 50,\n                    \"spent\": 50\n                },\n                \"slots\": {\n                    \"max\": 3,\n                    \"used\": 3\n                },\n                \"task_site\": \"https://taskplatform.com\",\n                \"date\": \"2025-11-03T22:38:57.237Z\"\n            },\n            {\n                \"_id\": \"69082d06a7fb49b650434521\",\n                \"title\": \"Complete Product Review\",\n                \"description\": \"Write a detailed review for the new product launch.\",\n                \"status\": true,\n                \"category\": \"Product Feedback\",\n                \"review_type\": \"Open\",\n                \"reward\": {\n                    \"currency\": \"NGN\",\n                    \"amount\": 450,\n                    \"amount_per_worker\": 50\n                },\n                \"slots\": {\n                    \"max\": 5,\n                    \"used\": 5\n                },\n                \"task_site\": \"https://taskplatform.com\",\n                \"completion_status\": \"Completed\",\n                \"date\": \"2025-11-03T04:18:14.961Z\"\n            },\n            {\n                \"_id\": \"68feb15323c8688423b7e0e2\",\n                \"title\": \"Share Product Promo on Facebook\",\n                \"description\": \"Share our promotional banner on your Facebook feed and keep it live for 48 hours.\",\n                \"status\": true,\n                \"category\": \"PROMOTION\",\n                \"reward\": {\n                    \"currency\": \"NGN\",\n                    \"amount\": 100\n                },\n                \"slots\": {\n                    \"max\": 25,\n                    \"used\": 24,\n                    \"submissions\": 2\n                },\n                \"task_site\": \"https://facebook.com/ourOfficialPage\",\n                \"date\": \"2025-10-26T23:40:03.565Z\"\n            },\n            {\n                \"_id\": \"68feaf4ffc4c1ac245487cf1\",\n                \"title\": \"TikTok Post Task\",\n                \"description\": \"Create and upload a short promotional TikTok video.\",\n                \"status\": true,\n                \"category\": \"ENGAGEMENT\",\n                \"reward\": {\n                    \"amount\": 1200,\n                    \"currency\": \"NGN\"\n                },\n                \"slots\": {\n                    \"max\": 50,\n                    \"used\": 9\n                },\n                \"task_site\": \"https://tiktok.com\",\n                \"date\": \"2025-10-26T23:31:27.903Z\"\n            },\n            {\n                \"_id\": \"68feace7e3d7f9f769385b1f\",\n                \"title\": \"Join Telegram Community\",\n                \"description\": \"Join our Telegram community and stay active in discussions.\",\n                \"status\": true,\n                \"category\": \"COMMUNITY\",\n                \"slots\": {\n                    \"max\": 15,\n                    \"used\": 2\n                },\n                \"task_site\": \"https://t.me/ourCommunity\",\n                \"reward\": {\n                    \"currency\": \"NGN\",\n                    \"amount\": 500\n                },\n                \"date\": \"2025-10-26T23:21:11.042Z\"\n            },\n            {\n                \"_id\": \"68feac0be3d7f9f769385b1c\",\n                \"title\": \"Retweet Our Campaign Tweet\",\n                \"description\": \"Share the official campaign tweet on your Twitter/X profile.\",\n                \"status\": true,\n                \"category\": \"SOCIAL MEDIA\",\n                \"slots\": {\n                    \"max\": 20,\n                    \"used\": 4\n                },\n                \"task_site\": \"https://twitter.com/YourCampaign\",\n                \"reward\": {\n                    \"currency\": \"NGN\",\n                    \"amount\": 250\n                },\n                \"date\": \"2025-10-26T23:17:31.337Z\"\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Status (Approve or Reject)",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"approval_status\": \"approved\" // approved or rejected\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/task-proof/{{task_proof_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"task-proof",
+								"{{task_proof_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"approval_status\": \"rejected\" // approved or rejected\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/task-proof/{{task_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"task-proof",
+										"{{task_id}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "37"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"25-02K8Moon5nI1rFH3/J5TLoZKOpw\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 03 Nov 2025 21:29:30 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Successful\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Sample Task Title\",\r\n    \"description\": \"Detailed description of the task goes here.\",\r\n    \"category\": \"Research\",\r\n    \"sub_category\": \"Market Analysis\",\r\n    \"instructions\": \"Complete the survey and upload screenshots.\",\r\n    \"country\": \"USA\",\r\n    \"review_type\": \"Closed\",\r\n    \"review_text\": [\r\n        \"Was the task clear?\",\r\n        \"Did you face any issues?\"\r\n    ],\r\n    \"closed_review_options\": [\r\n        \"Yes\",\r\n        \"No\",\r\n        \"Maybe\"\r\n    ],\r\n    \"reward\": {\r\n        \"currency\": \"NGN\",\r\n        \"amount\": 50,\r\n        \"amount_per_worker\": 10\r\n    },\r\n    \"slots\": {\r\n        \"max\": 50\r\n    },\r\n    \"is_screenshot_required\": true,\r\n    \"approval\": {\r\n        \"num_days\": 3,\r\n        \"mode\": \"Platform\"\r\n    },\r\n    \"attachment\": \"https://example.com/instructions.pdf\",\r\n    \"task_site\": \"https://example.com/task-site\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks/{{task_id}}/advertisers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"advertisers"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Sample Task Title\",\r\n    \"description\": \"Detailed description of the task goes here.\",\r\n    \"category\": \"Research\",\r\n    \"sub_category\": \"Market Analysis\",\r\n    \"instructions\": \"Complete the survey and upload screenshots.\",\r\n    \"country\": \"USA\",\r\n    \"review_type\": \"Closed\",\r\n    \"review_text\": [\r\n        \"Was the task clear?\",\r\n        \"Did you face any issues?\"\r\n    ],\r\n    \"closed_review_options\": [\r\n        \"Yes\",\r\n        \"No\",\r\n        \"Maybe\"\r\n    ],\r\n    \"reward\": {\r\n        \"currency\": \"NGN\",\r\n        \"amount\": 50,\r\n        \"amount_per_worker\": 10\r\n    },\r\n    \"slots\": {\r\n        \"max\": 50\r\n    },\r\n    \"is_screenshot_required\": true,\r\n    \"approval\": {\r\n        \"num_days\": 3,\r\n        \"mode\": \"Platform\"\r\n    },\r\n    \"attachment\": \"https://example.com/instructions.pdf\",\r\n    \"task_site\": \"https://example.com/task-site\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/tasks/{{task_id}}/advertisers",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks",
+										"{{task_id}}",
+										"advertisers"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "Content-Length",
+									"value": "40"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"28-1B4rFf6DJVaQuR6TX+iOZAAKbmY\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 07 Nov 2025 21:45:53 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Successfully.\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "TaskStats (Completed and Active Campaigns)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tasks/stats/advertisers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"stats",
+								"advertisers"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tasks/stats/advertisers",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks",
+										"stats",
+										"advertisers"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "86"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"56-Vo8r7Z5zX5tTwm9fJcKO86+RiJo\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 04 Nov 2025 03:42:03 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Successfully.\",\n    \"data\": {\n        \"active_tasks\": 0,\n        \"completed_tasks\": 2\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Wallet",
+			"item": [
+				{
+					"name": "Fund Wallet",
+					"item": [
+						{
+							"name": "Initialize Payment",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"amount\": 5000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/payments/initialize",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"payments",
+										"initialize"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 1000\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/payments/initialize",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"payments",
+												"initialize"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "273"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"111-v6J9teIUGBkAm45XZ0F4ROa/vhs\""
+										},
+										{
+											"key": "Vary",
+											"value": "Accept-Encoding"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 15 Nov 2025 00:45:32 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status_code\": 200,\n    \"message\": \"Payment initialized successfully\",\n    \"data\": {\n        \"transaction_id\": \"6917cd2aabf2a13d41150055\",\n        \"reference\": \"DH_1763167530913_69174cf72dd044b1f399ed54\",\n        \"authorization_url\": \"https://checkout.paystack.com/yfnl4d86ri09rrd\",\n        \"access_code\": \"yfnl4d86ri09rrd\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Verify Payment",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/payments/verify/{{reference_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"payments",
+										"verify",
+										"{{reference_id}}"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/payments/verify/{{reference_id}}",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"payments",
+												"verify",
+												"{{reference_id}}"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "425"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"1a9-I8TJWoSXYDNJ/vLsfHZEI9E+Yvk\""
+										},
+										{
+											"key": "Vary",
+											"value": "Accept-Encoding"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 15 Nov 2025 00:49:38 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status_code\": 200,\n    \"message\": \"Payment verified successfully\",\n    \"data\": {\n        \"_id\": \"6917cd2aabf2a13d41150055\",\n        \"reference\": \"DH_1763167530913_69174cf72dd044b1f399ed54\",\n        \"amount\": 1000,\n        \"currency\": \"NGN\",\n        \"status\": \"failed\",\n        \"type\": \"wallet_funding\",\n        \"advertiser_id\": \"69174cf72dd044b1f399ed54\",\n        \"fees\": 0,\n        \"createdAt\": \"2025-11-15T00:45:30.962Z\",\n        \"updatedAt\": \"2025-11-15T00:48:15.752Z\",\n        \"__v\": 0,\n        \"gateway_response\": \"The transaction was not completed\"\n    }\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "WalletBalance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/advertisers/me/wallet-balance",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"advertisers",
+								"me",
+								"wallet-balance"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/advertisers/me/wallet-balance",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"advertisers",
+										"me",
+										"wallet-balance"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "80"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"50-0tamA2Q3jjrIbHNfQeahYIojv3g\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 15 Nov 2025 01:06:18 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Successfully\",\n    \"data\": {\n        \"balance\": 2000,\n        \"currency\": \"NGN\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Profile",
+			"item": [
+				{
+					"name": "Me",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/advertisers/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"advertisers",
+								"me"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users/me",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "521"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"209-6ONkIc7f0OVTCkRsyuxUcG+5u0E\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 29 Oct 2025 00:54:50 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Successfully\",\n    \"data\": {\n        \"_id\": \"68feaaea36524d672e4443e3\",\n        \"status\": true,\n        \"is_deleted\": false,\n        \"is_archived\": false,\n        \"photo\": \"https://uatdrive.s3.us-west-002.backblazeb2.com/587228_profile_photo.png\",\n        \"first_name\": \"Miracle\",\n        \"last_name\": \"Johnson\",\n        \"email\": \"miracle.johnson@yopmail.com\",\n        \"username\": \"mirajohn01\",\n        \"phone\": \"+2348023456789\",\n        \"type\": \"User\",\n        \"role\": \"User\",\n        \"my_referral_code\": \"1CC4B7B688\",\n        \"country\": \"Ghana\",\n        \"createdAt\": \"2025-10-26T23:12:42.175Z\",\n        \"updatedAt\": \"2025-10-26T23:12:42.175Z\",\n        \"num\": 4,\n        \"__v\": 0\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kyc\": {\r\n        \"full_name\": \"Jane Doe\",\r\n        \"DOB\": \"1990-05-15T00:00:00.000Z\",\r\n        \"identification_number\": \"ID123456789\",\r\n        \"residential_address\": \"123 Main St, Lagos, Nigeria\",\r\n        \"id_src\": \"https://example.com/id_document.jpg\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/advertisers/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"advertisers",
+								"me"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"first_name\": \"Mirabel\",\r\n    \"last_name\": \"Johnston\",\r\n    // \"email\": \"mir.jojsn@yopmail.com\"\r\n    \"phone\": \"08178900071\",\r\n    \"photo\": \"https://res.cloudinary.com/dlk3pswf9/image/upload/v1761699536/uploads/2639260b14705efda1833cee737a0bf0_jerry-photo.jpg\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/me",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "Content-Length",
+									"value": "568"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"238-SRCaiabgdvq0igGdRvinaJSru8M\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 29 Oct 2025 01:04:25 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Successfully\",\n    \"data\": {\n        \"_id\": \"68feaaea36524d672e4443e3\",\n        \"status\": true,\n        \"is_deleted\": false,\n        \"is_archived\": false,\n        \"photo\": \"https://res.cloudinary.com/dlk3pswf9/image/upload/v1761699536/uploads/2639260b14705efda1833cee737a0bf0_jerry-photo.jpg\",\n        \"first_name\": \"Mirabel\",\n        \"last_name\": \"Johnston\",\n        \"email\": \"miracle.johnson@yopmail.com\",\n        \"username\": \"mirajohn01\",\n        \"phone\": \"+2348178900071\",\n        \"type\": \"User\",\n        \"role\": \"User\",\n        \"my_referral_code\": \"1CC4B7B688\",\n        \"country\": \"Ghana\",\n        \"createdAt\": \"2025-10-26T23:12:42.175Z\",\n        \"updatedAt\": \"2025-10-29T01:04:24.802Z\",\n        \"num\": 4,\n        \"__v\": 0\n    }\n}"
+						},
+						{
+							"name": "KYC",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"kyc\": {\r\n        \"full_name\": \"Jane Doe\",\r\n        \"DOB\": \"1990-05-15T00:00:00.000Z\",\r\n        \"identification_number\": \"ID123456789\",\r\n        \"residential_address\": \"123 Main St, Lagos, Nigeria\",\r\n        \"id_src\": \"https://example.com/id_document.jpg\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/me",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "789"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"315-Acikgwvy7Fmtcq4okfaA5DI8JbM\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Nov 2025 12:15:34 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Successfully\",\n    \"data\": {\n        \"kyc\": {\n            \"is_approved\": false,\n            \"full_name\": \"Jane Doe\",\n            \"DOB\": \"1990-05-15T00:00:00.000Z\",\n            \"identification_number\": \"ID123456789\",\n            \"residential_address\": \"123 Main St, Lagos, Nigeria\",\n            \"id_src\": \"https://example.com/id_document.jpg\"\n        },\n        \"_id\": \"68feaaea36524d672e4443e3\",\n        \"status\": true,\n        \"is_deleted\": false,\n        \"is_archived\": false,\n        \"photo\": \"https://res.cloudinary.com/dlk3pswf9/image/upload/v1761699536/uploads/2639260b14705efda1833cee737a0bf0_jerry-photo.jpg\",\n        \"first_name\": \"Mirabel\",\n        \"last_name\": \"Johnston\",\n        \"email\": \"miracle.johnson@yopmail.com\",\n        \"username\": \"mirajohn01\",\n        \"phone\": \"+2348178900071\",\n        \"type\": \"User\",\n        \"role\": \"User\",\n        \"my_referral_code\": \"1CC4B7B688\",\n        \"country\": \"Ghana\",\n        \"createdAt\": \"2025-10-26T23:12:42.175Z\",\n        \"updatedAt\": \"2025-11-01T12:15:33.771Z\",\n        \"num\": 4,\n        \"__v\": 0\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Submit KYC",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"kyc\": {\r\n        \"full_name\": \"Jane Doe\",\r\n        \"DOB\": \"1990-05-15T00:00:00.000Z\",\r\n        \"identification_number\": \"ID123456789\",\r\n        \"residential_address\": \"123 Main St, Lagos, Nigeria\",\r\n        \"id_src\": \"https://example.com/id_document.jpg\" // the id card file\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"kyc\": {\r\n        \"full_name\": \"Jane Doe\",\r\n        \"DOB\": \"1990-05-15T00:00:00.000Z\",\r\n        \"identification_number\": \"ID123456789\",\r\n        \"residential_address\": \"123 Main St, Lagos, Nigeria\",\r\n        \"id_src\": \"https://example.com/id_document.jpg\" // the id card file\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/me",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "Content-Length",
+									"value": "789"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"315-ThW2uChFl90Kt+q8qQ5lbstARNY\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Nov 2025 12:19:36 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Successfully\",\n    \"data\": {\n        \"kyc\": {\n            \"is_approved\": false,\n            \"full_name\": \"Jane Doe\",\n            \"DOB\": \"1990-05-15T00:00:00.000Z\",\n            \"identification_number\": \"ID123456789\",\n            \"residential_address\": \"123 Main St, Lagos, Nigeria\",\n            \"id_src\": \"https://example.com/id_document.jpg\"\n        },\n        \"_id\": \"68feaaea36524d672e4443e3\",\n        \"status\": true,\n        \"is_deleted\": false,\n        \"is_archived\": false,\n        \"photo\": \"https://res.cloudinary.com/dlk3pswf9/image/upload/v1761699536/uploads/2639260b14705efda1833cee737a0bf0_jerry-photo.jpg\",\n        \"first_name\": \"Mirabel\",\n        \"last_name\": \"Johnston\",\n        \"email\": \"miracle.johnson@yopmail.com\",\n        \"username\": \"mirajohn01\",\n        \"phone\": \"+2348178900071\",\n        \"type\": \"User\",\n        \"role\": \"User\",\n        \"my_referral_code\": \"1CC4B7B688\",\n        \"country\": \"Ghana\",\n        \"createdAt\": \"2025-10-26T23:12:42.175Z\",\n        \"updatedAt\": \"2025-11-01T12:19:36.643Z\",\n        \"num\": 4,\n        \"__v\": 0\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Transactions",
+			"item": [
+				{
+					"name": "ListTransactions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/transactions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"transactions"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/transactions",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"transactions"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"584-N7z+Q66VNGu5Y45ubGc2wH+h7vg\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 15 Nov 2025 01:37:50 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Successfully\",\n    \"data\": {\n        \"metadata\": {\n            \"total\": 3,\n            \"page\": 1,\n            \"limit\": 10,\n            \"pages\": 1\n        },\n        \"data\": [\n            {\n                \"_id\": \"6917d5d6d6ee07aa26ba281a\",\n                \"reference\": \"DH_1763169750008_69174cf72dd044b1f399ed54\",\n                \"amount\": 5000,\n                \"currency\": \"NGN\",\n                \"status\": \"success\",\n                \"type\": \"Credit\",\n                \"description\": \"wallet_funding\",\n                \"advertiser_id\": \"69174cf72dd044b1f399ed54\",\n                \"metadata\": {\n                    \"channel\": \"card\",\n                    \"gateway_response\": \"Successful\",\n                    \"paid_at\": \"2023-12-21T10:30:45.000Z\",\n                    \"paystack_reference\": \"DH_1763169750008_69174cf72dd044b1f399ed54\"\n                },\n                \"createdAt\": \"2025-11-15T01:22:30.033Z\"\n            },\n            {\n                \"_id\": \"6917d09c23a61813acd15267\",\n                \"reference\": \"DH_1763168412121_69174cf72dd044b1f399ed54\",\n                \"amount\": 1000,\n                \"currency\": \"NGN\",\n                \"status\": \"success\",\n                \"type\": \"Credit\",\n                \"description\": \"wallet_funding\",\n                \"advertiser_id\": \"69174cf72dd044b1f399ed54\",\n                \"metadata\": {\n                    \"channel\": \"card\",\n                    \"gateway_response\": \"Successful\",\n                    \"paid_at\": \"2025-11-15T01:00:57.000Z\",\n                    \"paystack_reference\": \"DH_1763168412121_69174cf72dd044b1f399ed54\"\n                },\n                \"createdAt\": \"2025-11-15T01:00:12.126Z\"\n            },\n            {\n                \"_id\": \"6917cfdf23a61813acd1525b\",\n                \"reference\": \"DH_1763168223272_69174cf72dd044b1f399ed54\",\n                \"amount\": 1000,\n                \"currency\": \"NGN\",\n                \"status\": \"success\",\n                \"type\": \"Credit\",\n                \"description\": \"wallet_funding\",\n                \"advertiser_id\": \"69174cf72dd044b1f399ed54\",\n                \"metadata\": {\n                    \"channel\": \"card\",\n                    \"gateway_response\": \"Successful\",\n                    \"paid_at\": \"2025-11-15T00:57:23.000Z\",\n                    \"paystack_reference\": \"DH_1763168223272_69174cf72dd044b1f399ed54\"\n                },\n                \"createdAt\": \"2025-11-15T00:57:03.301Z\"\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "ViewTransaction",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/transactions/{{transaction_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"transactions",
+								"{{transaction_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/transactions/{{transaction_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"transactions",
+										"{{transaction_id}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "537"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"219-C9V2f0HyT4/4MtuRYzV8HI1mrBs\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 15 Nov 2025 01:39:34 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Successfully\",\n    \"data\": {\n        \"_id\": \"6917d5d6d6ee07aa26ba281a\",\n        \"reference\": \"DH_1763169750008_69174cf72dd044b1f399ed54\",\n        \"amount\": 5000,\n        \"currency\": \"NGN\",\n        \"status\": \"success\",\n        \"type\": \"Credit\",\n        \"description\": \"wallet_funding\",\n        \"advertiser_id\": \"69174cf72dd044b1f399ed54\",\n        \"fees\": 75,\n        \"createdAt\": \"2025-11-15T01:22:30.033Z\",\n        \"updatedAt\": \"2025-11-15T01:32:49.254Z\",\n        \"__v\": 0,\n        \"metadata\": {\n            \"channel\": \"card\",\n            \"gateway_response\": \"Successful\",\n            \"paid_at\": \"2023-12-21T10:30:45.000Z\",\n            \"paystack_reference\": \"DH_1763169750008_69174cf72dd044b1f399ed54\"\n        }\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Webhooks",
+			"item": [
+				{
+					"name": "UpdateTransaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-paystack-signature",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"event\": \"charge.success\",\r\n  \"data\": {\r\n    \"id\": 302961,\r\n    \"domain\": \"live\",\r\n    \"status\": \"success\",\r\n    \"reference\": \"DH_1763169750008_69174cf72dd044b1f399ed54\",\r\n    \"amount\": 5000,\r\n    \"message\": null,\r\n    \"gateway_response\": \"Successful\",\r\n    \"paid_at\": \"2023-12-21T10:30:45.000Z\",\r\n    \"created_at\": \"2023-12-21T10:30:30.000Z\",\r\n    \"channel\": \"card\",\r\n    \"currency\": \"NGN\",\r\n    \"ip_address\": \"192.168.1.1\",\r\n    \"metadata\": {},\r\n    \"log\": {\r\n      \"start_time\": 1703158230,\r\n      \"time_spent\": 15,\r\n      \"attempts\": 1,\r\n      \"errors\": 0,\r\n      \"success\": true,\r\n      \"mobile\": false,\r\n      \"input\": [],\r\n      \"history\": [\r\n        {\r\n          \"type\": \"action\",\r\n          \"message\": \"Attempted to pay with card\",\r\n          \"time\": 14\r\n        },\r\n        {\r\n          \"type\": \"success\",\r\n          \"message\": \"Successfully paid with card\",\r\n          \"time\": 15\r\n        }\r\n      ]\r\n    },\r\n    \"fees\": 7500,\r\n    \"fees_split\": null,\r\n    \"authorization\": {\r\n      \"authorization_code\": \"AUTH_pmx3mgawyd\",\r\n      \"bin\": \"408408\",\r\n      \"last4\": \"4081\",\r\n      \"exp_month\": \"12\",\r\n      \"exp_year\": \"2030\",\r\n      \"channel\": \"card\",\r\n      \"card_type\": \"visa\",\r\n      \"bank\": \"TEST BANK\",\r\n      \"country_code\": \"NG\",\r\n      \"brand\": \"visa\",\r\n      \"reusable\": true,\r\n      \"signature\": \"SIG_2nzbu0k21pEz8g0zqFXw\",\r\n      \"account_name\": null\r\n    },\r\n    \"customer\": {\r\n      \"id\": 23070,\r\n      \"first_name\": \"John\",\r\n      \"last_name\": \"Doe\",\r\n      \"email\": \"john.doe@example.com\",\r\n      \"customer_code\": \"CUS_xnxdt6s1zg1f4nx\",\r\n      \"phone\": \"+2348123456789\",\r\n      \"metadata\": {},\r\n      \"risk_action\": \"default\",\r\n      \"international_format_phone\": null\r\n    },\r\n    \"plan\": null,\r\n    \"split\": {},\r\n    \"order_id\": null,\r\n    \"paidAt\": \"2023-12-21T10:30:45.000Z\",\r\n    \"requested_amount\": 500000,\r\n    \"pos_transaction_data\": null,\r\n    \"source\": null\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/payments/webhook",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"webhook"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-paystack-signature",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"event\": \"charge.success\",\r\n  \"data\": {\r\n    \"id\": 302961,\r\n    \"domain\": \"live\",\r\n    \"status\": \"success\",\r\n    \"reference\": \"DH_1763169750008_69174cf72dd044b1f399ed54\",\r\n    \"amount\": 5000,\r\n    \"message\": null,\r\n    \"gateway_response\": \"Successful\",\r\n    \"paid_at\": \"2023-12-21T10:30:45.000Z\",\r\n    \"created_at\": \"2023-12-21T10:30:30.000Z\",\r\n    \"channel\": \"card\",\r\n    \"currency\": \"NGN\",\r\n    \"ip_address\": \"192.168.1.1\",\r\n    \"metadata\": {},\r\n    \"log\": {\r\n      \"start_time\": 1703158230,\r\n      \"time_spent\": 15,\r\n      \"attempts\": 1,\r\n      \"errors\": 0,\r\n      \"success\": true,\r\n      \"mobile\": false,\r\n      \"input\": [],\r\n      \"history\": [\r\n        {\r\n          \"type\": \"action\",\r\n          \"message\": \"Attempted to pay with card\",\r\n          \"time\": 14\r\n        },\r\n        {\r\n          \"type\": \"success\",\r\n          \"message\": \"Successfully paid with card\",\r\n          \"time\": 15\r\n        }\r\n      ]\r\n    },\r\n    \"fees\": 7500,\r\n    \"fees_split\": null,\r\n    \"authorization\": {\r\n      \"authorization_code\": \"AUTH_pmx3mgawyd\",\r\n      \"bin\": \"408408\",\r\n      \"last4\": \"4081\",\r\n      \"exp_month\": \"12\",\r\n      \"exp_year\": \"2030\",\r\n      \"channel\": \"card\",\r\n      \"card_type\": \"visa\",\r\n      \"bank\": \"TEST BANK\",\r\n      \"country_code\": \"NG\",\r\n      \"brand\": \"visa\",\r\n      \"reusable\": true,\r\n      \"signature\": \"SIG_2nzbu0k21pEz8g0zqFXw\",\r\n      \"account_name\": null\r\n    },\r\n    \"customer\": {\r\n      \"id\": 23070,\r\n      \"first_name\": \"John\",\r\n      \"last_name\": \"Doe\",\r\n      \"email\": \"john.doe@example.com\",\r\n      \"customer_code\": \"CUS_xnxdt6s1zg1f4nx\",\r\n      \"phone\": \"+2348123456789\",\r\n      \"metadata\": {},\r\n      \"risk_action\": \"default\",\r\n      \"international_format_phone\": null\r\n    },\r\n    \"plan\": null,\r\n    \"split\": {},\r\n    \"order_id\": null,\r\n    \"paidAt\": \"2023-12-21T10:30:45.000Z\",\r\n    \"requested_amount\": 500000,\r\n    \"pos_transaction_data\": null,\r\n    \"source\": null\r\n  }\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/payments/webhook",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"payments",
+										"webhook"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/html; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "2"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2-nOO9QiTIwXgNtWtBJezz8kv3SLc\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 15 Nov 2025 01:32:50 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "OK"
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "",
+			"disabled": true
+		},
+		{
+			"key": "base_url",
+			"value": "https://daily-hustle-backend-fb9c10f98583.herokuapp.com/api/v1"
+		},
+		{
+			"key": "jwt",
+			"value": ""
+		}
+	]
+}
