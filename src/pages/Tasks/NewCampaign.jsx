@@ -202,18 +202,19 @@ const categoriesData = {
   ],
 };
 const categoryOptions = Object.keys(categoriesData);
-const countryOptions = [
-  "All/Worldwide",
-  "Nigeria",
-  "Africa",
-  "United States",
-  "Canada",
-  "United Kingdom",
+const africanCountries = [
+  "Algeria", "Angola", "Benin", "Botswana", "Burkina Faso", "Burundi", "Cabo Verde", "Cameroon",
+  "Central African Republic", "Chad", "Comoros", "Congo", "Democratic Republic of the Congo", "Djibouti",
+  "Egypt", "Equatorial Guinea", "Eritrea", "Eswatini", "Ethiopia", "Gabon", "Gambia", "Ghana",
+  "Guinea", "Guinea-Bissau", "Ivory Coast", "Kenya", "Lesotho", "Liberia", "Libya", "Madagascar",
+  "Malawi", "Mali", "Mauritania", "Mauritius", "Morocco", "Mozambique", "Namibia", "Niger",
+  "Nigeria", "Rwanda", "Sao Tome and Principe", "Senegal", "Seychelles", "Sierra Leone", "Somalia",
+  "South Africa", "South Sudan", "Sudan", "Tanzania", "Togo", "Tunisia", "Uganda", "Zambia", "Zimbabwe"
 ];
 const CURRENCIES = ["NGN", "USD", "GBP", "EUR"];
 const PLATFORM_FEE_PERCENT = 0.15;
 const TINYMCE_API_KEY = "vd6rmi2kajnxr70fb4qd3c9urje5qczvcoohhywwl6sbawpf";
-const MIN_CLOSED_OPTIONS = 10;
+
 
 export default function NewCampaign() {
   const { theme } = useTheme();
@@ -256,13 +257,47 @@ export default function NewCampaign() {
     approvalMode: "",
     file: null,
     reviewType: "Open",
-    closedReviewOptions: [],
-    reviewText: [""],
+    closedReviewOptions: "",
     rewardCurrency: "NGN",
     attachment: "",
     uploadingImage: false,
     is_screenshot_required: false,
   });
+  
+  const [uploadedFile, setUploadedFile] = useState(null);
+  
+  const [countrySearch, setCountrySearch] = useState("");
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [categorySearch, setCategorySearch] = useState("");
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [approvalModeSearch, setApprovalModeSearch] = useState("");
+  const [showApprovalModeDropdown, setShowApprovalModeDropdown] = useState(false);
+  
+  const filteredCountries = africanCountries.filter(country =>
+    country.toLowerCase().includes(countrySearch.toLowerCase())
+  );
+  
+  const filteredCategories = categoryOptions.filter(category =>
+    category.toLowerCase().includes(categorySearch.toLowerCase())
+  );
+  
+  const approvalModes = ["Self Approval", "Platform Approval"];
+  const filteredApprovalModes = approvalModes.filter(mode =>
+    mode.toLowerCase().includes(approvalModeSearch.toLowerCase())
+  );
+  
+  // Close dropdowns when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = () => {
+      setShowCountryDropdown(false);
+      setShowCategoryDropdown(false);
+      setShowApprovalModeDropdown(false);
+    };
+    if (showCountryDropdown || showCategoryDropdown || showApprovalModeDropdown) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [showCountryDropdown, showCategoryDropdown, showApprovalModeDropdown]);
 
   const subCategoryList = form.category
     ? categoriesData[form.category] || []
@@ -274,18 +309,15 @@ export default function NewCampaign() {
   const totalBudget = baseTotal + platformCharge;
 
   const isClosed = form.reviewType === "Closed";
-  const closedOptions = Array.isArray(form.closedReviewOptions)
-    ? form.closedReviewOptions.filter(Boolean)
+  const closedOptions = (form.closedReviewOptions && typeof form.closedReviewOptions === 'string') 
+    ? form.closedReviewOptions.split('\n').filter(Boolean) 
     : [];
   const closedOptionsCount = closedOptions.length;
-  const hasEnoughClosedOptions = closedOptionsCount >= MIN_CLOSED_OPTIONS;
+  const hasClosedReviewContent = uploadedFile || (form.closedReviewOptions && typeof form.closedReviewOptions === 'string' && form.closedReviewOptions.trim().length > 0);
 
   React.useEffect(() => {
-    if (isClosed && form.closedReviewOptions.length === 0) {
-      setForm((prev) => ({ ...prev, closedReviewOptions: [""] }));
-    }
     if (!isClosed) {
-      setForm((prev) => ({ ...prev, closedReviewOptions: [] }));
+      setForm((prev) => ({ ...prev, closedReviewOptions: "" }));
     }
   }, [form.reviewType]);
 
@@ -294,57 +326,27 @@ export default function NewCampaign() {
       alert("Please select a job category and subcategory.");
       return;
     }
-    if (step === 2 && isClosed && !hasEnoughClosedOptions) {
-      alert(`Closed Review requires at least ${MIN_CLOSED_OPTIONS} options.`);
-      return;
+    if (step === 2) {
+      if (!form.workersNeeded || workersNeeded < 10) {
+        alert("Workers needed must be at least 10.");
+        return;
+      }
+      if (!form.amountPerWorker || amountPerWorker < 50) {
+        alert("Amount per worker must be at least 50.");
+        return;
+      }
+      if (isClosed && !hasClosedReviewContent) {
+        alert("Closed Review requires review options (either paste text or upload file).");
+        return;
+      }
     }
     setStep((s) => Math.min(s + 1, 3));
   };
   const prevStep = () => setStep((s) => Math.max(s - 1, 1));
 
-  const handleClosedReviewChange = (idx, val) => {
-    const arr = [...form.closedReviewOptions];
-    arr[idx] = val;
-    setForm((prev) => ({
-      ...prev,
-      closedReviewOptions: arr,
-    }));
-  };
-  const addClosedReviewOption = () => {
-    setForm((prev) => ({
-      ...prev,
-      closedReviewOptions: [...(prev.closedReviewOptions || []), ""],
-    }));
-  };
-  const removeClosedReviewOption = (idx) => {
-    const arr = form.closedReviewOptions.filter((_, i) => i !== idx);
-    setForm((prev) => ({
-      ...prev,
-      closedReviewOptions: arr,
-    }));
-  };
 
-  const handleReviewTextChange = (idx, val) => {
-    const arr = [...form.reviewText];
-    arr[idx] = val;
-    setForm((prev) => ({
-      ...prev,
-      reviewText: arr,
-    }));
-  };
-  const addReviewTextOption = () => {
-    setForm((prev) => ({
-      ...prev,
-      reviewText: [...(prev.reviewText || []), ""],
-    }));
-  };
-  const removeReviewTextOption = (idx) => {
-    const arr = form.reviewText.filter((_, i) => i !== idx);
-    setForm((prev) => ({
-      ...prev,
-      reviewText: arr,
-    }));
-  };
+
+
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -365,18 +367,12 @@ export default function NewCampaign() {
     if (file) handleBulkFile(file);
   };
   const handleBulkFile = (file) => {
-    const isTxt = file.name.endsWith(".txt");
-    const isCsv = file.name.endsWith(".csv");
-    if (!isTxt && !isCsv) {
-      setBulkStatus("bad");
-      setTimeout(() => setBulkStatus(null), 3000);
-      return;
-    }
     const reader = new FileReader();
     reader.onload = (ev) => {
-      let lines;
       const text = ev.target.result;
-      if (isCsv) {
+      let lines;
+      
+      if (file.name.endsWith(".csv")) {
         Papa.parse(text, {
           complete: function (result) {
             lines = result.data
@@ -398,19 +394,16 @@ export default function NewCampaign() {
     reader.readAsText(file);
   };
   const finalizeBulk = (lines) => {
-    if (!Array.isArray(lines) || lines.length < MIN_CLOSED_OPTIONS) {
+    if (!Array.isArray(lines) || lines.length === 0) {
       setBulkStatus("bad");
-      alert(
-        `Need at least ${MIN_CLOSED_OPTIONS} options. Found ${
-          lines?.length || 0
-        }.`
-      );
+      alert(`No valid options found in file.`);
       setTimeout(() => setBulkStatus(null), 3000);
       return;
     }
+    setUploadedFile(lines);
     setForm((prev) => ({
       ...prev,
-      closedReviewOptions: lines,
+      closedReviewOptions: "", // Clear text field when file is uploaded
     }));
     setBulkStatus("good");
     setTimeout(() => setBulkStatus(null), 3000);
@@ -443,53 +436,56 @@ export default function NewCampaign() {
     setSubmitting(true);
     let attachmentUrl = form.attachment || "";
     let closed_review_options = null;
-    let review_text = null;
 
     if (form.reviewType === "Closed") {
-      closed_review_options = Array.isArray(form.closedReviewOptions)
-        ? form.closedReviewOptions.map((l) => l && l.trim()).filter((l) => !!l)
-        : [];
-      if (closed_review_options.length < MIN_CLOSED_OPTIONS) {
-        alert(`Closed Review requires at least ${MIN_CLOSED_OPTIONS} options.`);
-        setSubmitting(false);
-        return;
+      if (uploadedFile) {
+        closed_review_options = uploadedFile;
+      } else {
+        closed_review_options = (form.closedReviewOptions && typeof form.closedReviewOptions === 'string')
+          ? form.closedReviewOptions.split('\n').map(l => l.trim()).filter(l => l)
+          : [];
       }
-    } else {
-      review_text = Array.isArray(form.reviewText)
-        ? form.reviewText.map((l) => l && l.trim()).filter((l) => !!l)
-        : [];
-      if (!review_text.length || review_text.some((txt) => !txt)) {
-        alert("Open Review requires at least one non-empty review text.");
+      if (!closed_review_options.length) {
+        alert("Closed Review requires review options.");
         setSubmitting(false);
         return;
       }
     }
 
+    const payload = {
+      title: form.title,
+      is_screenshot_required: true,
+      description: form.jobDescription,
+      category: form.category,
+      sub_category: form.subCategory,
+      instructions: form.instructions,
+      country: form.country,
+      review_type: form.reviewType,
+      closed_review_options,
+      reward: {
+        currency: form.rewardCurrency,
+        amount: Number(totalBudget),
+        amount_per_worker: Number(form.amountPerWorker),
+      },
+      slots: { max: Number(form.workersNeeded) },
+      approval: {
+        num_days: Number(form.approvalDays),
+        mode: form.approvalMode === "Self Approval" ? "Self" : "Platform",
+      },
+      task_site: form.jobsLink || "",
+    };
+    
+    // Only include attachment if file was uploaded
+    if (attachmentUrl) {
+      payload.attachment = attachmentUrl;
+    }
+    
+    console.log('=== CREATE CAMPAIGN PAYLOAD ===');
+    console.log(JSON.stringify(payload, null, 2));
+    console.log('=== END PAYLOAD ===');
+    
     try {
-      await advertiserCreateTask({
-        title: form.title,
-        is_screenshot_required: true,
-        description: form.jobDescription,
-        category: form.category,
-        sub_category: form.subCategory,
-        instructions: form.instructions,
-        country: form.country,
-        review_type: form.reviewType,
-        closed_review_options,
-        review_text,
-        reward: {
-          currency: form.rewardCurrency,
-          amount: Number(totalBudget),
-          amount_per_worker: Number(form.amountPerWorker),
-        },
-        slots: { max: Number(form.workersNeeded) },
-        approval: {
-          num_days: Number(form.approvalDays),
-          mode: form.approvalMode === "Self Approval" ? "Self" : "Platform",
-        },
-        attachment: attachmentUrl || null,
-        task_site: form.jobsLink || "",
-      });
+      await advertiserCreateTask(payload);
       alert("Campaign submitted!");
       window.location.reload();
     } catch (err) {
@@ -558,26 +554,67 @@ export default function NewCampaign() {
                       >
                         Country
                       </Form.Label>
-                      <Form.Select
-                        name="country"
-                        value={form.country}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, country: e.target.value }))
-                        }
-                        style={{
-                          color: palette.text,
-                          background: palette.input,
-                          border: `1px solid ${palette.border}`,
-                          borderRadius: "8px",
-                          padding: "10px 12px",
-                        }}
-                      >
-                        {countryOptions.map((c) => (
-                          <option key={c} value={c}>
-                            {c}
-                          </option>
-                        ))}
-                      </Form.Select>
+                      <div style={{ position: "relative" }} onClick={(e) => e.stopPropagation()}>
+                        <Form.Control
+                          type="text"
+                          placeholder="Search and select country"
+                          value={countrySearch || form.country}
+                          onChange={(e) => {
+                            setCountrySearch(e.target.value);
+                            setShowCountryDropdown(true);
+                          }}
+                          onFocus={() => setShowCountryDropdown(true)}
+                          style={{
+                            color: palette.text,
+                            background: palette.input,
+                            border: `1px solid ${palette.border}`,
+                            borderRadius: "8px",
+                            padding: "10px 12px",
+                          }}
+                        />
+                        {showCountryDropdown && (
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: "100%",
+                              left: 0,
+                              right: 0,
+                              background: palette.cardBg,
+                              border: `1px solid ${palette.border}`,
+                              borderRadius: "8px",
+                              maxHeight: "200px",
+                              overflowY: "auto",
+                              zIndex: 1000,
+                              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                            }}
+                          >
+                            {filteredCountries.map((country) => (
+                              <div
+                                key={country}
+                                style={{
+                                  padding: "10px 12px",
+                                  cursor: "pointer",
+                                  borderBottom: `1px solid ${palette.border}`,
+                                  color: palette.text,
+                                }}
+                                onMouseOver={(e) => {
+                                  e.target.style.background = palette.hoverBg;
+                                }}
+                                onMouseOut={(e) => {
+                                  e.target.style.background = "transparent";
+                                }}
+                                onClick={() => {
+                                  setForm((f) => ({ ...f, country }));
+                                  setCountrySearch("");
+                                  setShowCountryDropdown(false);
+                                }}
+                              >
+                                {country}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </Form.Group>
                   </Col>
 
@@ -592,32 +629,67 @@ export default function NewCampaign() {
                       >
                         Job Category
                       </Form.Label>
-                      <Form.Select
-                        name="category"
-                        value={form.category}
-                        onChange={(e) =>
-                          setForm((f) => ({
-                            ...f,
-                            category: e.target.value,
-                            subCategory: "",
-                          }))
-                        }
-                        required
-                        style={{
-                          color: palette.text,
-                          background: palette.input,
-                          border: `1px solid ${palette.border}`,
-                          borderRadius: "8px",
-                          padding: "10px 12px",
-                        }}
-                      >
-                        <option value="">Select category</option>
-                        {categoryOptions.map((cat) => (
-                          <option key={cat} value={cat}>
-                            {cat}
-                          </option>
-                        ))}
-                      </Form.Select>
+                      <div style={{ position: "relative" }} onClick={(e) => e.stopPropagation()}>
+                        <Form.Control
+                          type="text"
+                          placeholder="Search and select category"
+                          value={categorySearch || form.category}
+                          onChange={(e) => {
+                            setCategorySearch(e.target.value);
+                            setShowCategoryDropdown(true);
+                          }}
+                          onFocus={() => setShowCategoryDropdown(true)}
+                          style={{
+                            color: palette.text,
+                            background: palette.input,
+                            border: `1px solid ${palette.border}`,
+                            borderRadius: "8px",
+                            padding: "10px 12px",
+                          }}
+                        />
+                        {showCategoryDropdown && (
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: "100%",
+                              left: 0,
+                              right: 0,
+                              background: palette.cardBg,
+                              border: `1px solid ${palette.border}`,
+                              borderRadius: "8px",
+                              maxHeight: "200px",
+                              overflowY: "auto",
+                              zIndex: 1000,
+                              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                            }}
+                          >
+                            {filteredCategories.map((category) => (
+                              <div
+                                key={category}
+                                style={{
+                                  padding: "10px 12px",
+                                  cursor: "pointer",
+                                  borderBottom: `1px solid ${palette.border}`,
+                                  color: palette.text,
+                                }}
+                                onMouseOver={(e) => {
+                                  e.target.style.background = palette.hoverBg;
+                                }}
+                                onMouseOut={(e) => {
+                                  e.target.style.background = "transparent";
+                                }}
+                                onClick={() => {
+                                  setForm((f) => ({ ...f, category, subCategory: "" }));
+                                  setCategorySearch("");
+                                  setShowCategoryDropdown(false);
+                                }}
+                              >
+                                {category}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </Form.Group>
                   </Col>
 
@@ -723,6 +795,88 @@ export default function NewCampaign() {
               {/* ====== Step 2 ====== */}
               {step === 2 && (
                 <Row className="g-4">
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label
+                        style={{
+                          fontWeight: "600",
+                          color: palette.text,
+                          marginBottom: "8px",
+                        }}
+                      >
+                        Workers Needed (Min: 10)
+                      </Form.Label>
+                      <Form.Control
+                        type="number"
+                        min={10}
+                        name="workersNeeded"
+                        value={form.workersNeeded}
+                        onChange={(e) =>
+                          setForm((f) => ({
+                            ...f,
+                            workersNeeded: e.target.value,
+                          }))
+                        }
+                        onBlur={(e) => {
+                          const value = Math.max(10, parseInt(e.target.value) || 10);
+                          setForm((f) => ({
+                            ...f,
+                            workersNeeded: value.toString(),
+                          }));
+                        }}
+                        required
+                        style={{
+                          color: palette.text,
+                          background: palette.input,
+                          border: `1px solid ${palette.border}`,
+                          borderRadius: "8px",
+                          padding: "10px 12px",
+                        }}
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label
+                        style={{
+                          fontWeight: "600",
+                          color: palette.text,
+                          marginBottom: "8px",
+                        }}
+                      >
+                        Amount per Worker (Min: 50)
+                      </Form.Label>
+                      <Form.Control
+                        type="number"
+                        min={50}
+                        step="0.01"
+                        name="amountPerWorker"
+                        value={form.amountPerWorker}
+                        onChange={(e) =>
+                          setForm((f) => ({
+                            ...f,
+                            amountPerWorker: e.target.value,
+                          }))
+                        }
+                        onBlur={(e) => {
+                          const value = Math.max(50, parseFloat(e.target.value) || 50);
+                          setForm((f) => ({
+                            ...f,
+                            amountPerWorker: value.toString(),
+                          }));
+                        }}
+                        required
+                        style={{
+                          color: palette.text,
+                          background: palette.input,
+                          border: `1px solid ${palette.border}`,
+                          borderRadius: "8px",
+                          padding: "10px 12px",
+                        }}
+                      />
+                    </Form.Group>
+                  </Col>
                   <Col md={12}>
                     <Form.Group>
                       <Form.Label
@@ -811,58 +965,7 @@ export default function NewCampaign() {
                     </Form.Group>
                   </Col>
 
-                  {!isClosed && (
-                    <Col md={12}>
-                      <Form.Group>
-                        <Form.Label
-                          style={{
-                            fontWeight: "600",
-                            color: palette.text,
-                            marginBottom: "12px",
-                          }}
-                        >
-                          Review Text (for Open Review)
-                        </Form.Label>
-                        {form.reviewText.map((text, idx) => (
-                          <InputGroup className="mb-2" key={idx}>
-                            <Form.Control
-                              as="textarea"
-                              rows={2}
-                              value={text}
-                              onChange={(e) =>
-                                handleReviewTextChange(idx, e.target.value)
-                              }
-                              placeholder={`Review Text ${idx + 1}`}
-                              style={{
-                                color: palette.text,
-                                background: palette.input,
-                                border: `1px solid ${palette.border}`,
-                                borderRadius: "8px",
-                              }}
-                            />
-                            <Button
-                              variant="outline-danger"
-                              size="sm"
-                              onClick={() => removeReviewTextOption(idx)}
-                              disabled={form.reviewText.length <= 1}
-                              style={{ borderRadius: "8px" }}
-                            >
-                              <Trash2 size={16} />
-                            </Button>
-                          </InputGroup>
-                        ))}
-                        <Button
-                          variant="outline-primary"
-                          size="sm"
-                          className="me-3"
-                          onClick={addReviewTextOption}
-                          style={{ borderRadius: "8px" }}
-                        >
-                          <Plus size={16} /> Add Review Text
-                        </Button>
-                      </Form.Group>
-                    </Col>
-                  )}
+
 
                   {isClosed && (
                     <Col md={12}>
@@ -885,8 +988,7 @@ export default function NewCampaign() {
                           }}
                         >
                           <strong>
-                            Add bulk review options as lines (TXT) or cells
-                            (CSV) - must have at least {MIN_CLOSED_OPTIONS}{" "}
+                            Paste bulk review options as lines (TXT) - must have at least {workersNeeded}{" "}
                             options.
                           </strong>
                         </Alert>
@@ -924,11 +1026,10 @@ export default function NewCampaign() {
                               margin: "12px 0",
                             }}
                           >
-                            Drop .txt or .csv file here
+                            Drop any file here
                           </p>
                           <input
                             type="file"
-                            accept=".txt,.csv"
                             onChange={handleFileInput}
                             style={{ display: "none" }}
                             id="bulk-upload"
@@ -960,7 +1061,40 @@ export default function NewCampaign() {
                               marginBottom: "12px",
                             }}
                           >
-                            ✓ {closedOptionsCount} review options uploaded!
+                            ✓ {uploadedFile ? uploadedFile.length : 0} review options uploaded!
+                          </Alert>
+                        )}
+                        
+                        {uploadedFile && (
+                          <Alert
+                            style={{
+                              background: "#d4edda",
+                              color: "#155724",
+                              border: "1px solid #c3e6cb",
+                              borderRadius: "8px",
+                              marginBottom: "12px",
+                            }}
+                          >
+                            ✓ File uploaded with {uploadedFile.length} options. Clear file to use text input instead.
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setUploadedFile(null);
+                                setBulkStatus(null);
+                              }}
+                              style={{
+                                marginLeft: "10px",
+                                background: "#dc3545",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "4px",
+                                padding: "2px 8px",
+                                fontSize: "12px",
+                                cursor: "pointer"
+                              }}
+                            >
+                              Clear File
+                            </button>
                           </Alert>
                         )}
                         {bulkStatus === "bad" && (
@@ -977,57 +1111,32 @@ export default function NewCampaign() {
                           </Alert>
                         )}
 
-                        {form.closedReviewOptions.map((text, idx) => (
-                          <InputGroup className="mb-2" key={idx}>
-                            <Form.Control
-                              as="textarea"
-                              rows={2}
-                              value={text}
-                              onChange={(e) =>
-                                handleClosedReviewChange(idx, e.target.value)
-                              }
-                              placeholder={`Option ${idx + 1}`}
-                              style={{
-                                color: palette.text,
-                                background: palette.input,
-                                border: `1px solid ${palette.border}`,
-                                borderRadius: "8px",
-                              }}
-                            />
-                            <Button
-                              variant="outline-danger"
-                              size="sm"
-                              onClick={() => removeClosedReviewOption(idx)}
-                              disabled={form.closedReviewOptions.length <= 1}
-                              style={{ borderRadius: "8px" }}
-                            >
-                              <Trash2 size={16} />
-                            </Button>
-                          </InputGroup>
-                        ))}
-                        <Button
-                          variant="outline-primary"
-                          size="sm"
-                          className="me-3"
-                          onClick={addClosedReviewOption}
-                          style={{ borderRadius: "8px" }}
-                        >
-                          <Plus size={16} /> Add Option
-                        </Button>
-                        <Badge
-                          style={{
-                            background: hasEnoughClosedOptions
-                              ? "#28a745"
-                              : "#ffc107",
-                            color: hasEnoughClosedOptions ? "#fff" : "#000",
-                            marginLeft: "8px",
-                            padding: "6px 12px",
-                            fontSize: "0.9rem",
+                        <Form.Control
+                          as="textarea"
+                          rows={8}
+                          value={form.closedReviewOptions}
+                          onChange={(e) => {
+                            setForm((prev) => ({
+                              ...prev,
+                              closedReviewOptions: e.target.value,
+                            }));
+                            // Clear uploaded file when user types
+                            if (e.target.value.trim() && uploadedFile) {
+                              setUploadedFile(null);
+                            }
                           }}
-                        >
-                          {closedOptionsCount} / {MIN_CLOSED_OPTIONS}
-                        </Badge>
-                        {!hasEnoughClosedOptions && (
+                          placeholder={uploadedFile ? "File uploaded. Clear file above to use text input." : "Paste your review options here, one per line..."}
+                          disabled={!!uploadedFile}
+                          style={{
+                            color: palette.text,
+                            background: uploadedFile ? palette.border : palette.input,
+                            border: `1px solid ${palette.border}`,
+                            borderRadius: "8px",
+                            marginBottom: "12px",
+                            opacity: uploadedFile ? 0.6 : 1,
+                          }}
+                        />
+                        {!hasClosedReviewContent && (
                           <Alert
                             style={{
                               background: "#fff3cd",
@@ -1037,8 +1146,7 @@ export default function NewCampaign() {
                               marginTop: "12px",
                             }}
                           >
-                            You need at least {MIN_CLOSED_OPTIONS} review
-                            options.
+                            Please provide review options by either pasting text OR uploading a file (not both).
                           </Alert>
                         )}
                       </Form.Group>
@@ -1077,14 +1185,14 @@ export default function NewCampaign() {
                           fontWeight: "600",
                           borderRadius: "8px",
                           cursor:
-                            isClosed && !hasEnoughClosedOptions
+                            (!form.workersNeeded || workersNeeded < 10 || !form.amountPerWorker || amountPerWorker < 50 || (isClosed && !hasClosedReviewContent))
                               ? "not-allowed"
                               : "pointer",
                           opacity:
-                            isClosed && !hasEnoughClosedOptions ? 0.5 : 1,
+                            (!form.workersNeeded || workersNeeded < 10 || !form.amountPerWorker || amountPerWorker < 50 || (isClosed && !hasClosedReviewContent)) ? 0.5 : 1,
                         }}
                         onClick={nextStep}
-                        disabled={isClosed && !hasEnoughClosedOptions}
+                        disabled={!form.workersNeeded || workersNeeded < 10 || !form.amountPerWorker || amountPerWorker < 50 || (isClosed && !hasClosedReviewContent)}
                       >
                         Next{" "}
                         <ChevronRight size={18} style={{ marginLeft: "8px" }} />
@@ -1141,10 +1249,10 @@ export default function NewCampaign() {
                       <Editor
                         apiKey={TINYMCE_API_KEY}
                         value={form.jobDescription}
-                        onEditorChange={(c) =>
+                        onEditorChange={(content) =>
                           setForm((f) => ({
                             ...f,
-                            jobDescription: c,
+                            jobDescription: content,
                           }))
                         }
                         init={{
@@ -1156,6 +1264,12 @@ export default function NewCampaign() {
                           branding: false,
                           skin: isDark ? "oxide-dark" : "oxide",
                           content_css: isDark ? "dark" : "light",
+                          setup: (editor) => {
+                            editor.on('change', () => {
+                              const content = editor.getContent();
+                              setForm((f) => ({ ...f, jobDescription: content }));
+                            });
+                          }
                         }}
                       />
                     </Form.Group>
@@ -1175,10 +1289,10 @@ export default function NewCampaign() {
                       <Editor
                         apiKey={TINYMCE_API_KEY}
                         value={form.instructions}
-                        onEditorChange={(c) =>
+                        onEditorChange={(content) =>
                           setForm((f) => ({
                             ...f,
-                            instructions: c,
+                            instructions: content,
                           }))
                         }
                         init={{
@@ -1190,12 +1304,18 @@ export default function NewCampaign() {
                           branding: false,
                           skin: isDark ? "oxide-dark" : "oxide",
                           content_css: isDark ? "dark" : "light",
+                          setup: (editor) => {
+                            editor.on('change', () => {
+                              const content = editor.getContent();
+                              setForm((f) => ({ ...f, instructions: content }));
+                            });
+                          }
                         }}
                       />
                     </Form.Group>
                   </Col>
 
-                  <Col md={4}>
+                  <Col md={6}>
                     <Form.Group>
                       <Form.Label
                         style={{
@@ -1204,80 +1324,12 @@ export default function NewCampaign() {
                           marginBottom: "8px",
                         }}
                       >
-                        Workers Needed
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        min={isClosed ? MIN_CLOSED_OPTIONS : 1}
-                        name="workersNeeded"
-                        value={form.workersNeeded}
-                        onChange={(e) =>
-                          setForm((f) => ({
-                            ...f,
-                            workersNeeded: e.target.value,
-                          }))
-                        }
-                        required
-                        style={{
-                          color: palette.text,
-                          background: palette.input,
-                          border: `1px solid ${palette.border}`,
-                          borderRadius: "8px",
-                          padding: "10px 12px",
-                        }}
-                      />
-                    </Form.Group>
-                  </Col>
-
-                  <Col md={4}>
-                    <Form.Group>
-                      <Form.Label
-                        style={{
-                          fontWeight: "600",
-                          color: palette.text,
-                          marginBottom: "8px",
-                        }}
-                      >
-                        Amount per Worker
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        min={0}
-                        step="0.01"
-                        name="amountPerWorker"
-                        value={form.amountPerWorker}
-                        onChange={(e) =>
-                          setForm((f) => ({
-                            ...f,
-                            amountPerWorker: e.target.value,
-                          }))
-                        }
-                        required
-                        style={{
-                          color: palette.text,
-                          background: palette.input,
-                          border: `1px solid ${palette.border}`,
-                          borderRadius: "8px",
-                          padding: "10px 12px",
-                        }}
-                      />
-                    </Form.Group>
-                  </Col>
-
-                  <Col md={4}>
-                    <Form.Group>
-                      <Form.Label
-                        style={{
-                          fontWeight: "600",
-                          color: palette.text,
-                          marginBottom: "8px",
-                        }}
-                      >
-                        Approval Days
+                        Approval Days (Max: 5)
                       </Form.Label>
                       <Form.Control
                         type="number"
                         min={1}
+                        max={5}
                         name="approvalDays"
                         value={form.approvalDays}
                         onChange={(e) =>
@@ -1286,6 +1338,13 @@ export default function NewCampaign() {
                             approvalDays: e.target.value,
                           }))
                         }
+                        onBlur={(e) => {
+                          const value = Math.min(5, Math.max(1, parseInt(e.target.value) || 1));
+                          setForm((f) => ({
+                            ...f,
+                            approvalDays: value,
+                          }));
+                        }}
                         required
                         style={{
                           color: palette.text,
@@ -1295,6 +1354,84 @@ export default function NewCampaign() {
                           padding: "10px 12px",
                         }}
                       />
+                      <small style={{ color: palette.label, marginTop: "4px", display: "block" }}>
+                        If approval is not made within 5 days, an approval would be automatically made for you.
+                      </small>
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label
+                        style={{
+                          fontWeight: "600",
+                          color: palette.text,
+                          marginBottom: "8px",
+                        }}
+                      >
+                        Approval Mode
+                      </Form.Label>
+                      <div style={{ position: "relative" }} onClick={(e) => e.stopPropagation()}>
+                        <Form.Control
+                          type="text"
+                          placeholder="Search and select approval mode"
+                          value={approvalModeSearch || form.approvalMode}
+                          onChange={(e) => {
+                            setApprovalModeSearch(e.target.value);
+                            setShowApprovalModeDropdown(true);
+                          }}
+                          onFocus={() => setShowApprovalModeDropdown(true)}
+                          style={{
+                            color: palette.text,
+                            background: palette.input,
+                            border: `1px solid ${palette.border}`,
+                            borderRadius: "8px",
+                            padding: "10px 12px",
+                          }}
+                        />
+                        {showApprovalModeDropdown && (
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: "100%",
+                              left: 0,
+                              right: 0,
+                              background: palette.cardBg,
+                              border: `1px solid ${palette.border}`,
+                              borderRadius: "8px",
+                              maxHeight: "200px",
+                              overflowY: "auto",
+                              zIndex: 1000,
+                              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                            }}
+                          >
+                            {filteredApprovalModes.map((mode) => (
+                              <div
+                                key={mode}
+                                style={{
+                                  padding: "10px 12px",
+                                  cursor: "pointer",
+                                  borderBottom: `1px solid ${palette.border}`,
+                                  color: palette.text,
+                                }}
+                                onMouseOver={(e) => {
+                                  e.target.style.background = palette.hoverBg;
+                                }}
+                                onMouseOut={(e) => {
+                                  e.target.style.background = "transparent";
+                                }}
+                                onClick={() => {
+                                  setForm((f) => ({ ...f, approvalMode: mode }));
+                                  setApprovalModeSearch("");
+                                  setShowApprovalModeDropdown(false);
+                                }}
+                              >
+                                {mode}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </Form.Group>
                   </Col>
 
@@ -1345,7 +1482,7 @@ export default function NewCampaign() {
                           marginBottom: "8px",
                         }}
                       >
-                        Job Link (Optional)
+                        Job Link
                       </Form.Label>
                       <Form.Control
                         name="jobsLink"
@@ -1358,6 +1495,7 @@ export default function NewCampaign() {
                         }
                         placeholder="https://example.com"
                         type="url"
+                        required
                         style={{
                           color: palette.text,
                           background: palette.input,
@@ -1430,42 +1568,6 @@ export default function NewCampaign() {
                       </Card>
                     </Col>
                   )}
-
-                  <Col md={6}>
-                    <Form.Group>
-                      <Form.Label
-                        style={{
-                          fontWeight: "600",
-                          color: palette.text,
-                          marginBottom: "8px",
-                        }}
-                      >
-                        Approval Mode
-                      </Form.Label>
-                      <Form.Select
-                        name="approvalMode"
-                        value={form.approvalMode}
-                        onChange={(e) =>
-                          setForm((f) => ({
-                            ...f,
-                            approvalMode: e.target.value,
-                          }))
-                        }
-                        required
-                        style={{
-                          color: palette.text,
-                          background: palette.input,
-                          border: `1px solid ${palette.border}`,
-                          borderRadius: "8px",
-                          padding: "10px 12px",
-                        }}
-                      >
-                        <option value="">Select mode</option>
-                        <option>Self Approval</option>
-                        <option>Platform Approval</option>
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
 
                   <Col md={6}>
                     <Form.Group>
