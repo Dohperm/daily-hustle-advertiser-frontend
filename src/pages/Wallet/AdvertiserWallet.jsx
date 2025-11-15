@@ -21,6 +21,10 @@ export default function AdvertiserWallet() {
   const [loading, setLoading] = useState(false);
   const [transactionsLoading, setTransactionsLoading] = useState(false);
   const [totalSpentLoading, setTotalSpentLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalTransactions, setTotalTransactions] = useState(0);
+  const itemsPerPage = 10;
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [amount, setAmount] = useState("");
   const [paymentLoading, setPaymentLoading] = useState(false);
@@ -50,17 +54,7 @@ export default function AdvertiserWallet() {
       }
 
       // Fetch transactions
-      setTransactionsLoading(true);
-      try {
-        const response = await advertiserTransactions();
-        const transactionData = response?.data?.data?.data || [];
-        setTransactions(Array.isArray(transactionData) ? transactionData : []);
-      } catch (error) {
-        console.error('Failed to fetch transactions:', error);
-        setTransactions([]);
-      } finally {
-        setTransactionsLoading(false);
-      }
+      fetchTransactions(1);
 
       // Fetch total spent
       setTotalSpentLoading(true);
@@ -77,6 +71,35 @@ export default function AdvertiserWallet() {
     }
     fetchWalletData();
   }, []);
+
+  // Fetch transactions with pagination
+  const fetchTransactions = async (pageNo = 1) => {
+    console.log('Fetching transactions for page:', pageNo);
+    setTransactionsLoading(true);
+    try {
+      const response = await advertiserTransactions(`?pageNo=${pageNo}&limitNo=${itemsPerPage}&order=-1`);
+      const data = response?.data?.data || {};
+      const transactionData = data.data || [];
+      const metadata = data.metadata || {};
+      
+      setTransactions(Array.isArray(transactionData) ? transactionData : []);
+      setCurrentPage(pageNo);
+      setTotalPages(Math.ceil((metadata.total || 0) / itemsPerPage));
+      setTotalTransactions(metadata.total || 0);
+    } catch (error) {
+      console.error('Failed to fetch transactions:', error);
+      setTransactions([]);
+    } finally {
+      setTransactionsLoading(false);
+    }
+  };
+
+  // Handle page change
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      fetchTransactions(page);
+    }
+  };
 
   // Refresh wallet data when returning from payment
   useEffect(() => {
@@ -484,6 +507,76 @@ export default function AdvertiserWallet() {
                   })}
                 </tbody>
               </table>
+            </div>
+          )}
+          
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="d-flex justify-content-between align-items-center mt-4 px-4 pb-4">
+              <div style={{ color: palette.label, fontSize: '0.9rem' }}>
+                Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalTransactions)} of {totalTransactions} transactions
+              </div>
+              <div className="d-flex gap-2">
+                <button
+                  className="btn btn-sm"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1 || transactionsLoading}
+                  style={{
+                    background: palette.bg,
+                    color: palette.text,
+                    border: `1px solid ${palette.border}`,
+                    borderRadius: '6px'
+                  }}
+                >
+                  Previous
+                </button>
+                
+                {/* Page numbers */}
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNum;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+                  
+                  return (
+                    <button
+                      key={pageNum}
+                      className="btn btn-sm"
+                      onClick={() => handlePageChange(pageNum)}
+                      disabled={transactionsLoading}
+                      style={{
+                        background: currentPage === pageNum ? palette.red : palette.bg,
+                        color: currentPage === pageNum ? '#fff' : palette.text,
+                        border: `1px solid ${currentPage === pageNum ? palette.red : palette.border}`,
+                        borderRadius: '6px',
+                        minWidth: '35px'
+                      }}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+                
+                <button
+                  className="btn btn-sm"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages || transactionsLoading}
+                  style={{
+                    background: palette.bg,
+                    color: palette.text,
+                    border: `1px solid ${palette.border}`,
+                    borderRadius: '6px'
+                  }}
+                >
+                  Next
+                </button>
+              </div>
             </div>
           )}
         </div>

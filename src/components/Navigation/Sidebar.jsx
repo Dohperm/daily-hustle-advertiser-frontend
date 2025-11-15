@@ -13,7 +13,7 @@ export default function Sidebar() {
       <nav className="flex-grow-1">
         <ul className="nav flex-column gap-1">
           <li className="nav-item">
-            <NavLink to="/" className="nav-link">
+            <NavLink to="/" className="nav-link" end>
               <i className="bi bi-house-door-fill me-2" />
               Dashboard
             </NavLink>
