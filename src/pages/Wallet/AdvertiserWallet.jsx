@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect } from "react";
 import { useAdvertiserData } from "../hooks/useAppDataContext";
 import { useTheme } from "../../context/ThemeContext";
 import { useLocation } from "react-router-dom";
-import { advertiserWalletBalance, advertiserTransactions, initializePayment } from "../services/services";
+import { advertiserWalletBalance, advertiserTransactions, advertiserTotalSpent, initializePayment } from "../services/services";
 import {
   Wallet,
   TrendingUp,
@@ -17,8 +17,10 @@ export default function AdvertiserWallet() {
   const location = useLocation();
   const [walletData, setWalletData] = useState({ balance: 0, transactions: [] });
   const [transactions, setTransactions] = useState([]);
+  const [totalSpent, setTotalSpent] = useState({ total_spent: 0, currency: 'NGN' });
   const [loading, setLoading] = useState(false);
   const [transactionsLoading, setTransactionsLoading] = useState(false);
+  const [totalSpentLoading, setTotalSpentLoading] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [amount, setAmount] = useState("");
   const [paymentLoading, setPaymentLoading] = useState(false);
@@ -58,6 +60,19 @@ export default function AdvertiserWallet() {
         setTransactions([]);
       } finally {
         setTransactionsLoading(false);
+      }
+
+      // Fetch total spent
+      setTotalSpentLoading(true);
+      try {
+        const response = await advertiserTotalSpent();
+        const spentData = response?.data?.data || { total_spent: 0, currency: 'NGN' };
+        setTotalSpent(spentData);
+      } catch (error) {
+        console.error('Failed to fetch total spent:', error);
+        setTotalSpent({ total_spent: 0, currency: 'NGN' });
+      } finally {
+        setTotalSpentLoading(false);
       }
     }
     fetchWalletData();
@@ -216,35 +231,44 @@ export default function AdvertiserWallet() {
             style={{
               background: palette.cardBg,
               borderRadius: "16px",
+              overflow: "hidden",
             }}
           >
-            <div className="card-body p-4 d-flex flex-column justify-content-between">
-              <div className="mb-3 d-flex align-items-center justify-content-between">
-                <span
-                  style={{
-                    fontSize: "0.9rem",
-                    fontWeight: "600",
-                    color: palette.label,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.5px",
-                  }}
-                >
-                  Total Spent
-                </span>
-                <ArrowDownLeft size={20} style={{ color: palette.danger }} />
+            <div
+              style={{
+                background: `linear-gradient(135deg, ${palette.danger}, #ff6b5b)`,
+                height: "6px",
+              }}
+            />
+            <div className="card-body p-4">
+              <div
+                className="mb-3"
+                style={{
+                  fontSize: "0.9rem",
+                  fontWeight: "600",
+                  color: palette.label,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                Total Spent
               </div>
               <h3
-                className="fw-bold"
+                className="fw-bold mb-4"
                 style={{
                   fontSize: "1.8rem",
                   color: palette.danger,
+                  lineHeight: "1",
                 }}
               >
-                ₦
-                {currentWallet.transactions
-                  ?.filter((t) => t.amount < 0)
-                  .reduce((sum, t) => sum + Math.abs(t.amount), 0)
-                  .toLocaleString() || "0"}
+                {totalSpentLoading ? (
+                  <div className="d-flex align-items-center gap-2">
+                    <div className="spinner-border spinner-border-sm" role="status" style={{ color: palette.danger }}></div>
+                    <span>Loading...</span>
+                  </div>
+                ) : (
+                  `${totalSpent.currency === 'NGN' ? '₦' : totalSpent.currency}${totalSpent.total_spent?.toLocaleString() || '0'}`
+                )}
               </h3>
             </div>
           </div>

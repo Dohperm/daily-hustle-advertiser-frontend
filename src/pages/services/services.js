@@ -142,6 +142,8 @@ export const advertiserWalletBalance = () => api.get("/advertisers/me/wallet-bal
  */
 export const advertiserTransactions = () => api.get("/transactions/advertisers");
 
+export const advertiserTotalSpent = () => api.get("/transactions/advertisers/stats/total-spent");
+
 export const initializePayment = (amount) => {
   return api.post("/payments/initialize", { amount });
 };
