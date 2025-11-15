@@ -140,7 +140,7 @@ export const advertiserWalletBalance = () => api.get("/advertisers/me/wallet-bal
  * GET /transactions
  * No params or body
  */
-export const advertiserTransactions = () => api.get("/transactions");
+export const advertiserTransactions = () => api.get("/transactions/advertisers");
 
 export const initializePayment = (amount) => {
   return api.post("/payments/initialize", { amount });

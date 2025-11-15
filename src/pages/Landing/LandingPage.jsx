@@ -93,9 +93,12 @@ export default function LandingPage() {
               >
                 <Megaphone size={24} color="#fff" />
               </div>
-              <h4 className="fw-bold mb-0" style={{ color: palette.text }}>
-                DailyHustle
-              </h4>
+              <div>
+                <h4 className="fw-bold mb-0" style={{ color: palette.text }}>
+                  DailyHustle
+                </h4>
+                <small style={{ color: palette.red, fontWeight: "600" }}>for Advertisers</small>
+              </div>
             </div>
             <div className="d-flex gap-3">
               <Link
@@ -144,9 +147,9 @@ export default function LandingPage() {
                   lineHeight: "1.2",
                 }}
               >
-                Launch Powerful{" "}
-                <span style={{ color: palette.red }}>Marketing Campaigns</span>{" "}
-                with Ease
+                The Ultimate{" "}
+                <span style={{ color: palette.red }}>Advertiser Platform</span>{" "}
+                for Campaign Success
               </h1>
               <p
                 className="mb-4"
@@ -156,7 +159,7 @@ export default function LandingPage() {
                   lineHeight: "1.6",
                 }}
               >
-                Connect with skilled workers, manage campaigns efficiently, and grow your business with our comprehensive advertiser platform.
+                Designed specifically for advertisers to create powerful campaigns, connect with quality workers, and scale their marketing efforts with ease.
               </p>
               <div className="d-flex gap-3 mb-5">
                 <Link
@@ -266,10 +269,10 @@ export default function LandingPage() {
         <div className="container">
           <div className="text-center mb-5">
             <h2 className="fw-bold mb-3" style={{ color: palette.text, fontSize: "2.5rem" }}>
-              Everything You Need to Succeed
+              Built for Advertisers, By Advertisers
             </h2>
             <p style={{ color: palette.label, fontSize: "1.1rem" }}>
-              Powerful tools to manage your campaigns and grow your business
+              Everything you need to launch, manage, and optimize your advertising campaigns
             </p>
           </div>
           <div className="row g-4">
@@ -421,9 +424,12 @@ export default function LandingPage() {
               >
                 <Megaphone size={20} color="#fff" />
               </div>
-              <h5 className="fw-bold mb-0" style={{ color: palette.text }}>
-                DailyHustle
-              </h5>
+              <div>
+                <h5 className="fw-bold mb-0" style={{ color: palette.text }}>
+                  DailyHustle
+                </h5>
+                <small style={{ color: palette.red }}>Advertiser Platform</small>
+              </div>
             </div>
             <p style={{ color: palette.label, margin: 0 }}>
               © 2024 DailyHustle. All rights reserved.
