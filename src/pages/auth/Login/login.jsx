@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "react-toastify/dist/ReactToastify.css";
 import { advertiserLogin } from "../../services/services";
-// Add this line:
-import { useAdvertiserData } from "../../hooks/useAppDataContext"; // Adjust import path if needed
+import { useAdvertiserData } from "../../hooks/useAppDataContext";
 
 const Login = () => {
   // Add this line:
@@ -147,6 +147,20 @@ const Login = () => {
             >
               Forgot Password?
             </a>
+          </div>
+          <div className="text-center mt-3">
+            <Link
+              to="/"
+              className="btn btn-outline-secondary btn-sm"
+              style={{
+                borderRadius: "8px",
+                padding: "6px 16px",
+                textDecoration: "none"
+              }}
+            >
+              <i className="bi bi-house me-1"></i>
+              Back to Home
+            </Link>
           </div>
         </form>
       </div>

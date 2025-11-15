@@ -19,11 +19,17 @@ import Leaderboard from "./pages/Leaderboard/Leaderboard";
 import Plans from "./pages/Plans/Plans";
 import AdvertiserNotifications from "./pages/Notifications/AdvertiserNotifications";
 import PaymentCallback from "./pages/Wallet/PaymentCallback";
+import LandingPage from "./pages/Landing/LandingPage";
 
 // Protected Route Component
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem("token");
-  return token ? children : <Navigate to="/login" replace />;
+  return token ? children : <Navigate to="/" replace />;
+}
+
+function HomeRoute() {
+  const token = localStorage.getItem("token");
+  return token ? <Navigate to="/dashboard" replace /> : <LandingPage />;
 }
 
 // ✅ LOGOUT COMPONENT
@@ -48,6 +54,9 @@ function Logout() {
 export default function App() {
   return (
     <Routes>
+      {/* ✅ HOME/LANDING PAGE */}
+      <Route path="/" element={<HomeRoute />} />
+
       {/* ✅ AUTH ROUTES - NO LAYOUT */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<QuickSignup />} />
@@ -59,7 +68,7 @@ export default function App() {
 
       {/* ✅ APP ROUTES - WITH LAYOUT */}
       <Route element={<Layout />}>
-        <Route path="/" element={<ProtectedRoute><AdvertiserDashboard /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><AdvertiserDashboard /></ProtectedRoute>} />
         <Route path="/jobs/my-campaigns" element={<MyCampaigns />} />
         <Route path="/jobs/new" element={<NewCampaign />} />
         <Route path="/jobs/allcampaigns" element={<AllCampaigns />} />
