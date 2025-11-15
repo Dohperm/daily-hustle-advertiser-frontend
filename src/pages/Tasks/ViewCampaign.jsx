@@ -394,22 +394,13 @@ export default function ViewCampaignPage() {
                 <Form.Group className="mb-3">
                   <Form.Label>Job Description</Form.Label>
                   {editMode ? (
-                    <Editor
-                      apiKey={TINYMCE_API_KEY}
+                    <Form.Control
+                      as="textarea"
+                      rows={4}
+                      name="description"
                       value={form.description || ""}
-                      onEditorChange={(content) =>
-                        setForm((prev) => ({
-                          ...prev,
-                          description: content,
-                        }))
-                      }
-                      init={{
-                        height: 120,
-                        menubar: false,
-                        branding: false,
-                        toolbar: "bold italic underline | bullist numlist",
-                        readonly: !editMode,
-                      }}
+                      onChange={handleChange}
+                      placeholder="Describe the job requirements..."
                     />
                   ) : (
                     <div
@@ -418,9 +409,11 @@ export default function ViewCampaignPage() {
                         background: "#f8f9fa",
                         borderRadius: 8,
                         minHeight: 60,
+                        whiteSpace: "pre-wrap",
                       }}
-                      dangerouslySetInnerHTML={{ __html: form.description }}
-                    />
+                    >
+                      {form.description}
+                    </div>
                   )}
                 </Form.Group>
                 <Form.Group className="mb-3">

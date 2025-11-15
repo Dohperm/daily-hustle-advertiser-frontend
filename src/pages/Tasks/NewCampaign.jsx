@@ -13,6 +13,7 @@ import {
   Spinner,
   Table,
 } from "react-bootstrap";
+
 import { Editor } from "@tinymce/tinymce-react";
 import {
   Trash2,
@@ -213,7 +214,8 @@ const africanCountries = [
 ];
 const CURRENCIES = ["NGN", "USD", "GBP", "EUR"];
 const PLATFORM_FEE_PERCENT = 0.15;
-const TINYMCE_API_KEY = "vd6rmi2kajnxr70fb4qd3c9urje5qczvcoohhywwl6sbawpf";
+const TINYMCE_API_KEY = "hibj0zuw254t339ddq36gppxwz01azujueckegndkz5ag3q4";
+
 
 
 export default function NewCampaign() {
@@ -264,7 +266,7 @@ export default function NewCampaign() {
     is_screenshot_required: false,
   });
   
-  const [uploadedFile, setUploadedFile] = useState(null);
+
   
   const [countrySearch, setCountrySearch] = useState("");
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
@@ -313,7 +315,8 @@ export default function NewCampaign() {
     ? form.closedReviewOptions.split('\n').filter(Boolean) 
     : [];
   const closedOptionsCount = closedOptions.length;
-  const hasClosedReviewContent = uploadedFile || (form.closedReviewOptions && typeof form.closedReviewOptions === 'string' && form.closedReviewOptions.trim().length > 0);
+  const hasClosedReviewContent = form.closedReviewOptions && typeof form.closedReviewOptions === 'string' && form.closedReviewOptions.trim().length > 0;
+  const hasEnoughOptions = !isClosed || closedOptionsCount >= workersNeeded;
 
   React.useEffect(() => {
     if (!isClosed) {
@@ -337,6 +340,10 @@ export default function NewCampaign() {
       }
       if (isClosed && !hasClosedReviewContent) {
         alert("Closed Review requires review options (either paste text or upload file).");
+        return;
+      }
+      if (isClosed && closedOptionsCount < workersNeeded) {
+        alert(`You need at least ${workersNeeded} options but only have ${closedOptionsCount}. Please add ${workersNeeded - closedOptionsCount} more options.`);
         return;
       }
     }
@@ -400,10 +407,9 @@ export default function NewCampaign() {
       setTimeout(() => setBulkStatus(null), 3000);
       return;
     }
-    setUploadedFile(lines);
     setForm((prev) => ({
       ...prev,
-      closedReviewOptions: "", // Clear text field when file is uploaded
+      closedReviewOptions: lines.join('\n'),
     }));
     setBulkStatus("good");
     setTimeout(() => setBulkStatus(null), 3000);
@@ -438,13 +444,9 @@ export default function NewCampaign() {
     let closed_review_options = null;
 
     if (form.reviewType === "Closed") {
-      if (uploadedFile) {
-        closed_review_options = uploadedFile;
-      } else {
-        closed_review_options = (form.closedReviewOptions && typeof form.closedReviewOptions === 'string')
-          ? form.closedReviewOptions.split('\n').map(l => l.trim()).filter(l => l)
-          : [];
-      }
+      closed_review_options = (form.closedReviewOptions && typeof form.closedReviewOptions === 'string')
+        ? form.closedReviewOptions.split('\n').map(l => l.trim()).filter(l => l)
+        : [];
       if (!closed_review_options.length) {
         alert("Closed Review requires review options.");
         setSubmitting(false);
@@ -1061,40 +1063,7 @@ export default function NewCampaign() {
                               marginBottom: "12px",
                             }}
                           >
-                            ✓ {uploadedFile ? uploadedFile.length : 0} review options uploaded!
-                          </Alert>
-                        )}
-                        
-                        {uploadedFile && (
-                          <Alert
-                            style={{
-                              background: "#d4edda",
-                              color: "#155724",
-                              border: "1px solid #c3e6cb",
-                              borderRadius: "8px",
-                              marginBottom: "12px",
-                            }}
-                          >
-                            ✓ File uploaded with {uploadedFile.length} options. Clear file to use text input instead.
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setUploadedFile(null);
-                                setBulkStatus(null);
-                              }}
-                              style={{
-                                marginLeft: "10px",
-                                background: "#dc3545",
-                                color: "white",
-                                border: "none",
-                                borderRadius: "4px",
-                                padding: "2px 8px",
-                                fontSize: "12px",
-                                cursor: "pointer"
-                              }}
-                            >
-                              Clear File
-                            </button>
+                            ✓ File content loaded into text area!
                           </Alert>
                         )}
                         {bulkStatus === "bad" && (
@@ -1115,25 +1084,19 @@ export default function NewCampaign() {
                           as="textarea"
                           rows={8}
                           value={form.closedReviewOptions}
-                          onChange={(e) => {
+                          onChange={(e) =>
                             setForm((prev) => ({
                               ...prev,
                               closedReviewOptions: e.target.value,
-                            }));
-                            // Clear uploaded file when user types
-                            if (e.target.value.trim() && uploadedFile) {
-                              setUploadedFile(null);
-                            }
-                          }}
-                          placeholder={uploadedFile ? "File uploaded. Clear file above to use text input." : "Paste your review options here, one per line..."}
-                          disabled={!!uploadedFile}
+                            }))
+                          }
+                          placeholder="Paste your review options here, one per line..."
                           style={{
                             color: palette.text,
-                            background: uploadedFile ? palette.border : palette.input,
+                            background: palette.input,
                             border: `1px solid ${palette.border}`,
                             borderRadius: "8px",
                             marginBottom: "12px",
-                            opacity: uploadedFile ? 0.6 : 1,
                           }}
                         />
                         {!hasClosedReviewContent && (
@@ -1146,7 +1109,20 @@ export default function NewCampaign() {
                               marginTop: "12px",
                             }}
                           >
-                            Please provide review options by either pasting text OR uploading a file (not both).
+                            Please provide review options by pasting text or uploading a file.
+                          </Alert>
+                        )}
+                        {hasClosedReviewContent && !hasEnoughOptions && (
+                          <Alert
+                            style={{
+                              background: "#f8d7da",
+                              color: "#721c24",
+                              border: "1px solid #f5c6cb",
+                              borderRadius: "8px",
+                              marginTop: "12px",
+                            }}
+                          >
+                            Need {workersNeeded} options but only have {closedOptionsCount}. Add {workersNeeded - closedOptionsCount} more options.
                           </Alert>
                         )}
                       </Form.Group>
@@ -1185,14 +1161,14 @@ export default function NewCampaign() {
                           fontWeight: "600",
                           borderRadius: "8px",
                           cursor:
-                            (!form.workersNeeded || workersNeeded < 10 || !form.amountPerWorker || amountPerWorker < 50 || (isClosed && !hasClosedReviewContent))
+                            (!form.workersNeeded || workersNeeded < 10 || !form.amountPerWorker || amountPerWorker < 50 || (isClosed && (!hasClosedReviewContent || !hasEnoughOptions)))
                               ? "not-allowed"
                               : "pointer",
                           opacity:
-                            (!form.workersNeeded || workersNeeded < 10 || !form.amountPerWorker || amountPerWorker < 50 || (isClosed && !hasClosedReviewContent)) ? 0.5 : 1,
+                            (!form.workersNeeded || workersNeeded < 10 || !form.amountPerWorker || amountPerWorker < 50 || (isClosed && (!hasClosedReviewContent || !hasEnoughOptions))) ? 0.5 : 1,
                         }}
                         onClick={nextStep}
-                        disabled={!form.workersNeeded || workersNeeded < 10 || !form.amountPerWorker || amountPerWorker < 50 || (isClosed && !hasClosedReviewContent)}
+                        disabled={!form.workersNeeded || workersNeeded < 10 || !form.amountPerWorker || amountPerWorker < 50 || (isClosed && (!hasClosedReviewContent || !hasEnoughOptions))}
                       >
                         Next{" "}
                         <ChevronRight size={18} style={{ marginLeft: "8px" }} />
@@ -1246,30 +1222,23 @@ export default function NewCampaign() {
                       >
                         Job Description
                       </Form.Label>
-                      <Editor
-                        apiKey={TINYMCE_API_KEY}
+                      <Form.Control
+                        as="textarea"
+                        rows={5}
                         value={form.jobDescription}
-                        onEditorChange={(content) =>
+                        onChange={(e) =>
                           setForm((f) => ({
                             ...f,
-                            jobDescription: content,
+                            jobDescription: e.target.value,
                           }))
                         }
-                        init={{
-                          height: 200,
-                          menubar: false,
-                          plugins: "lists link image",
-                          toolbar:
-                            "bold italic underline | bullist numlist | link removeformat",
-                          branding: false,
-                          skin: isDark ? "oxide-dark" : "oxide",
-                          content_css: isDark ? "dark" : "light",
-                          setup: (editor) => {
-                            editor.on('change', () => {
-                              const content = editor.getContent();
-                              setForm((f) => ({ ...f, jobDescription: content }));
-                            });
-                          }
+                        placeholder="Describe the job requirements and what workers need to do..."
+                        style={{
+                          color: palette.text,
+                          background: palette.input,
+                          border: `1px solid ${palette.border}`,
+                          borderRadius: "8px",
+                          padding: "10px 12px",
                         }}
                       />
                     </Form.Group>
@@ -1444,7 +1413,7 @@ export default function NewCampaign() {
                           marginBottom: "8px",
                         }}
                       >
-                        Attachment (Optional)
+                        Job Screenshot Sample (Optional)
                       </Form.Label>
                       <Form.Control
                         type="file"
@@ -1531,7 +1500,7 @@ export default function NewCampaign() {
                                 color: palette.red,
                               }}
                             >
-                              Image Preview
+                              Screenshot Preview
                             </small>
                             <Button
                               style={{
@@ -1801,10 +1770,9 @@ export default function NewCampaign() {
             </Badge>
             <div style={{ marginTop: "20px" }}>
               <strong>Description</strong>
-              <div
-                dangerouslySetInnerHTML={{ __html: form.jobDescription }}
-                style={{ marginTop: "8px", color: palette.label }}
-              />
+              <p style={{ marginTop: "8px", color: palette.label, whiteSpace: "pre-wrap" }}>
+                {form.jobDescription}
+              </p>
             </div>
             <div style={{ marginTop: "20px" }}>
               <strong>Instructions</strong>
