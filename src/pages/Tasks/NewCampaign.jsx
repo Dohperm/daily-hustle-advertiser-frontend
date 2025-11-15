@@ -244,6 +244,7 @@ export default function NewCampaign() {
   const [submitting, setSubmitting] = useState(false);
   const [bulkStatus, setBulkStatus] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const [form, setForm] = useState({
     title: "",
@@ -488,8 +489,10 @@ export default function NewCampaign() {
     
     try {
       await advertiserCreateTask(payload);
-      alert("Campaign submitted!");
-      window.location.reload();
+      setShowSuccess(true);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (err) {
       alert("Failed: " + (err.response?.data?.message || err.message));
     } finally {
@@ -1800,6 +1803,74 @@ export default function NewCampaign() {
             </Button>
           </Modal.Footer>
         </Modal>
+
+        {/* Success Animation Modal */}
+        <Modal
+          show={showSuccess}
+          centered
+          backdrop="static"
+          keyboard={false}
+        >
+          <Modal.Body className="text-center py-5">
+            <div
+              style={{
+                fontSize: "4rem",
+                color: "#28a745",
+                marginBottom: "20px",
+                animation: "bounce 1s ease-in-out",
+              }}
+            >
+              ✅
+            </div>
+            <h3 style={{ color: palette.text, marginBottom: "10px" }}>
+              Campaign Submitted Successfully!
+            </h3>
+            <p style={{ color: palette.label }}>
+              Your campaign is now live and workers can start applying.
+            </p>
+            <div
+              style={{
+                width: "100%",
+                height: "4px",
+                background: "#e9ecef",
+                borderRadius: "2px",
+                marginTop: "20px",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  background: "linear-gradient(90deg, #28a745, #20c997)",
+                  animation: "progress 2s ease-in-out",
+                }}
+              />
+            </div>
+          </Modal.Body>
+        </Modal>
+
+        <style>{`
+          @keyframes bounce {
+            0%, 20%, 60%, 100% {
+              transform: translateY(0);
+            }
+            40% {
+              transform: translateY(-30px);
+            }
+            80% {
+              transform: translateY(-15px);
+            }
+          }
+          @keyframes progress {
+            0% {
+              width: 0%;
+            }
+            100% {
+              width: 100%;
+            }
+          }
+        `}</style>
       </div>
     </div>
   );
