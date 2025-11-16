@@ -24,7 +24,7 @@ function stripHtml(html) {
   return div.textContent || div.innerText || "";
 }
 
-function CampaignsTable({ campaigns, palette, isDark, navigate }) {
+function CampaignsTable({ campaigns, palette, isDark, navigate, onDelete }) {
 
   const handleAction = (action, campaign) => {
     if (action === "submissions") {
@@ -32,10 +32,24 @@ function CampaignsTable({ campaigns, palette, isDark, navigate }) {
     } else if (action === "details") {
       navigate(`/viewcampaign/${campaign._id}`);
     } else if (action === "delete") {
-      if (window.confirm("Are you sure you want to delete this campaign?")) {
-        console.log("Delete campaign:", campaign._id);
-      }
+      onDelete(campaign);
     }
+  };
+
+  const handleDeleteConfirm = () => {
+    if (campaignToDelete) {
+      console.log("Delete campaign:", campaignToDelete._id);
+      // Add actual delete API call here
+      setCampaigns(prev => prev.filter(c => c._id !== campaignToDelete._id));
+      setFiltered(prev => prev.filter(c => c._id !== campaignToDelete._id));
+    }
+    setShowDeleteModal(false);
+    setCampaignToDelete(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
+    setCampaignToDelete(null);
   };
 
   const formatStatus = (status, boolStatus) => {
@@ -256,6 +270,8 @@ export default function MyCampaigns() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [viewMode, setViewMode] = useState("grid"); // "grid" or "table"
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [campaignToDelete, setCampaignToDelete] = useState(null);
   const [meta, setMeta] = useState({
     total: 0,
     pages: 1,
@@ -263,6 +279,22 @@ export default function MyCampaigns() {
     page: 1,
   });
   const [page, setPage] = useState(1);
+
+  const handleDeleteConfirm = () => {
+    if (campaignToDelete) {
+      console.log("Delete campaign:", campaignToDelete._id);
+      // Add actual delete API call here
+      setCampaigns(prev => prev.filter(c => c._id !== campaignToDelete._id));
+      setFiltered(prev => prev.filter(c => c._id !== campaignToDelete._id));
+    }
+    setShowDeleteModal(false);
+    setCampaignToDelete(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
+    setCampaignToDelete(null);
+  };
 
   useEffect(() => {
     async function fetchCampaigns(pageNum = 1) {
@@ -723,19 +755,46 @@ export default function MyCampaigns() {
                       >
                         {truncateText(c.title || "Untitled", 50)}
                       </h5>
-                      <span
-                        style={{
-                          background: statusInfo.bg,
-                          color: statusInfo.text,
-                          padding: "6px 12px",
-                          borderRadius: "20px",
-                          fontSize: "0.85rem",
-                          fontWeight: "600",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {formatStatus(c.completion_status, c.status)}
-                      </span>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <button
+                          onClick={() => {
+                            setCampaignToDelete(c);
+                            setShowDeleteModal(true);
+                          }}
+                          title="Delete Campaign"
+                          style={{
+                            background: "none",
+                            border: "none",
+                            color: palette.red,
+                            fontSize: "1rem",
+                            cursor: "pointer",
+                            padding: "4px",
+                            borderRadius: "4px",
+                            transition: "all 0.2s",
+                          }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.background = palette.border;
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.background = "none";
+                          }}
+                        >
+                          <i className="bi bi-trash"></i>
+                        </button>
+                        <span
+                          style={{
+                            background: statusInfo.bg,
+                            color: statusInfo.text,
+                            padding: "6px 12px",
+                            borderRadius: "20px",
+                            fontSize: "0.85rem",
+                            fontWeight: "600",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {formatStatus(c.completion_status, c.status)}
+                        </span>
+                      </div>
                     </div>
 
                     {/* Category & Review Type */}
@@ -862,11 +921,87 @@ export default function MyCampaigns() {
             })}
           </div>
         ) : (
-          <CampaignsTable campaigns={filtered} palette={palette} isDark={isDark} navigate={navigate} />
+          <CampaignsTable 
+            campaigns={filtered} 
+            palette={palette} 
+            isDark={isDark} 
+            navigate={navigate}
+            onDelete={(campaign) => {
+              setCampaignToDelete(campaign);
+              setShowDeleteModal(true);
+            }}
+          />
         )}
 
         {/* Pagination */}
         <PaginationNav />
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.7)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 99999,
+          }}
+          onClick={handleDeleteCancel}
+        >
+          <div
+            style={{
+              background: palette.cardBg,
+              borderRadius: "12px",
+              padding: "24px",
+              maxWidth: "400px",
+              width: "90%",
+              boxShadow: "0 10px 25px rgba(0,0,0,0.3)",
+              border: `2px solid ${palette.red}`,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h4 style={{ color: palette.text, marginBottom: "16px" }}>Delete Campaign</h4>
+            <p style={{ color: palette.label, marginBottom: "24px" }}>
+              Are you sure you want to delete "{campaignToDelete?.title || "this campaign"}"? This action cannot be undone.
+            </p>
+            <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+              <button
+                onClick={handleDeleteCancel}
+                style={{
+                  background: "none",
+                  border: `2px solid ${palette.border}`,
+                  color: palette.text,
+                  padding: "8px 16px",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteConfirm}
+                style={{
+                  background: palette.red,
+                  border: "none",
+                  color: "#fff",
+                  padding: "8px 16px",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       </div>
     </div>
   );
