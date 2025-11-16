@@ -50,7 +50,7 @@ export default function CampaignSubmissions() {
   const handleApproval = async (submissionId, status) => {
     try {
       console.log('Updating submission:', submissionId, 'to status:', status);
-      const response = await advertiserUpdateTaskProofStatus(submissionId, { status });
+      const response = await advertiserUpdateTaskProofStatus(submissionId, { approval_status: status });
       console.log('API response:', response);
       
       setSubmissions(prev =>

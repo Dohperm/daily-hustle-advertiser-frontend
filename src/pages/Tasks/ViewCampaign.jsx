@@ -24,7 +24,7 @@ import {
   ThumbsUp,
   ThumbsDown,
 } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   advertiserViewTask,
   advertiserUpdateTask,
@@ -54,6 +54,7 @@ function mapApprovalModeFromApi(val) {
 
 export default function ViewCampaignPage() {
   const { param: taskId } = useParams();
+  const navigate = useNavigate();
   const [editMode, setEditMode] = useState(false);
 
   const [form, setForm] = useState({
@@ -292,7 +293,17 @@ export default function ViewCampaignPage() {
       <Card className="shadow-sm mb-4 border-0">
         <Card.Body>
           <div className="d-flex justify-content-between align-items-center mb-4">
-            <h2 className="fw-bold mb-0 text-primary">Campaign Details</h2>
+            <div className="d-flex align-items-center">
+              <Button
+                variant="outline-secondary"
+                onClick={() => navigate('/jobs/my-campaigns')}
+                className="me-3"
+                size="sm"
+              >
+                <ArrowRight size={16} style={{ transform: 'rotate(180deg)' }} />
+              </Button>
+              <h2 className="fw-bold mb-0 text-primary">Campaign Details</h2>
+            </div>
             <Button
               variant={editMode ? "outline-danger" : "primary"}
               onClick={() => setEditMode(!editMode)}
@@ -585,129 +596,19 @@ export default function ViewCampaignPage() {
         <Card.Body>
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h5 className="fw-bold mb-0">Submissions ({subsTotal})</h5>
-            <DropdownButton
-              title={filterLabel(filter)}
-              variant="outline-secondary"
-              size="sm"
-              onSelect={handleFilterSelect}
+            <Button
+              variant="primary"
+              onClick={() => navigate(`/campaign-submissions/${taskId}`)}
             >
-              {["all", "approved", "pending", "rejected", "blacklisted"].map(
-                (key) => (
-                  <Dropdown.Item key={key} eventKey={key}>
-                    {filterLabel(key)}
-                  </Dropdown.Item>
-                )
-              )}
-            </DropdownButton>
+              <Eye size={16} className="me-1" />
+              View Submissions
+            </Button>
           </div>
-          {subsLoading ? (
-            <div className="text-center py-3">
-              <Spinner animation="border" size="sm" className="mb-2" />
-              <div>Loading submissions...</div>
-            </div>
-          ) : subsError ? (
-            <Alert variant="danger">{subsError}</Alert>
-          ) : filteredSubs.length === 0 ? (
-            <Alert variant="info">No submissions found.</Alert>
-          ) : (
-            <>
-              <ListGroup variant="flush">
-                {filteredSubs.map((sub) => (
-                  <ListGroup.Item key={sub._id} className="px-0">
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div>
-                        <strong>Worker #{sub.user_id}</strong>{" "}
-                        <small className="text-muted">
-                          {sub.date ? new Date(sub.date).toLocaleString() : ""}
-                        </small>
-                        <Button
-                          variant="link"
-                          size="sm"
-                          className="p-0 ms-2"
-                          onClick={() => handleShowProof(sub)}
-                        >
-                          View Proof
-                        </Button>
-                      </div>
-                      <div className="d-flex align-items-center gap-2">
-                        <Badge
-                          bg={
-                            sub.status === "approved" || sub.is_approved
-                              ? "success"
-                              : sub.status === "pending"
-                              ? "warning"
-                              : sub.status === "rejected"
-                              ? "danger"
-                              : sub.status === "blacklisted"
-                              ? "dark"
-                              : "secondary"
-                          }
-                        >
-                          {sub.status ||
-                            (sub.is_approved ? "approved" : "pending")}
-                        </Badge>
-                        <Button
-                          size="sm"
-                          variant="success"
-                          onClick={() =>
-                            handleProofStatusChange(sub._id, "approved")
-                          }
-                          disabled={
-                            sub.status === "approved" || sub.is_approved
-                          }
-                        >
-                          <ThumbsUp size={16} />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="danger"
-                          onClick={() =>
-                            handleProofStatusChange(sub._id, "rejected")
-                          }
-                          disabled={sub.status === "rejected"}
-                        >
-                          <ThumbsDown size={16} />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline-danger"
-                          onClick={() =>
-                            handleProofStatusChange(sub._id, "blacklisted")
-                          }
-                          disabled={sub.status === "blacklisted"}
-                        >
-                          <ShieldX size={16} />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline-primary"
-                          onClick={() => handleShowProof(sub)}
-                        >
-                          <Eye size={16} />
-                        </Button>
-                      </div>
-                    </div>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-              {subsTotal > subsPageSize && (
-                <Pagination className="justify-content-center mt-4">
-                  {Array.from(
-                    { length: Math.ceil(subsTotal / subsPageSize) },
-                    (_, i) => (
-                      <Pagination.Item
-                        key={i + 1}
-                        active={i + 1 === subsPage}
-                        onClick={() => setSubsPage(i + 1)}
-                      >
-                        {i + 1}
-                      </Pagination.Item>
-                    )
-                  )}
-                </Pagination>
-              )}
-            </>
-          )}
+          <div className="text-center py-4">
+            <p className="text-muted mb-3">
+              Click "View Submissions" to see all submission details and manage approvals.
+            </p>
+          </div>
         </Card.Body>
       </Card>
       <Modal
