@@ -6,6 +6,7 @@ import ViewCampaign from "./pages/Tasks/ViewCampaign";
 import AllCampaigns from "./pages/Tasks/AllCampaigns";
 import AdvertiserDashboard from "./pages/Dashboard/AdvertiserDashboard";
 import MyCampaigns from "./pages/Tasks/MyCampaigns";
+import CampaignSubmissions from "./pages/Tasks/CampaignSubmissions";
 import QuickSignup from "./pages/auth/Signup/signup";
 import Login from "./pages/auth/Login/login";
 import KYCForm from "./pages/auth/Kyc/kyc";
@@ -72,6 +73,7 @@ export default function App() {
         <Route path="/jobs/my-campaigns" element={<MyCampaigns />} />
         <Route path="/jobs/new" element={<NewCampaign />} />
         <Route path="/jobs/allcampaigns" element={<AllCampaigns />} />
+        <Route path="/campaign-submissions/:taskId" element={<CampaignSubmissions />} />
         <Route path="/wallet" element={<AdvertiserWallet />} />
         <Route path="/wallet/payment/callback" element={<PaymentCallback />} />
         <Route path="/viewcampaign/:param" element={<ViewCampaign />} />

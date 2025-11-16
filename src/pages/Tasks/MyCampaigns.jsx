@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { advertiserListMyTasks } from "../services/services";
 import { useTheme } from "../../context/ThemeContext";
 
@@ -24,8 +24,214 @@ function stripHtml(html) {
   return div.textContent || div.innerText || "";
 }
 
+function CampaignsTable({ campaigns, palette, isDark, navigate }) {
+
+  const handleAction = (action, campaign) => {
+    if (action === "submissions") {
+      navigate(`/campaign-submissions/${campaign._id}`);
+    } else if (action === "details") {
+      navigate(`/viewcampaign/${campaign._id}`);
+    } else if (action === "delete") {
+      if (window.confirm("Are you sure you want to delete this campaign?")) {
+        console.log("Delete campaign:", campaign._id);
+      }
+    }
+  };
+
+  const formatStatus = (status, boolStatus) => {
+    if (typeof status === "string" && status) {
+      return status.charAt(0).toUpperCase() + status.slice(1);
+    }
+    if (typeof boolStatus === "boolean")
+      return boolStatus ? "Active" : "Inactive";
+    return "N/A";
+  };
+
+  const statusClass = (status, boolStatus) => {
+    if (typeof status === "string") {
+      const s = status.toLowerCase();
+      if (s === "active")
+        return { bg: palette.success, text: "#fff" };
+      if (s === "completed")
+        return { bg: palette.secondary, text: "#fff" };
+      if (s === "inactive")
+        return { bg: palette.warning, text: "#000" };
+    }
+    if (typeof boolStatus === "boolean") {
+      return boolStatus
+        ? { bg: palette.success, text: "#fff" }
+        : { bg: palette.warning, text: "#000" };
+    }
+    return { bg: palette.label, text: "#fff" };
+  };
+
+  return (
+    <div
+      style={{
+        background: palette.cardBg,
+        borderRadius: "12px",
+        overflow: "hidden",
+        border: `1px solid ${palette.border}`,
+        marginBottom: "40px",
+      }}
+    >
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ background: isDark ? "#2a2a2a" : "#f8f9fa" }}>
+              <th style={{ padding: "16px", textAlign: "left", color: palette.text, fontWeight: "600" }}>Title</th>
+              <th style={{ padding: "16px", textAlign: "left", color: palette.text, fontWeight: "600" }}>Category</th>
+              <th style={{ padding: "16px", textAlign: "left", color: palette.text, fontWeight: "600" }}>Status</th>
+              <th style={{ padding: "16px", textAlign: "left", color: palette.text, fontWeight: "600" }}>Workers</th>
+              <th style={{ padding: "16px", textAlign: "left", color: palette.text, fontWeight: "600" }}>Reward</th>
+              <th style={{ padding: "16px", textAlign: "center", color: palette.text, fontWeight: "600" }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {campaigns.map((c) => {
+              const statusInfo = statusClass(c.completion_status, c.status);
+              return (
+                <tr
+                  key={c._id}
+                  style={{
+                    borderBottom: `1px solid ${palette.border}`,
+                    transition: "background 0.2s",
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.background = isDark ? "#2a2a2a" : "#f8f9fa";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.background = "transparent";
+                  }}
+                >
+                  <td style={{ padding: "16px", color: palette.text }}>
+                    <div style={{ fontWeight: "600", marginBottom: "4px" }}>
+                      {truncateText(c.title || "Untitled", 40)}
+                    </div>
+                    <div style={{ fontSize: "0.85rem", color: palette.label }}>
+                      {truncateText(stripHtml(c.description || ""), 60)}
+                    </div>
+                  </td>
+                  <td style={{ padding: "16px", color: palette.text }}>
+                    {c.category || "Uncategorized"}
+                    {c.review_type && (
+                      <div style={{ fontSize: "0.85rem", color: palette.label }}>
+                        {c.review_type} review
+                      </div>
+                    )}
+                  </td>
+                  <td style={{ padding: "16px" }}>
+                    <span
+                      style={{
+                        background: statusInfo.bg,
+                        color: statusInfo.text,
+                        padding: "4px 12px",
+                        borderRadius: "16px",
+                        fontSize: "0.85rem",
+                        fontWeight: "600",
+                      }}
+                    >
+                      {formatStatus(c.completion_status, c.status)}
+                    </span>
+                  </td>
+                  <td style={{ padding: "16px", color: palette.text }}>
+                    <strong>{c.slots?.used ?? 0}</strong> / {c.slots?.max ?? "∞"}
+                  </td>
+                  <td style={{ padding: "16px", color: palette.text }}>
+                    <strong>{c.reward?.amount_per_worker ?? c.reward?.amount ?? 0}</strong>
+                    <div style={{ fontSize: "0.85rem", color: palette.label }}>
+                      {c.reward?.currency || ""} / worker
+                    </div>
+                  </td>
+                  <td style={{ padding: "16px", textAlign: "center" }}>
+                    <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+                      <button
+                        onClick={() => handleAction("submissions", c)}
+                        title="View Submissions"
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: palette.text,
+                          fontSize: "1rem",
+                          cursor: "pointer",
+                          padding: "6px",
+                          borderRadius: "4px",
+                          transition: "all 0.2s",
+                        }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.background = palette.border;
+                          e.currentTarget.style.color = palette.red;
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.background = "none";
+                          e.currentTarget.style.color = palette.text;
+                        }}
+                      >
+                        <i className="bi bi-file-earmark-text"></i>
+                      </button>
+                      <button
+                        onClick={() => handleAction("details", c)}
+                        title="View Details"
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: palette.text,
+                          fontSize: "1rem",
+                          cursor: "pointer",
+                          padding: "6px",
+                          borderRadius: "4px",
+                          transition: "all 0.2s",
+                        }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.background = palette.border;
+                          e.currentTarget.style.color = palette.red;
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.background = "none";
+                          e.currentTarget.style.color = palette.text;
+                        }}
+                      >
+                        <i className="bi bi-eye"></i>
+                      </button>
+                      <button
+                        onClick={() => handleAction("delete", c)}
+                        title="Delete Campaign"
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: palette.text,
+                          fontSize: "1rem",
+                          cursor: "pointer",
+                          padding: "6px",
+                          borderRadius: "4px",
+                          transition: "all 0.2s",
+                        }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.background = palette.border;
+                          e.currentTarget.style.color = palette.red;
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.background = "none";
+                          e.currentTarget.style.color = palette.text;
+                        }}
+                      >
+                        <i className="bi bi-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 export default function MyCampaigns() {
   const { theme } = useTheme();
+  const navigate = useNavigate();
   const isDark = theme === "dark";
 
   const palette = useMemo(
@@ -49,6 +255,7 @@ export default function MyCampaigns() {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [viewMode, setViewMode] = useState("grid"); // "grid" or "table"
   const [meta, setMeta] = useState({
     total: 0,
     pages: 1,
@@ -261,21 +468,62 @@ export default function MyCampaigns() {
             />
             My Campaigns
           </h1>
-          {filtered.length > 0 && (
-            <span
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            {/* View Toggle */}
+            <div
               style={{
-                background: palette.red,
-                color: "#fff",
-                fontWeight: 600,
-                fontSize: "1rem",
-                padding: "8px 16px",
-                borderRadius: "20px",
-                whiteSpace: "nowrap",
+                display: "flex",
+                background: palette.cardBg,
+                border: `2px solid ${palette.border}`,
+                borderRadius: "12px",
+                overflow: "hidden",
               }}
             >
-              {filtered.length} Campaign{filtered.length !== 1 ? "s" : ""}
-            </span>
-          )}
+              <button
+                onClick={() => setViewMode("grid")}
+                style={{
+                  background: viewMode === "grid" ? palette.red : "transparent",
+                  color: viewMode === "grid" ? "#fff" : palette.text,
+                  border: "none",
+                  padding: "8px 16px",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+              >
+                <i className="bi bi-grid-3x3-gap me-1"></i>
+                Grid
+              </button>
+              <button
+                onClick={() => setViewMode("table")}
+                style={{
+                  background: viewMode === "table" ? palette.red : "transparent",
+                  color: viewMode === "table" ? "#fff" : palette.text,
+                  border: "none",
+                  padding: "8px 16px",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+              >
+                <i className="bi bi-table me-1"></i>
+                Table
+              </button>
+            </div>
+            {filtered.length > 0 && (
+              <span
+                style={{
+                  background: palette.red,
+                  color: "#fff",
+                  fontWeight: 600,
+                  fontSize: "1rem",
+                  padding: "8px 16px",
+                  borderRadius: "20px",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {filtered.length} Campaign{filtered.length !== 1 ? "s" : ""}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Search & Filter */}
@@ -411,207 +659,211 @@ export default function MyCampaigns() {
           </div>
         )}
 
-        {/* Campaigns Grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-            gap: "20px",
-            marginBottom: "40px",
-          }}
-        >
-          {filtered.map((c) => {
-            const cleanDescription = stripHtml(c.description || "").trim();
-            const statusInfo = statusClass(c.completion_status, c.status);
+        {/* Campaigns Display */}
+        {viewMode === "grid" ? (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+              gap: "20px",
+              marginBottom: "40px",
+            }}
+          >
+            {filtered.map((c) => {
+              const cleanDescription = stripHtml(c.description || "").trim();
+              const statusInfo = statusClass(c.completion_status, c.status);
 
-            return (
-              <div
-                key={c._id}
-                style={{
-                  background: palette.cardBg,
-                  borderRadius: "14px",
-                  overflow: "hidden",
-                  boxShadow: isDark
-                    ? "0 2px 8px rgba(0,0,0,0.3)"
-                    : "0 2px 8px rgba(0,0,0,0.1)",
-                  border: `1px solid ${palette.border}`,
-                  display: "flex",
-                  flexDirection: "column",
-                  transition: "all 0.25s ease",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = "translateY(-4px)";
-                  e.currentTarget.style.boxShadow = isDark
-                    ? `0 8px 20px rgba(0,0,0,0.4), 0 0 0 3px ${palette.red}20`
-                    : `0 8px 20px rgba(0,0,0,0.15), 0 0 0 3px ${palette.red}20`;
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = isDark
-                    ? "0 2px 8px rgba(0,0,0,0.3)"
-                    : "0 2px 8px rgba(0,0,0,0.1)";
-                }}
-              >
-                <div style={{ padding: "20px" }}>
-                  {/* Title & Status */}
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "flex-start",
-                      gap: "12px",
-                      marginBottom: "12px",
-                    }}
-                  >
-                    <h5
+              return (
+                <div
+                  key={c._id}
+                  style={{
+                    background: palette.cardBg,
+                    borderRadius: "14px",
+                    overflow: "hidden",
+                    boxShadow: isDark
+                      ? "0 2px 8px rgba(0,0,0,0.3)"
+                      : "0 2px 8px rgba(0,0,0,0.1)",
+                    border: `1px solid ${palette.border}`,
+                    display: "flex",
+                    flexDirection: "column",
+                    transition: "all 0.25s ease",
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.boxShadow = isDark
+                      ? `0 8px 20px rgba(0,0,0,0.4), 0 0 0 3px ${palette.red}20`
+                      : `0 8px 20px rgba(0,0,0,0.15), 0 0 0 3px ${palette.red}20`;
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = isDark
+                      ? "0 2px 8px rgba(0,0,0,0.3)"
+                      : "0 2px 8px rgba(0,0,0,0.1)";
+                  }}
+                >
+                  <div style={{ padding: "20px" }}>
+                    {/* Title & Status */}
+                    <div
                       style={{
-                        fontSize: "1.1rem",
-                        fontWeight: "bold",
-                        color: palette.text,
-                        margin: 0,
-                        flex: 1,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        gap: "12px",
+                        marginBottom: "12px",
                       }}
                     >
-                      {truncateText(c.title || "Untitled", 50)}
-                    </h5>
-                    <span
-                      style={{
-                        background: statusInfo.bg,
-                        color: statusInfo.text,
-                        padding: "6px 12px",
-                        borderRadius: "20px",
-                        fontSize: "0.85rem",
-                        fontWeight: "600",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {formatStatus(c.completion_status, c.status)}
-                    </span>
-                  </div>
-
-                  {/* Category & Review Type */}
-                  <p
-                    style={{
-                      fontSize: "0.9rem",
-                      color: palette.label,
-                      margin: "0 0 12px 0",
-                    }}
-                  >
-                    {c.category || "Uncategorized"}
-                    {c.review_type && ` • ${c.review_type} review`}
-                  </p>
-
-                  {/* Description */}
-                  {cleanDescription ? (
-                    <p
-                      style={{
-                        fontSize: "0.9rem",
-                        color: palette.label,
-                        margin: "0 0 16px 0",
-                        flex: 1,
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      {truncateText(cleanDescription, 120)}
-                    </p>
-                  ) : (
-                    <p
-                      style={{
-                        fontSize: "0.9rem",
-                        color: palette.label,
-                        fontStyle: "italic",
-                        margin: "0 0 16px 0",
-                      }}
-                    >
-                      No description provided.
-                    </p>
-                  )}
-
-                  {/* Stats */}
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      flexWrap: "wrap",
-                      gap: "12px",
-                      marginBottom: "16px",
-                      fontSize: "0.9rem",
-                    }}
-                  >
-                    <small style={{ color: palette.label }}>
-                      <i
-                        className="bi bi-people me-1"
-                        style={{ color: palette.red }}
-                      ></i>
-                      <strong style={{ color: palette.text }}>
-                        {c.slots?.used ?? 0}
-                      </strong>
-                      <span> / {c.slots?.max ?? "∞"}</span>
-                    </small>
-                    <small style={{ color: palette.label }}>
-                      <i
-                        className="bi bi-cash-coin me-1"
-                        style={{ color: palette.red }}
-                      ></i>
-                      <strong style={{ color: palette.text }}>
-                        {c.reward?.amount_per_worker ?? c.reward?.amount ?? 0}
-                      </strong>
-                      <span> {c.reward?.currency || ""} / worker</span>
-                    </small>
-                  </div>
-
-                  {/* Task Link */}
-                  {c.task_site && (
-                    <div style={{ marginBottom: "16px" }}>
-                      <span
+                      <h5
                         style={{
-                          display: "inline-block",
-                          background: palette.secondary,
-                          color: "#fff",
-                          padding: "6px 12px",
-                          borderRadius: "8px",
-                          fontSize: "0.8rem",
-                          fontWeight: "600",
+                          fontSize: "1.1rem",
+                          fontWeight: "bold",
+                          color: palette.text,
+                          margin: 0,
+                          flex: 1,
                         }}
                       >
-                        <i className="bi bi-link-45deg me-1"></i>
-                        {truncateText(c.task_site, 30)}
+                        {truncateText(c.title || "Untitled", 50)}
+                      </h5>
+                      <span
+                        style={{
+                          background: statusInfo.bg,
+                          color: statusInfo.text,
+                          padding: "6px 12px",
+                          borderRadius: "20px",
+                          fontSize: "0.85rem",
+                          fontWeight: "600",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {formatStatus(c.completion_status, c.status)}
                       </span>
                     </div>
-                  )}
 
-                  {/* View Button */}
-                  <Link
-                    to={`/viewcampaign/${c._id}`}
-                    style={{
-                      display: "block",
-                      background: palette.red,
-                      color: "#fff",
-                      padding: "12px 16px",
-                      borderRadius: "10px",
-                      textDecoration: "none",
-                      fontWeight: "600",
-                      textAlign: "center",
-                      transition: "all 0.2s",
-                      boxShadow: `0 4px 12px ${palette.red}40`,
-                    }}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.transform = "scale(1.05)";
-                      e.currentTarget.style.boxShadow = `0 6px 16px ${palette.red}60`;
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.transform = "scale(1)";
-                      e.currentTarget.style.boxShadow = `0 4px 12px ${palette.red}40`;
-                    }}
-                  >
-                    <i className="bi bi-eye me-2"></i>
-                    View Campaign
-                  </Link>
+                    {/* Category & Review Type */}
+                    <p
+                      style={{
+                        fontSize: "0.9rem",
+                        color: palette.label,
+                        margin: "0 0 12px 0",
+                      }}
+                    >
+                      {c.category || "Uncategorized"}
+                      {c.review_type && ` • ${c.review_type} review`}
+                    </p>
+
+                    {/* Description */}
+                    {cleanDescription ? (
+                      <p
+                        style={{
+                          fontSize: "0.9rem",
+                          color: palette.label,
+                          margin: "0 0 16px 0",
+                          flex: 1,
+                          lineHeight: "1.5",
+                        }}
+                      >
+                        {truncateText(cleanDescription, 120)}
+                      </p>
+                    ) : (
+                      <p
+                        style={{
+                          fontSize: "0.9rem",
+                          color: palette.label,
+                          fontStyle: "italic",
+                          margin: "0 0 16px 0",
+                        }}
+                      >
+                        No description provided.
+                      </p>
+                    )}
+
+                    {/* Stats */}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        flexWrap: "wrap",
+                        gap: "12px",
+                        marginBottom: "16px",
+                        fontSize: "0.9rem",
+                      }}
+                    >
+                      <small style={{ color: palette.label }}>
+                        <i
+                          className="bi bi-people me-1"
+                          style={{ color: palette.red }}
+                        ></i>
+                        <strong style={{ color: palette.text }}>
+                          {c.slots?.used ?? 0}
+                        </strong>
+                        <span> / {c.slots?.max ?? "∞"}</span>
+                      </small>
+                      <small style={{ color: palette.label }}>
+                        <i
+                          className="bi bi-cash-coin me-1"
+                          style={{ color: palette.red }}
+                        ></i>
+                        <strong style={{ color: palette.text }}>
+                          {c.reward?.amount_per_worker ?? c.reward?.amount ?? 0}
+                        </strong>
+                        <span> {c.reward?.currency || ""} / worker</span>
+                      </small>
+                    </div>
+
+                    {/* Task Link */}
+                    {c.task_site && (
+                      <div style={{ marginBottom: "16px" }}>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            background: palette.secondary,
+                            color: "#fff",
+                            padding: "6px 12px",
+                            borderRadius: "8px",
+                            fontSize: "0.8rem",
+                            fontWeight: "600",
+                          }}
+                        >
+                          <i className="bi bi-link-45deg me-1"></i>
+                          {truncateText(c.task_site, 30)}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* View Button */}
+                    <Link
+                      to={`/viewcampaign/${c._id}`}
+                      style={{
+                        display: "block",
+                        background: palette.red,
+                        color: "#fff",
+                        padding: "12px 16px",
+                        borderRadius: "10px",
+                        textDecoration: "none",
+                        fontWeight: "600",
+                        textAlign: "center",
+                        transition: "all 0.2s",
+                        boxShadow: `0 4px 12px ${palette.red}40`,
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.transform = "scale(1.05)";
+                        e.currentTarget.style.boxShadow = `0 6px 16px ${palette.red}60`;
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.transform = "scale(1)";
+                        e.currentTarget.style.boxShadow = `0 4px 12px ${palette.red}40`;
+                      }}
+                    >
+                      <i className="bi bi-eye me-2"></i>
+                      View Campaign
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        ) : (
+          <CampaignsTable campaigns={filtered} palette={palette} isDark={isDark} navigate={navigate} />
+        )}
 
         {/* Pagination */}
         <PaginationNav />
