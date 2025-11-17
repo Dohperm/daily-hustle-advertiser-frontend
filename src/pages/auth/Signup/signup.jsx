@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -27,6 +27,7 @@ const strengthColors = ["#dc3545", "#ffc107", "#1ab7ea", "#198754", "#28a745"];
 export default function QuickSignup() {
   // Add this:
   const { setUserLoggedIn } = useAdvertiserData();
+  const [searchParams] = useSearchParams();
 
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -52,6 +53,13 @@ export default function QuickSignup() {
       otpRefs.current[0].current.focus();
     }
   }, [step]);
+
+  useEffect(() => {
+    const referralCode = searchParams.get('referral_code');
+    if (referralCode) {
+      setFormData(prev => ({ ...prev, referral_code: referralCode }));
+    }
+  }, [searchParams]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
