@@ -67,7 +67,7 @@ export default function CampaignSubmissions() {
   };
 
   const filteredSubmissions = submissions.filter(sub => {
-    const matchesSearch = sub.title?.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = search === "" || sub._id?.toLowerCase().includes(search.toLowerCase());
     const matchesStatus = statusFilter === "all" || sub.approval_status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -197,10 +197,7 @@ export default function CampaignSubmissions() {
                 <thead>
                   <tr style={{ background: isDark ? "#2a2a2a" : "#f8f9fa" }}>
                     <th style={{ padding: "16px", textAlign: "left", color: palette.text, fontWeight: "600" }}>
-                      Proof Text
-                    </th>
-                    <th style={{ padding: "16px", textAlign: "left", color: palette.text, fontWeight: "600" }}>
-                      Proof Image
+                      Proof
                     </th>
                     <th style={{ padding: "16px", textAlign: "left", color: palette.text, fontWeight: "600" }}>
                       Status
@@ -227,9 +224,6 @@ export default function CampaignSubmissions() {
                           e.currentTarget.style.background = "transparent";
                         }}
                       >
-                        <td style={{ padding: "16px", color: palette.text, maxWidth: "300px" }}>
-                          {submission.title || "No text provided"}
-                        </td>
                         <td style={{ padding: "16px" }}>
                           {submission.src ? (
                             <img
