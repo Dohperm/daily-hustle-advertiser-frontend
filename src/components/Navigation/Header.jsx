@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Navbar, NavDropdown, Container, Badge } from "react-bootstrap";
-import Logo from "../../../public/dailyjhustleimage.png";
+const Logo = "/dailyjhustleimage.png";
 const menu = [
   { to: "/", icon: "bi-house-door-fill", label: "Dashboard" },
   { to: "/jobs/allcampaigns", icon: "bi-bullseye", label: "Campaigns" },
