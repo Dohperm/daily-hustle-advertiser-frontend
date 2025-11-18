@@ -239,8 +239,8 @@ export default function NewCampaign() {
 
   const [step, setStep] = useState(1);
   const [showPreview, setShowPreview] = useState(false);
-  const [fileName, setFileName] = useState("");
-  const [imagePreview, setImagePreview] = useState(null);
+  const [fileNames, setFileNames] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [bulkStatus, setBulkStatus] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -262,7 +262,7 @@ export default function NewCampaign() {
     reviewType: "Open",
     closedReviewOptions: "",
     rewardCurrency: "NGN",
-    attachment: "",
+    attachment: [],
     uploadingImage: false,
     is_screenshot_required: false,
   });
@@ -417,22 +417,37 @@ export default function NewCampaign() {
   };
 
   const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setFileName(file.name);
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    
     setForm((prev) => ({ ...prev, uploadingImage: true }));
+    
     try {
-      const res = await uploadFile(file);
-      const imgUrl = res.data?.data?.[0]?.src;
+      const uploadPromises = files.map(file => uploadFile(file));
+      const responses = await Promise.all(uploadPromises);
+      
+      const newUrls = responses.map(res => res.data?.data?.[0]?.src).filter(Boolean);
+      const newNames = files.map(file => file.name);
+      
+      // Create preview URLs for images
+      const newPreviews = await Promise.all(
+        files.map(file => {
+          return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(file);
+          });
+        })
+      );
+      
       setForm((prev) => ({
         ...prev,
-        file,
-        attachment: imgUrl,
+        attachment: [...prev.attachment, ...newUrls],
         uploadingImage: false,
       }));
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result);
-      reader.readAsDataURL(file);
+      
+      setFileNames(prev => [...prev, ...newNames]);
+      setImagePreviews(prev => [...prev, ...newPreviews]);
     } catch {
       setForm((prev) => ({ ...prev, uploadingImage: false }));
     }
@@ -441,7 +456,6 @@ export default function NewCampaign() {
   async function handleSubmit(e) {
     e.preventDefault();
     setSubmitting(true);
-    let attachmentUrl = form.attachment || "";
     let closed_review_options = null;
 
     if (form.reviewType === "Closed") {
@@ -478,9 +492,9 @@ export default function NewCampaign() {
       task_site: form.jobsLink || "",
     };
     
-    // Only include attachment if file was uploaded
-    if (attachmentUrl) {
-      payload.attachment = attachmentUrl;
+    // Include attachment array if files were uploaded
+    if (form.attachment.length > 0) {
+      payload.attachment = form.attachment;
     }
     
     console.log('=== CREATE CAMPAIGN PAYLOAD ===');
@@ -1225,23 +1239,30 @@ export default function NewCampaign() {
                       >
                         Job Description
                       </Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows={5}
+                      <Editor
+                        apiKey={TINYMCE_API_KEY}
                         value={form.jobDescription}
-                        onChange={(e) =>
+                        onEditorChange={(content) =>
                           setForm((f) => ({
                             ...f,
-                            jobDescription: e.target.value,
+                            jobDescription: content,
                           }))
                         }
-                        placeholder="Describe the job requirements and what workers need to do..."
-                        style={{
-                          color: palette.text,
-                          background: palette.input,
-                          border: `1px solid ${palette.border}`,
-                          borderRadius: "8px",
-                          padding: "10px 12px",
+                        init={{
+                          height: 250,
+                          menubar: false,
+                          plugins: "lists link",
+                          toolbar:
+                            "bold italic underline | bullist numlist | outdent indent | link removeformat",
+                          branding: false,
+                          skin: isDark ? "oxide-dark" : "oxide",
+                          content_css: isDark ? "dark" : "light",
+                          setup: (editor) => {
+                            editor.on('change', () => {
+                              const content = editor.getContent();
+                              setForm((f) => ({ ...f, jobDescription: content }));
+                            });
+                          }
                         }}
                       />
                     </Form.Group>
@@ -1416,11 +1437,12 @@ export default function NewCampaign() {
                           marginBottom: "8px",
                         }}
                       >
-                        Job Screenshot Sample (Optional)
+                        Job Screenshot Sample(s) (Optional)
                       </Form.Label>
                       <Form.Control
                         type="file"
                         accept=".jpg,.jpeg,.png"
+                        multiple
                         onChange={handleImageUpload}
                         disabled={form.uploadingImage}
                         style={{
@@ -1431,16 +1453,21 @@ export default function NewCampaign() {
                           padding: "10px 12px",
                         }}
                       />
-                      {fileName && (
-                        <small
-                          style={{
-                            display: "block",
-                            marginTop: "8px",
-                            color: palette.label,
-                          }}
-                        >
-                          {fileName}
-                        </small>
+                      {fileNames.length > 0 && (
+                        <div style={{ marginTop: "8px" }}>
+                          {fileNames.map((name, index) => (
+                            <small
+                              key={index}
+                              style={{
+                                display: "block",
+                                color: palette.label,
+                                marginBottom: "4px",
+                              }}
+                            >
+                              {name}
+                            </small>
+                          ))}
+                        </div>
                       )}
                     </Form.Group>
                   </Col>
@@ -1479,7 +1506,7 @@ export default function NewCampaign() {
                     </Form.Group>
                   </Col>
 
-                  {imagePreview && (
+                  {imagePreviews.length > 0 && (
                     <Col md={12}>
                       <Card
                         style={{
@@ -1503,7 +1530,7 @@ export default function NewCampaign() {
                                 color: palette.red,
                               }}
                             >
-                              Screenshot Preview
+                              Screenshot Previews ({imagePreviews.length})
                             </small>
                             <Button
                               style={{
@@ -1514,28 +1541,62 @@ export default function NewCampaign() {
                                 padding: 0,
                               }}
                               onClick={() => {
-                                setImagePreview(null);
-                                setFileName("");
+                                setImagePreviews([]);
+                                setFileNames([]);
                                 setForm((f) => ({
                                   ...f,
                                   file: null,
-                                  attachment: "",
+                                  attachment: [],
                                 }));
                               }}
                             >
                               <X size={16} />
                             </Button>
                           </div>
-                          <img
-                            src={imagePreview}
-                            alt="Attachment preview"
-                            style={{
-                              maxHeight: "200px",
-                              objectFit: "contain",
-                              borderRadius: "8px",
-                              width: "100%",
-                            }}
-                          />
+                          <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+                            {imagePreviews.map((preview, index) => (
+                              <div key={index} style={{ position: "relative" }}>
+                                <img
+                                  src={preview}
+                                  alt={`Attachment ${index + 1}`}
+                                  style={{
+                                    maxHeight: "150px",
+                                    maxWidth: "150px",
+                                    objectFit: "contain",
+                                    borderRadius: "8px",
+                                    border: `1px solid ${palette.border}`,
+                                  }}
+                                />
+                                <Button
+                                  style={{
+                                    position: "absolute",
+                                    top: "4px",
+                                    right: "4px",
+                                    background: "rgba(220, 53, 69, 0.8)",
+                                    border: "none",
+                                    borderRadius: "50%",
+                                    width: "24px",
+                                    height: "24px",
+                                    padding: 0,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                  }}
+                                  onClick={() => {
+                                    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+                                    const newNames = fileNames.filter((_, i) => i !== index);
+                                    const newAttachments = form.attachment.filter((_, i) => i !== index);
+                                    
+                                    setImagePreviews(newPreviews);
+                                    setFileNames(newNames);
+                                    setForm(f => ({ ...f, attachment: newAttachments }));
+                                  }}
+                                >
+                                  <X size={12} color="white" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
                         </Card.Body>
                       </Card>
                     </Col>
