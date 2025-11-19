@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { advertiserListMyTasks } from "../services/services";
+import { advertiserListMyTasks, advertiserUpdateTask } from "../services/services";
 import { useTheme } from "../../context/ThemeContext";
+import { toast } from "react-toastify";
 
 const statusOptions = [
   { value: "all", label: "All Statuses" },
@@ -24,7 +25,7 @@ function stripHtml(html) {
   return div.textContent || div.innerText || "";
 }
 
-function CampaignsTable({ campaigns, palette, isDark, navigate, onDelete }) {
+function CampaignsTable({ campaigns, palette, isDark, navigate, onDelete, onStatusToggle }) {
 
   const handleAction = (action, campaign) => {
     if (action === "submissions") {
@@ -33,6 +34,8 @@ function CampaignsTable({ campaigns, palette, isDark, navigate, onDelete }) {
       navigate(`/viewcampaign/${campaign._id}`);
     } else if (action === "delete") {
       onDelete(campaign);
+    } else if (action === "activate" || action === "deactivate") {
+      onStatusToggle(campaign._id, action === "activate");
     }
   };
 
@@ -158,7 +161,7 @@ function CampaignsTable({ campaigns, palette, isDark, navigate, onDelete }) {
                     </div>
                   </td>
                   <td style={{ padding: "16px", textAlign: "center" }}>
-                    <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+                    <div style={{ display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" }}>
                       <button
                         onClick={() => handleAction("submissions", c)}
                         title="View Submissions"
@@ -207,6 +210,53 @@ function CampaignsTable({ campaigns, palette, isDark, navigate, onDelete }) {
                       >
                         <i className="bi bi-eye"></i>
                       </button>
+                      {c.status ? (
+                        <button
+                          onClick={() => handleAction("deactivate", c)}
+                          title="Deactivate Campaign"
+                          style={{
+                            background: "none",
+                            border: "none",
+                            color: palette.warning,
+                            fontSize: "1rem",
+                            cursor: "pointer",
+                            padding: "6px",
+                            borderRadius: "4px",
+                            transition: "all 0.2s",
+                          }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.background = palette.border;
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.background = "none";
+                          }}
+                        >
+                          <i className="bi bi-pause-circle"></i>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleAction("activate", c)}
+                          title="Activate Campaign"
+                          style={{
+                            background: "none",
+                            border: "none",
+                            color: palette.success,
+                            fontSize: "1rem",
+                            cursor: "pointer",
+                            padding: "6px",
+                            borderRadius: "4px",
+                            transition: "all 0.2s",
+                          }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.background = palette.border;
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.background = "none";
+                          }}
+                        >
+                          <i className="bi bi-play-circle"></i>
+                        </button>
+                      )}
                       <button
                         onClick={() => handleAction("delete", c)}
                         title="Delete Campaign"
@@ -279,6 +329,22 @@ export default function MyCampaigns() {
     page: 1,
   });
   const [page, setPage] = useState(1);
+
+  const handleStatusToggle = async (campaignId, activate) => {
+    try {
+      await advertiserUpdateTask(campaignId, { status: activate });
+      toast.success(`Campaign ${activate ? 'activated' : 'deactivated'} successfully!`);
+      // Update local state
+      setCampaigns(prev => prev.map(c => 
+        c._id === campaignId ? { ...c, status: activate } : c
+      ));
+      setFiltered(prev => prev.map(c => 
+        c._id === campaignId ? { ...c, status: activate } : c
+      ));
+    } catch (error) {
+      toast.error(`Failed to ${activate ? 'activate' : 'deactivate'} campaign`);
+    }
+  };
 
   const handleDeleteConfirm = () => {
     if (campaignToDelete) {
@@ -756,6 +822,53 @@ export default function MyCampaigns() {
                         {truncateText(c.title || "Untitled", 50)}
                       </h5>
                       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        {c.status ? (
+                          <button
+                            onClick={() => handleStatusToggle(c._id, false)}
+                            title="Deactivate Campaign"
+                            style={{
+                              background: "none",
+                              border: "none",
+                              color: palette.warning,
+                              fontSize: "1rem",
+                              cursor: "pointer",
+                              padding: "4px",
+                              borderRadius: "4px",
+                              transition: "all 0.2s",
+                            }}
+                            onMouseOver={(e) => {
+                              e.currentTarget.style.background = palette.border;
+                            }}
+                            onMouseOut={(e) => {
+                              e.currentTarget.style.background = "none";
+                            }}
+                          >
+                            <i className="bi bi-pause-circle"></i>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleStatusToggle(c._id, true)}
+                            title="Activate Campaign"
+                            style={{
+                              background: "none",
+                              border: "none",
+                              color: palette.success,
+                              fontSize: "1rem",
+                              cursor: "pointer",
+                              padding: "4px",
+                              borderRadius: "4px",
+                              transition: "all 0.2s",
+                            }}
+                            onMouseOver={(e) => {
+                              e.currentTarget.style.background = palette.border;
+                            }}
+                            onMouseOut={(e) => {
+                              e.currentTarget.style.background = "none";
+                            }}
+                          >
+                            <i className="bi bi-play-circle"></i>
+                          </button>
+                        )}
                         <button
                           onClick={() => {
                             setCampaignToDelete(c);
@@ -930,6 +1043,7 @@ export default function MyCampaigns() {
               setCampaignToDelete(campaign);
               setShowDeleteModal(true);
             }}
+            onStatusToggle={handleStatusToggle}
           />
         )}
 
