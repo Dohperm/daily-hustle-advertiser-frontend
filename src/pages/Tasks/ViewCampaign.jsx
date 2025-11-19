@@ -71,11 +71,13 @@ export default function ViewCampaignPage() {
     approvalDays: "",
     rewardCurrency: "NGN",
     slots: { max: "", used: "" },
-    attachment: "",
+    attachment: [],
     task_site: "",
     review_type: "Closed",
     uploadingImage: false,
   });
+
+  const [existingAttachments, setExistingAttachments] = useState([]);
 
   const [imgBroken, setImgBroken] = useState(false);
   const [showGoTo, setShowGoTo] = useState(false);
@@ -112,11 +114,12 @@ export default function ViewCampaignPage() {
             ? data.reward.currency
             : "NGN",
           slots: data.slots || { max: "", used: "" },
-          attachment: data.attachment || "",
+          attachment: Array.isArray(data.attachment) ? data.attachment : (data.attachment ? [data.attachment] : []),
           task_site: data.task_site || "",
           review_type: data.review_type || "Closed",
           uploadingImage: false,
         });
+        setExistingAttachments(Array.isArray(data.attachment) ? data.attachment : (data.attachment ? [data.attachment] : []));
         setShowGoTo(!!(data.jobsLink || data.task_site));
       } catch (err) {}
     }
@@ -237,20 +240,20 @@ export default function ViewCampaignPage() {
   };
 
   const handleImageUploadChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
     setImgBroken(false);
     setForm((prev) => ({ ...prev, uploadingImage: true }));
     try {
-      const res = await uploadFile(file);
-      const imgUrl = res.data?.data?.[0]?.src;
-      if (imgUrl) {
-        setForm((prev) => ({
-          ...prev,
-          attachment: imgUrl,
-          uploadingImage: false,
-        }));
-      }
+      const uploadPromises = files.map(file => uploadFile(file));
+      const responses = await Promise.all(uploadPromises);
+      const newUrls = responses.map(res => res.data?.data?.[0]?.src).filter(Boolean);
+      
+      setForm((prev) => ({
+        ...prev,
+        attachment: [...prev.attachment, ...newUrls],
+        uploadingImage: false,
+      }));
     } catch {
       setForm((prev) => ({ ...prev, uploadingImage: false }));
     }
@@ -486,30 +489,74 @@ export default function ViewCampaignPage() {
                   />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Attachment</Form.Label>
-                  <div className="d-flex align-items-start gap-3">
-                    <img
-                      src={
-                        !imgBroken && form.attachment
-                          ? form.attachment
-                          : PLACEHOLDER_IMAGE
-                      }
-                      onError={() => setImgBroken(true)}
-                      alt="Attachment"
-                      className="img-fluid mb-2"
-                      style={{
-                        maxWidth: "180px",
-                        maxHeight: "120px",
-                        borderRadius: "10px",
-                        border: "1px solid #eee",
-                        objectFit: "cover",
-                      }}
-                    />
+                  <Form.Label>Attachment(s)</Form.Label>
+                  <div>
+                    {form.attachment.length > 0 ? (
+                      <div className="d-flex flex-wrap gap-2 mb-3">
+                        {form.attachment.map((url, index) => {
+                          const isExisting = existingAttachments.includes(url);
+                          return (
+                            <div key={index} className="position-relative">
+                              <img
+                                src={url}
+                                alt={`Attachment ${index + 1}`}
+                                className="img-fluid"
+                                style={{
+                                  maxWidth: "120px",
+                                  maxHeight: "80px",
+                                  borderRadius: "8px",
+                                  border: "1px solid #eee",
+                                  objectFit: "cover",
+                                }}
+                              />
+                              {editMode && !isExisting && (
+                                <button
+                                  type="button"
+                                  className="btn btn-sm btn-danger position-absolute top-0 end-0"
+                                  style={{
+                                    width: "20px",
+                                    height: "20px",
+                                    padding: 0,
+                                    fontSize: "12px",
+                                    borderRadius: "50%",
+                                    transform: "translate(50%, -50%)",
+                                  }}
+                                  onClick={() => {
+                                    setForm(prev => ({
+                                      ...prev,
+                                      attachment: prev.attachment.filter((_, i) => i !== index)
+                                    }));
+                                  }}
+                                >
+                                  ×
+                                </button>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="mb-3">
+                        <img
+                          src={PLACEHOLDER_IMAGE}
+                          alt="No attachments"
+                          className="img-fluid"
+                          style={{
+                            maxWidth: "120px",
+                            maxHeight: "80px",
+                            borderRadius: "8px",
+                            border: "1px solid #eee",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </div>
+                    )}
                     {editMode && (
                       <div>
                         <Form.Control
                           type="file"
                           accept="image/*"
+                          multiple
                           onChange={handleImageUploadChange}
                           disabled={form.uploadingImage}
                         />
@@ -550,16 +597,11 @@ export default function ViewCampaignPage() {
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Review Type</Form.Label>
-                  <Form.Select
-                    name="review_type"
+                  <Form.Control
                     value={form.review_type || "Closed"}
-                    onChange={handleChange}
-                    disabled={!editMode}
-                  >
-                    {reviewTypeOptions.map((opt) => (
-                      <option key={opt}>{opt}</option>
-                    ))}
-                  </Form.Select>
+                    disabled
+                    readOnly
+                  />
                 </Form.Group>
               </Col>
             </Row>
