@@ -67,7 +67,10 @@ export default function CampaignSubmissions() {
   };
 
   const filteredSubmissions = submissions.filter(sub => {
-    const matchesSearch = search === "" || sub._id?.toLowerCase().includes(search.toLowerCase());
+    const workerName = sub.user ? `${sub.user.first_name} ${sub.user.last_name}`.toLowerCase() : "";
+    const matchesSearch = search === "" || 
+      sub._id?.toLowerCase().includes(search.toLowerCase()) ||
+      workerName.includes(search.toLowerCase());
     const matchesStatus = statusFilter === "all" || sub.approval_status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -114,7 +117,7 @@ export default function CampaignSubmissions() {
           <div className="col-md-6">
             <input
               type="text"
-              placeholder="Search submissions..."
+              placeholder="Search by ID or worker name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{
@@ -200,6 +203,12 @@ export default function CampaignSubmissions() {
                       Proof
                     </th>
                     <th style={{ padding: "16px", textAlign: "left", color: palette.text, fontWeight: "600" }}>
+                      Worker
+                    </th>
+                    <th style={{ padding: "16px", textAlign: "left", color: palette.text, fontWeight: "600" }}>
+                      Submission Date
+                    </th>
+                    <th style={{ padding: "16px", textAlign: "left", color: palette.text, fontWeight: "600" }}>
                       Status
                     </th>
                     <th style={{ padding: "16px", textAlign: "center", color: palette.text, fontWeight: "600" }}>
@@ -243,6 +252,16 @@ export default function CampaignSubmissions() {
                               No image
                             </span>
                           )}
+                        </td>
+                        <td style={{ padding: "16px" }}>
+                          <span style={{ color: palette.text, fontWeight: "500" }}>
+                            {submission.user ? `${submission.user.first_name} ${submission.user.last_name}` : "N/A"}
+                          </span>
+                        </td>
+                        <td style={{ padding: "16px" }}>
+                          <span style={{ color: palette.text }}>
+                            {submission.date_submitted ? new Date(submission.date_submitted).toLocaleString('en-US', { hour12: true }) : "N/A"}
+                          </span>
                         </td>
                         <td style={{ padding: "16px" }}>
                           <span
