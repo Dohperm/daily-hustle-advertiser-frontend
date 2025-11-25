@@ -77,6 +77,8 @@ export default function ViewCampaignPage() {
     uploadingImage: false,
   });
 
+  const [originalWorkersNeeded, setOriginalWorkersNeeded] = useState(0);
+
   const [existingAttachments, setExistingAttachments] = useState([]);
 
   const [imgBroken, setImgBroken] = useState(false);
@@ -98,13 +100,14 @@ export default function ViewCampaignPage() {
       try {
         const res = await advertiserViewTask(taskId);
         const data = res.data?.data || {};
+        const workersNeeded = data.slots?.max || 0;
         setForm({
           title: data.title || "",
           description: data.description || "",
           category: data.category || "",
           sub_category: data.sub_category || "",
           country: data.country || "",
-          workersNeeded: data.slots?.max || "",
+          workersNeeded: workersNeeded,
           amountPerWorker: data.reward?.amount_per_worker || "",
           instructions: data.instructions || "",
           jobsLink: data.jobsLink || data.task_site || "",
@@ -119,6 +122,7 @@ export default function ViewCampaignPage() {
           review_type: data.review_type || "Closed",
           uploadingImage: false,
         });
+        setOriginalWorkersNeeded(workersNeeded);
         setExistingAttachments(Array.isArray(data.attachment) ? data.attachment : (data.attachment ? [data.attachment] : []));
         setShowGoTo(!!(data.jobsLink || data.task_site));
       } catch (err) {}
@@ -329,7 +333,7 @@ export default function ViewCampaignPage() {
                     name="title"
                     value={form.title || ""}
                     onChange={handleChange}
-                    disabled={!editMode}
+                    disabled
                   />
                 </Form.Group>
                 <Form.Group className="mb-3">
@@ -338,7 +342,7 @@ export default function ViewCampaignPage() {
                     name="category"
                     value={form.category || ""}
                     onChange={handleChange}
-                    disabled={!editMode}
+                    disabled
                   />
                 </Form.Group>
                 <Form.Group className="mb-3">
@@ -347,7 +351,7 @@ export default function ViewCampaignPage() {
                     name="sub_category"
                     value={form.sub_category || ""}
                     onChange={handleChange}
-                    disabled={!editMode}
+                    disabled
                   />
                 </Form.Group>
                 <Form.Group className="mb-3">
@@ -356,18 +360,57 @@ export default function ViewCampaignPage() {
                     name="country"
                     value={form.country || ""}
                     onChange={handleChange}
-                    disabled={!editMode}
+                    disabled
                   />
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Workers Needed</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="workersNeeded"
-                    value={form.workersNeeded || ""}
-                    onChange={handleChange}
-                    disabled={!editMode}
-                  />
+                  {editMode ? (
+                    <div className="d-flex align-items-center">
+                      <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        onClick={() => {
+                          const newValue = Math.max(originalWorkersNeeded, (parseInt(form.workersNeeded) || 0) - 1);
+                          setForm(prev => ({ 
+                            ...prev, 
+                            workersNeeded: newValue,
+                            slots: { ...prev.slots, max: newValue }
+                          }));
+                        }}
+                        disabled={parseInt(form.workersNeeded) <= originalWorkersNeeded}
+                      >
+                        -
+                      </Button>
+                      <Form.Control
+                        type="number"
+                        value={form.workersNeeded || ""}
+                        readOnly
+                        className="mx-2 text-center"
+                        style={{ width: "80px" }}
+                      />
+                      <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        onClick={() => {
+                          const newValue = (parseInt(form.workersNeeded) || 0) + 1;
+                          setForm(prev => ({ 
+                            ...prev, 
+                            workersNeeded: newValue,
+                            slots: { ...prev.slots, max: newValue }
+                          }));
+                        }}
+                      >
+                        +
+                      </Button>
+                    </div>
+                  ) : (
+                    <Form.Control
+                      type="number"
+                      value={form.workersNeeded || ""}
+                      disabled
+                    />
+                  )}
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>
@@ -387,7 +430,7 @@ export default function ViewCampaignPage() {
                     name="rewardCurrency"
                     value={form.rewardCurrency || "NGN"}
                     onChange={handleChange}
-                    disabled={!editMode}
+                    disabled
                   >
                     {CURRENCIES.map((cur) => (
                       <option value={cur} key={cur}>
@@ -408,13 +451,22 @@ export default function ViewCampaignPage() {
                 <Form.Group className="mb-3">
                   <Form.Label>Job Description</Form.Label>
                   {editMode ? (
-                    <Form.Control
-                      as="textarea"
-                      rows={4}
-                      name="description"
+                    <Editor
+                      apiKey={TINYMCE_API_KEY}
                       value={form.description || ""}
-                      onChange={handleChange}
-                      placeholder="Describe the job requirements..."
+                      onEditorChange={(content) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          description: content,
+                        }))
+                      }
+                      init={{
+                        height: 200,
+                        menubar: false,
+                        plugins: "lists link",
+                        toolbar: "bold italic underline | bullist numlist | outdent indent | link removeformat",
+                        branding: false,
+                      }}
                     />
                   ) : (
                     <div
@@ -423,11 +475,9 @@ export default function ViewCampaignPage() {
                         background: "#f8f9fa",
                         borderRadius: 8,
                         minHeight: 60,
-                        whiteSpace: "pre-wrap",
                       }}
-                    >
-                      {form.description}
-                    </div>
+                      dangerouslySetInnerHTML={{ __html: form.description }}
+                    />
                   )}
                 </Form.Group>
                 <Form.Group className="mb-3">
@@ -443,11 +493,11 @@ export default function ViewCampaignPage() {
                         }))
                       }
                       init={{
-                        height: 120,
+                        height: 200,
                         menubar: false,
+                        plugins: "lists link",
+                        toolbar: "bold italic underline | bullist numlist | outdent indent | link removeformat",
                         branding: false,
-                        toolbar: "bold italic underline | bullist numlist",
-                        readonly: !editMode,
                       }}
                     />
                   ) : (

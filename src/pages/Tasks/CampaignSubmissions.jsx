@@ -79,6 +79,7 @@ export default function CampaignSubmissions() {
     switch (status) {
       case "approved": return { bg: palette.success, text: "#fff" };
       case "rejected": return { bg: palette.red, text: "#fff" };
+      case "resubmit": return { bg: "#fd7e14", text: "#fff" };
       default: return { bg: palette.warning, text: "#000" };
     }
   };
@@ -146,6 +147,7 @@ export default function CampaignSubmissions() {
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
               <option value="approved">Approved</option>
+              <option value="resubmit">Resubmit</option>
               <option value="rejected">Rejected</option>
             </select>
           </div>
@@ -297,6 +299,21 @@ export default function CampaignSubmissions() {
                                 Approve
                               </button>
                               <button
+                                onClick={() => handleApproval(submission._id, "resubmit")}
+                                style={{
+                                  background: palette.warning,
+                                  color: "#000",
+                                  border: "none",
+                                  padding: "6px 12px",
+                                  borderRadius: "6px",
+                                  cursor: "pointer",
+                                  fontSize: "0.85rem",
+                                }}
+                              >
+                                <i className="bi bi-arrow-clockwise me-1"></i>
+                                Resubmit
+                              </button>
+                              <button
                                 onClick={() => handleApproval(submission._id, "rejected")}
                                 style={{
                                   background: palette.red,
@@ -313,7 +330,24 @@ export default function CampaignSubmissions() {
                               </button>
                             </div>
                           )}
-                          {submission.approval_status !== "pending" && (
+                          {submission.approval_status === "resubmit" && (
+                            <button
+                              onClick={() => handleApproval(submission._id, "rejected")}
+                              style={{
+                                background: palette.red,
+                                color: "#fff",
+                                border: "none",
+                                padding: "6px 12px",
+                                borderRadius: "6px",
+                                cursor: "pointer",
+                                fontSize: "0.85rem",
+                              }}
+                            >
+                              <i className="bi bi-x-lg me-1"></i>
+                              Reject
+                            </button>
+                          )}
+                          {submission.approval_status !== "pending" && submission.approval_status !== "resubmit" && (
                             <span style={{ color: palette.label, fontSize: "0.85rem" }}>
                               Already {submission.approval_status}
                             </span>
