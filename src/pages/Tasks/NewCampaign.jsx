@@ -33,18 +33,18 @@ import { advertiserCreateTask, uploadFile } from "../services/services";
 const categoriesData = {
   "Affiliate Rewards": [
     "Top of Form",
-    "Mobile App Invites (Bounty)",
-    "Course Sale (Bounty)",
-    "Software Sales (Bounty)",
-    "Cashback Sale (Bounty)",
+    "Mobile App Invites",
+    "Course Sale",
+    "Software Sales",
+    "Cashback Sale",
   ],
   "App Download": [
     "Mobile Gameplay",
-    "Blogpost App Review (Bounty)",
+    "Blogpost App Review",
     "Mobile App Download",
-    "Sign Up & Review (Bounty)",
-    "Mobile App Download & Sign Up + Deposit (Bounty)",
-    "Mobile App Download, KYC Sign Up & Additional Task (Bounty)",
+    "Sign Up & Review",
+    "Mobile App Download & Sign Up + Deposit",
+    "Mobile App Download, KYC Sign Up & Additional Task",
   ],
   "Artist Engagement": [
     "Spotify Follow",
@@ -63,17 +63,17 @@ const categoriesData = {
     "AudioMack Follow, Favorite & Comment",
   ],
   "Content Rewards": [
-    "UGC Content (Bounty)",
-    "Reaction Video (Bounty)",
-    "Fanpage With 10 Posts (Bounty)",
-    "Fanpage With 50 Posts (Bounty)",
-    "Fanpage With 100 Posts (Bounty)",
+    "UGC Content",
+    "Reaction Video",
+    "Fanpage With 10 Posts",
+    "Fanpage With 50 Posts",
+    "Fanpage With 100 Posts",
     "Create a Meme Series (10 Slides)",
-    "Public Reaction Bounty (Street Interview)",
-    "Behind-the-Scenes or Explainer Edit (Bounty)",
-    "UGC Content Bounty with 10K Views (Bounty)",
-    "UGC Content Bounty with 50K Views (Bounty)",
-    "UGC Content Bounty with 100K+ Views (Bounty)",
+    "Public Reaction (Street Interview)",
+    "Behind-the-Scenes or Explainer Edit",
+    "UGC Content with 10K Views",
+    "UGC Content with 50K Views",
+    "UGC Content with 100K+ Views",
   ],
   Discord: ["Like/React", "Join Server", "Join Channel"],
   Facebook: [
@@ -100,7 +100,7 @@ const categoriesData = {
     "Repost To Insta-feed",
     "Repost To Insta-Story",
     "Like, Comment & Save",
-    "Watch Video & Comment (Bounty)",
+    "Watch Video & Comment",
     "Like, Comment & Comment Likes + Reply",
   ],
   LinkedIn: [
@@ -118,36 +118,36 @@ const categoriesData = {
     "Sign Up & Vote",
     "Instagram Post Vote",
     "Vote & Email Confirmation",
-    "Paid Vote (Bounty)",
-    "Vote Via SMS (Bounty)",
+    "Paid Vote",
+    "Vote Via SMS",
     "Complex Vote (Multiple Survey, Email, Phone Verification)",
   ],
   Review: ["Facebook Page" ,"Google Review",
       "Facebook Review",
       "Trust Pilot Review",],
   "Sign Up": [
-    "Forum Sign Up (Bounty)",
-    "Quick Email Sign Up (Bounty)",
-    "Sign Up & Submit KYC (Bounty)",
-    "Detailed Sign Up (Bounty)",
-    "Sign Up + Additional Task (Bounty)",
-    "Sign Up + Deposit (Bounty)",
+    "Forum Sign Up",
+    "Quick Email Sign Up",
+    "Sign Up & Submit KYC",
+    "Detailed Sign Up",
+    "Sign Up + Additional Task",
+    "Sign Up + Deposit",
     "Verify Email & Mobile Number",
   ],
   Snapchat: ["View All Story (Public Only)", "Snapchat Follow/Subscribe"],
   "Stream Music": [
-    "Stream on Boomplay & Share (Bounty)",
-    "Stream Music on Spotify & Share (Bounty)",
-    "Stream Music on Apple Music & Share (Bounty)",
-    "Stream on AudioMack & Share (Bounty)",
-    "Stream on YouTube Music & Share (Bounty)",
-    "Stream Music on Tidal & Share (Bounty)",
-    "Stream on Deezer & Share (Bounty)",
+    "Stream on Boomplay & Share",
+    "Stream Music on Spotify & Share",
+    "Stream Music on Apple Music & Share",
+    "Stream on AudioMack & Share",
+    "Stream on YouTube Music & Share",
+    "Stream Music on Tidal & Share",
+    "Stream on Deezer & Share",
   ],
   Survey: [
-    "10 Questions (Bounty)",
-    "20 Questions (Bounty)",
-    "30 Questions (Bounty)",
+    "10 Questions",
+    "20 Questions",
+    "30 Questions",
   ],
   Telegram: ["Bot Join", "Group Join", "Simple Air Drop", "Complex Air Drop"],
   Threads: ["Like", "Quote", "Follow", "Repost", "Comment", "Like & Comment"],
@@ -174,15 +174,15 @@ const categoriesData = {
     "Follow, Like & Retweet",
     "Vote On Twitter & Reply",
   ],
-  UGC: ["UGC App Review (Bounty)", "UGC Product Review (Bounty)"],
+  UGC: ["UGC App Review", "UGC Product Review"],
   "Video Watch Time": [
-    "Watch Video 3 Mins (Bounty)",
-    "Watch Video 6 Mins (Bounty)",
-    "Watch Video 9 Mins (Bounty)",
-    "Watch Video 20 Minutes (Bounty)",
-    "Watch Video 3 Mins, Like, Share & Comment (Bounty)",
-    "Watch Video 6 Mins, Like, Share & Comment (Bounty)",
-    "Watch Video 9 Mins, Like, Share & Comment (Bounty)",
+    "Watch Video 3 Mins",
+    "Watch Video 6 Mins",
+    "Watch Video 9 Mins",
+    "Watch Video 20 Minutes",
+    "Watch Video 3 Mins, Like, Share & Comment",
+    "Watch Video 6 Mins, Like, Share & Comment",
+    "Watch Video 9 Mins, Like, Share & Comment",
   ],
   Website: [
     "Visit Webpage Only",
@@ -246,26 +246,34 @@ export default function NewCampaign() {
   const [isDragging, setIsDragging] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const [form, setForm] = useState({
-    title: "",
-    jobDescription: "",
-    instructions: "",
-    country: "Nigeria",
-    category: "",
-    subCategory: "",
-    workersNeeded: "",
-    amountPerWorker: "",
-    approvalDays: 3,
-    jobsLink: "",
-    approvalMode: "",
-    file: null,
-    reviewType: "Open",
-    closedReviewOptions: "",
-    rewardCurrency: "NGN",
-    attachment: [],
-    uploadingImage: false,
-    is_screenshot_required: false,
+  const [form, setForm] = useState(() => {
+    const saved = localStorage.getItem('campaignDraft');
+    return saved ? JSON.parse(saved) : {
+      title: "",
+      jobDescription: "",
+      instructions: "",
+      country: "Nigeria",
+      category: "",
+      subCategory: "",
+      workersNeeded: "",
+      amountPerWorker: "",
+      approvalDays: 3,
+      jobsLink: "",
+      approvalMode: "",
+      file: null,
+      reviewType: "Open",
+      closedReviewOptions: "",
+      rewardCurrency: "NGN",
+      attachment: [],
+      uploadingImage: false,
+      is_screenshot_required: false,
+    };
   });
+
+  // Save draft to localStorage whenever form changes
+  React.useEffect(() => {
+    localStorage.setItem('campaignDraft', JSON.stringify(form));
+  }, [form]);
   
 
   
@@ -335,15 +343,15 @@ export default function NewCampaign() {
         alert("Workers needed must be at least 10.");
         return;
       }
-      if (!form.amountPerWorker || amountPerWorker < 50) {
-        alert("Amount per worker must be at least 50.");
+      if (!form.amountPerWorker) {
+        alert("Amount per worker is required.");
         return;
       }
-      if (isClosed && !hasClosedReviewContent) {
+      if (form.category === "Review" && isClosed && !hasClosedReviewContent) {
         alert("Closed Review requires review options (either paste text or upload file).");
         return;
       }
-      if (isClosed && closedOptionsCount < workersNeeded) {
+      if (form.category === "Review" && isClosed && closedOptionsCount < workersNeeded) {
         alert(`You need at least ${workersNeeded} options but only have ${closedOptionsCount}. Please add ${workersNeeded - closedOptionsCount} more options.`);
         return;
       }
@@ -503,6 +511,7 @@ export default function NewCampaign() {
     
     try {
       await advertiserCreateTask(payload);
+      localStorage.removeItem('campaignDraft');
       setShowSuccess(true);
       setTimeout(() => {
         window.location.reload();
@@ -864,11 +873,10 @@ export default function NewCampaign() {
                           marginBottom: "8px",
                         }}
                       >
-                        Amount per Worker (Min: 50)
+                        Amount per Worker
                       </Form.Label>
                       <Form.Control
                         type="number"
-                        min={50}
                         step="0.01"
                         name="amountPerWorker"
                         value={form.amountPerWorker}
@@ -878,13 +886,6 @@ export default function NewCampaign() {
                             amountPerWorker: e.target.value,
                           }))
                         }
-                        onBlur={(e) => {
-                          const value = Math.max(50, parseFloat(e.target.value) || 50);
-                          setForm((f) => ({
-                            ...f,
-                            amountPerWorker: value.toString(),
-                          }));
-                        }}
                         required
                         style={{
                           color: palette.text,
@@ -896,97 +897,99 @@ export default function NewCampaign() {
                       />
                     </Form.Group>
                   </Col>
-                  <Col md={12}>
-                    <Form.Group>
-                      <Form.Label
-                        style={{
-                          fontWeight: "600",
-                          color: palette.text,
-                          marginBottom: "16px",
-                          display: "block",
-                        }}
-                      >
-                        Review Type
-                      </Form.Label>
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "20px",
-                          marginBottom: "20px",
-                        }}
-                      >
-                        {["Open", "Closed"].map((type) => (
-                          <label
-                            key={type}
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "10px",
-                              cursor: "pointer",
-                              padding: "12px 16px",
-                              borderRadius: "8px",
-                              border: `2px solid ${
-                                form.reviewType === type
-                                  ? palette.red
-                                  : palette.border
-                              }`,
-                              background:
-                                form.reviewType === type
-                                  ? `${palette.red}20`
-                                  : palette.input,
-                              transition: "all 0.2s",
-                            }}
-                          >
-                            <input
-                              type="radio"
-                              name="reviewType"
-                              value={type}
-                              checked={form.reviewType === type}
-                              onChange={(e) =>
-                                setForm((f) => ({
-                                  ...f,
-                                  reviewType: e.target.value,
-                                  ...(e.target.value === "Closed"
-                                    ? { closedReviewOptions: [""] }
-                                    : { reviewText: [""] }),
-                                }))
-                              }
-                              style={{ cursor: "pointer" }}
-                            />
-                            <span
+                  {form.category === "Review" && (
+                    <Col md={12}>
+                      <Form.Group>
+                        <Form.Label
+                          style={{
+                            fontWeight: "600",
+                            color: palette.text,
+                            marginBottom: "16px",
+                            display: "block",
+                          }}
+                        >
+                          Review Type
+                        </Form.Label>
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "20px",
+                            marginBottom: "20px",
+                          }}
+                        >
+                          {["Open", "Closed"].map((type) => (
+                            <label
+                              key={type}
                               style={{
-                                fontWeight: "500",
-                                color: palette.text,
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "10px",
+                                cursor: "pointer",
+                                padding: "12px 16px",
+                                borderRadius: "8px",
+                                border: `2px solid ${
+                                  form.reviewType === type
+                                    ? palette.red
+                                    : palette.border
+                                }`,
+                                background:
+                                  form.reviewType === type
+                                    ? `${palette.red}20`
+                                    : palette.input,
+                                transition: "all 0.2s",
                               }}
                             >
-                              {type === "Open" ? (
-                                <FileText
-                                  size={18}
-                                  style={{
-                                    display: "inline",
-                                    marginRight: "8px",
-                                  }}
-                                />
-                              ) : (
-                                <ImageIcon
-                                  size={18}
-                                  style={{
-                                    display: "inline",
-                                    marginRight: "8px",
-                                  }}
-                                />
-                              )}
-                              {type} Review
-                            </span>
-                          </label>
-                        ))}
-                      </div>
-                    </Form.Group>
-                  </Col>
+                              <input
+                                type="radio"
+                                name="reviewType"
+                                value={type}
+                                checked={form.reviewType === type}
+                                onChange={(e) =>
+                                  setForm((f) => ({
+                                    ...f,
+                                    reviewType: e.target.value,
+                                    ...(e.target.value === "Closed"
+                                      ? { closedReviewOptions: [""] }
+                                      : { reviewText: [""] }),
+                                  }))
+                                }
+                                style={{ cursor: "pointer" }}
+                              />
+                              <span
+                                style={{
+                                  fontWeight: "500",
+                                  color: palette.text,
+                                }}
+                              >
+                                {type === "Open" ? (
+                                  <FileText
+                                    size={18}
+                                    style={{
+                                      display: "inline",
+                                      marginRight: "8px",
+                                    }}
+                                  />
+                                ) : (
+                                  <ImageIcon
+                                    size={18}
+                                    style={{
+                                      display: "inline",
+                                      marginRight: "8px",
+                                    }}
+                                  />
+                                )}
+                                {type} Review
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      </Form.Group>
+                    </Col>
+                  )}
 
 
 
-                  {isClosed && (
+                  {form.category === "Review" && isClosed && (
                     <Col md={12}>
                       <Form.Group>
                         <Form.Label
@@ -1178,14 +1181,14 @@ export default function NewCampaign() {
                           fontWeight: "600",
                           borderRadius: "8px",
                           cursor:
-                            (!form.workersNeeded || workersNeeded < 10 || !form.amountPerWorker || amountPerWorker < 50 || (isClosed && (!hasClosedReviewContent || !hasEnoughOptions)))
+                            (!form.workersNeeded || workersNeeded < 10 || !form.amountPerWorker || (form.category === "Review" && isClosed && (!hasClosedReviewContent || !hasEnoughOptions)))
                               ? "not-allowed"
                               : "pointer",
                           opacity:
-                            (!form.workersNeeded || workersNeeded < 10 || !form.amountPerWorker || amountPerWorker < 50 || (isClosed && (!hasClosedReviewContent || !hasEnoughOptions))) ? 0.5 : 1,
+                            (!form.workersNeeded || workersNeeded < 10 || !form.amountPerWorker || (form.category === "Review" && isClosed && (!hasClosedReviewContent || !hasEnoughOptions))) ? 0.5 : 1,
                         }}
                         onClick={nextStep}
-                        disabled={!form.workersNeeded || workersNeeded < 10 || !form.amountPerWorker || amountPerWorker < 50 || (isClosed && (!hasClosedReviewContent || !hasEnoughOptions))}
+                        disabled={!form.workersNeeded || workersNeeded < 10 || !form.amountPerWorker || (form.category === "Review" && isClosed && (!hasClosedReviewContent || !hasEnoughOptions))}
                       >
                         Next{" "}
                         <ChevronRight size={18} style={{ marginLeft: "8px" }} />
@@ -1197,7 +1200,24 @@ export default function NewCampaign() {
 
               {/* ====== Step 3 ====== */}
               {step === 3 && (
-                <Row className="g-4">
+                <>
+                  <div className="d-flex justify-content-start mb-3">
+                    <Button
+                      style={{
+                        background: palette.label,
+                        color: "#fff",
+                        border: "none",
+                        padding: "10px 24px",
+                        fontWeight: "600",
+                        borderRadius: "8px",
+                      }}
+                      onClick={prevStep}
+                    >
+                      <ChevronLeft size={18} style={{ marginRight: "8px" }} />
+                      Back
+                    </Button>
+                  </div>
+                  <Row className="g-4">
                   <Col md={12}>
                     <Form.Group>
                       <Form.Label
@@ -1778,7 +1798,8 @@ export default function NewCampaign() {
                       </div>
                     </div>
                   </Col>
-                </Row>
+                  </Row>
+                </>  
               )}
             </Form>
           </Card.Body>
