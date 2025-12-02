@@ -23,6 +23,7 @@ import {
   UploadCloud,
   ThumbsUp,
   ThumbsDown,
+  Copy,
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -654,18 +655,32 @@ export default function ViewCampaignPage() {
                     readOnly
                   />
                 </Form.Group>
-                {form.review_type === "Closed" && (
-                  <Form.Group className="mb-3">
-                    <Form.Label>Closed Review Options</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={3}
-                      value={Array.isArray(form.closed_review_options) ? form.closed_review_options.join("\n") : form.closed_review_options || ""}
-                      disabled
-                      readOnly
-                    />
-                  </Form.Group>
-                )}
+                {form.review_type === "Closed" && (() => {
+                  const options = Array.isArray(form.closed_review_options) ? form.closed_review_options : (form.closed_review_options ? [form.closed_review_options] : []);
+                  const rowCount = Math.max(3, options.length);
+                  const textToCopy = options.join("\n");
+                  return (
+                    <Form.Group className="mb-3">
+                      <div className="d-flex justify-content-between align-items-center">
+                        <Form.Label>Closed Review Options ({options.length} items)</Form.Label>
+                        <Button
+                          variant="outline-secondary"
+                          size="sm"
+                          onClick={() => navigator.clipboard.writeText(textToCopy)}
+                        >
+                          <Copy size={14} className="me-1" /> Copy All
+                        </Button>
+                      </div>
+                      <Form.Control
+                        as="textarea"
+                        rows={rowCount}
+                        value={textToCopy}
+                        disabled
+                        readOnly
+                      />
+                    </Form.Group>
+                  );
+                })()}
               </Col>
             </Row>
             {editMode && (
