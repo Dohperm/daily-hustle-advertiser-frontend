@@ -657,19 +657,31 @@ export default function ViewCampaignPage() {
                 </Form.Group>
                 {form.review_type === "Closed" && (() => {
                   const options = Array.isArray(form.closed_review_options) ? form.closed_review_options : (form.closed_review_options ? [form.closed_review_options] : []);
-                  const rowCount = Math.max(3, options.length);
                   const textToCopy = options.join("\n");
+                  const [showAll, setShowAll] = React.useState(false);
+                  const rowCount = showAll ? Math.max(3, options.length) : 3;
                   return (
                     <Form.Group className="mb-3">
                       <div className="d-flex justify-content-between align-items-center">
                         <Form.Label>Closed Review Options ({options.length} items)</Form.Label>
-                        <Button
-                          variant="outline-secondary"
-                          size="sm"
-                          onClick={() => navigator.clipboard.writeText(textToCopy)}
-                        >
-                          <Copy size={14} className="me-1" /> Copy All
-                        </Button>
+                        <div className="d-flex gap-2">
+                          {options.length > 3 && (
+                            <Button
+                              variant="outline-primary"
+                              size="sm"
+                              onClick={() => setShowAll(!showAll)}
+                            >
+                              {showAll ? "Show Less" : "See More"}
+                            </Button>
+                          )}
+                          <Button
+                            variant="outline-secondary"
+                            size="sm"
+                            onClick={() => navigator.clipboard.writeText(textToCopy)}
+                          >
+                            <Copy size={14} className="me-1" /> Copy All
+                          </Button>
+                        </div>
                       </div>
                       <Form.Control
                         as="textarea"
