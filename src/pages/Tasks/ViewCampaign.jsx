@@ -187,7 +187,17 @@ export default function ViewCampaignPage() {
     const selectedCurrency = CURRENCIES.includes(form.rewardCurrency)
       ? form.rewardCurrency
       : "NGN";
-    const closedReview = form.review_type === "Open" ? ["NO"] : ["YES"];
+    let closedReviewOptions;
+    if (form.review_type === "Closed" && typeof form.closed_review_options === 'string') {
+      closedReviewOptions = form.closed_review_options.split('\n').map(l => l.trim()).filter(l => l);
+      const workersNeeded = parseInt(form.workersNeeded) || 0;
+      if (closedReviewOptions.length < workersNeeded) {
+        alert(`Need ${workersNeeded - closedReviewOptions.length} more closed review options`);
+        return;
+      }
+    } else {
+      closedReviewOptions = form.review_type === "Open" ? ["NO"] : (Array.isArray(form.closed_review_options) ? form.closed_review_options : ["YES"]);
+    }
     try {
       await advertiserUpdateTask(taskId, {
         ...form,
@@ -202,13 +212,13 @@ export default function ViewCampaignPage() {
         slots: {
           max: form.workersNeeded,
         },
-        closed_review_options: closedReview,
+        closed_review_options: closedReviewOptions,
         attachment: form.attachment,
       });
       setEditMode(false);
       setForm((p) => ({
         ...p,
-        closed_review_options: closedReview,
+        closed_review_options: closedReviewOptions,
       }));
     } catch {}
   };
@@ -658,14 +668,18 @@ export default function ViewCampaignPage() {
                 {form.review_type === "Closed" && (() => {
                   const options = Array.isArray(form.closed_review_options) ? form.closed_review_options : (form.closed_review_options ? [form.closed_review_options] : []);
                   const textToCopy = options.join("\n");
+                  const textValue = editMode ? (typeof form.closed_review_options === 'string' ? form.closed_review_options : textToCopy) : textToCopy;
+                  const currentCount = editMode ? (textValue ? textValue.split('\n').filter(Boolean).length : 0) : options.length;
+                  const workersNeeded = parseInt(form.workersNeeded) || 0;
+                  const needsMore = editMode && currentCount < workersNeeded;
                   const [showAll, setShowAll] = React.useState(false);
-                  const rowCount = showAll ? Math.max(3, options.length) : 3;
+                  const rowCount = editMode ? Math.max(5, Math.min(15, currentCount + 2)) : (showAll ? Math.max(3, options.length) : 3);
                   return (
                     <Form.Group className="mb-3">
                       <div className="d-flex justify-content-between align-items-center">
-                        <Form.Label>Closed Review Options ({options.length} items)</Form.Label>
+                        <Form.Label>Closed Review Options ({currentCount} items{editMode && workersNeeded > 0 ? ` / ${workersNeeded} needed` : ''})</Form.Label>
                         <div className="d-flex gap-2">
-                          {options.length > 3 && (
+                          {!editMode && options.length > 3 && (
                             <Button
                               variant="outline-primary"
                               size="sm"
@@ -686,40 +700,54 @@ export default function ViewCampaignPage() {
                       <Form.Control
                         as="textarea"
                         rows={rowCount}
-                        value={textToCopy}
-                        disabled
-                        readOnly
+                        value={textValue}
+                        onChange={editMode ? (e) => setForm(prev => ({ ...prev, closed_review_options: e.target.value })) : undefined}
+                        disabled={!editMode}
+                        readOnly={!editMode}
+                        placeholder={editMode ? "Enter review options, one per line..." : ""}
                       />
+                      {needsMore && (
+                        <small className="text-danger mt-1 d-block">
+                          Need {workersNeeded - currentCount} more options
+                        </small>
+                      )}
                     </Form.Group>
                   );
                 })()}
               </Col>
             </Row>
-            {editMode && (
-              <div className="text-end mt-4">
-                <Button
-                  variant="secondary"
-                  onClick={() => setEditMode(false)}
-                  className="me-2"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="success"
-                  onClick={handleSave}
-                  disabled={form.uploadingImage}
-                >
-                  {form.uploadingImage ? (
-                    <>
-                      <Spinner animation="border" size="sm" /> Uploading
-                      image...
-                    </>
-                  ) : (
-                    "Save Changes"
-                  )}
-                </Button>
-              </div>
-            )}
+            {editMode && (() => {
+              const currentCount = form.review_type === "Closed" && typeof form.closed_review_options === 'string' 
+                ? form.closed_review_options.split('\n').filter(Boolean).length 
+                : 0;
+              const workersNeeded = parseInt(form.workersNeeded) || 0;
+              const hasInsufficientOptions = form.review_type === "Closed" && currentCount < workersNeeded;
+              return (
+                <div className="text-end mt-4">
+                  <Button
+                    variant="secondary"
+                    onClick={() => setEditMode(false)}
+                    className="me-2"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="success"
+                    onClick={handleSave}
+                    disabled={form.uploadingImage || hasInsufficientOptions}
+                  >
+                    {form.uploadingImage ? (
+                      <>
+                        <Spinner animation="border" size="sm" /> Uploading
+                        image...
+                      </>
+                    ) : (
+                      "Save Changes"
+                    )}
+                  </Button>
+                </div>
+              );
+            })()}
           </Form>
         </Card.Body>
       </Card>
