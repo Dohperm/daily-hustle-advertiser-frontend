@@ -120,6 +120,7 @@ export default function ViewCampaignPage() {
           attachment: Array.isArray(data.attachment) ? data.attachment : (data.attachment ? [data.attachment] : []),
           task_site: data.task_site || "",
           review_type: data.review_type || "Closed",
+          closed_review_options: data.closed_review_options || [],
           uploadingImage: false,
         });
         setOriginalWorkersNeeded(workersNeeded);
@@ -653,6 +654,18 @@ export default function ViewCampaignPage() {
                     readOnly
                   />
                 </Form.Group>
+                {form.review_type === "Closed" && (
+                  <Form.Group className="mb-3">
+                    <Form.Label>Closed Review Options</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      value={Array.isArray(form.closed_review_options) ? form.closed_review_options.join("\n") : form.closed_review_options || ""}
+                      disabled
+                      readOnly
+                    />
+                  </Form.Group>
+                )}
               </Col>
             </Row>
             {editMode && (
