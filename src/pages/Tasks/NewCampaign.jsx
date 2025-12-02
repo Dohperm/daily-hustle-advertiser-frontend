@@ -1010,9 +1010,10 @@ export default function NewCampaign() {
                           }}
                         >
                           <strong>
-                            Paste bulk review options as lines (TXT) - must have at least {workersNeeded}{" "}
-                            options.
+                            Paste bulk review options - must have at least {workersNeeded} options.
                           </strong>
+                          <br />
+                          <small>Each line = one statement. For multi-line statements, use a single line without breaks.</small>
                         </Alert>
 
                         <div
