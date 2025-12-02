@@ -35,7 +35,7 @@ import {
 } from "../services/services";
 
 const PLATFORM_FEE_PERCENT = 0.1;
-const TINYMCE_API_KEY = "vd6rmi2kajnxr70fb4qd3c9urje5qczvcoohhywwl6sbawpf";
+const TINYMCE_API_KEY = "hibj0zuw254t339ddq36gppxwz01azujueckegndkz5ag3q4";
 const CURRENCIES = ["NGN", "USD", "GBP", "EUR"];
 const approvalModeOptions = ["Self Approval", "Platform Approval"];
 const reviewTypeOptions = ["Closed", "Open"];
