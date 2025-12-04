@@ -28,180 +28,240 @@ import {
 import Papa from "papaparse";
 import { advertiserCreateTask, uploadFile } from "../services/services";
 
-// Categories data (same as before)
+// Campaign types data from CampaignTypes.jsx
+const campaignTypesData = [
+  {
+    job_title: "Affiliate Referral Task",
+    job_category: "Affiliate Rewards",
+    sub_job_category: "Referral Tasks",
+    job_description: "Refer users, products or services",
+    job_instructions: "Share referral links; track signups",
+    amount: "₦25,000",
+    min_duration: "1 day",
+    complexity_rating: "Very Hard"
+  },
+  {
+    job_title: "App Installation Task",
+    job_category: "App Download",
+    sub_job_category: "Install Tasks",
+    job_description: "Download and install apps",
+    job_instructions: "Install app & take screenshot as proof",
+    amount: "₦150",
+    min_duration: "2–5 mins",
+    complexity_rating: "High"
+  },
+  {
+    job_title: "Artist Engagement Task",
+    job_category: "Artist Engagement",
+    sub_job_category: "Music Promotion",
+    job_description: "Engage with music artists",
+    job_instructions: "Follow artists and interact on social media",
+    amount: "₦45",
+    min_duration: "1–2 mins",
+    complexity_rating: "Easy"
+  },
+  {
+    job_title: "Content Interaction Task",
+    job_category: "Content Rewards",
+    sub_job_category: "Content Interaction",
+    job_description: "Like, comment, share content",
+    job_instructions: "Interact with content posted by clients",
+    amount: "₦35",
+    min_duration: "1–3 mins",
+    complexity_rating: "Easy"
+  },
+  {
+    job_title: "Discord Join Task",
+    job_category: "Discord",
+    sub_job_category: "Community Join",
+    job_description: "Join Discord server & interact",
+    job_instructions: "Join server & perform reactions / message",
+    amount: "₦50",
+    min_duration: "2–3 mins",
+    complexity_rating: "Easy"
+  },
+  {
+    job_title: "Facebook Engagement Task",
+    job_category: "Facebook",
+    sub_job_category: "Page/Group/Engage",
+    job_description: "Follow, like, comment, join group",
+    job_instructions: "Like pages, join groups, comment on posts",
+    amount: "₦12",
+    min_duration: "1 min",
+    complexity_rating: "Easy"
+  },
+  {
+    job_title: "Instagram Engagement Task",
+    job_category: "Instagram",
+    sub_job_category: "Follow/Engage",
+    job_description: "Follow pages, like posts",
+    job_instructions: "Follow IG accounts, like posts, comment",
+    amount: "₦15",
+    min_duration: "1 min",
+    complexity_rating: "Easy"
+  },
+  {
+    job_title: "LinkedIn Professional Task",
+    job_category: "LinkedIn",
+    sub_job_category: "Professional Engage",
+    job_description: "Follow companies, like/comment",
+    job_instructions: "Follow business pages & engage posts",
+    amount: "₦20",
+    min_duration: "1–2 mins",
+    complexity_rating: "Medium"
+  },
+  {
+    job_title: "Online Voting Task",
+    job_category: "Online Vote",
+    sub_job_category: "Voting Tasks",
+    job_description: "Vote in polls or contests",
+    job_instructions: "Cast vote online as instructed",
+    amount: "₦45",
+    min_duration: "1–3 mins",
+    complexity_rating: "Medium"
+  },
+  {
+    job_title: "Review Task",
+    job_category: "Review",
+    sub_job_category: "App/Product/Website",
+    job_description: "Write reviews for apps, websites",
+    job_instructions: "Write honest reviews on platform",
+    amount: "₦125",
+    min_duration: "3–5 mins",
+    complexity_rating: "Medium"
+  },
+  {
+    job_title: "Registration Task",
+    job_category: "Sign Up",
+    sub_job_category: "Registration Tasks",
+    job_description: "Website or app registration",
+    job_instructions: "Register account; complete optional KYC",
+    amount: "₦175",
+    min_duration: "2–5 mins",
+    complexity_rating: "Medium/High"
+  },
+  {
+    job_title: "Snapchat Engagement Task",
+    job_category: "Snapchat",
+    sub_job_category: "Add/Engage",
+    job_description: "Add accounts, view stories",
+    job_instructions: "Add user & interact with content",
+    amount: "₦35",
+    min_duration: "1 min",
+    complexity_rating: "Easy"
+  },
+  {
+    job_title: "Music Streaming Task",
+    job_category: "Stream Music",
+    sub_job_category: "Music Streaming",
+    job_description: "Stream music on platforms",
+    job_instructions: "Stream tracks & share proof if required",
+    amount: "₦30",
+    min_duration: "2–10 mins",
+    complexity_rating: "Medium"
+  },
+  {
+    job_title: "Survey Task",
+    job_category: "Survey",
+    sub_job_category: "Opinion/Research",
+    job_description: "Complete survey forms",
+    job_instructions: "Answer survey questions fully",
+    amount: "₦95",
+    min_duration: "3–10 mins",
+    complexity_rating: "Medium"
+  },
+  {
+    job_title: "Telegram Engagement Task",
+    job_category: "Telegram",
+    sub_job_category: "Join/Engage",
+    job_description: "Join groups/channels",
+    job_instructions: "Join group/channel & react or comment",
+    amount: "₦27",
+    min_duration: "1–3 mins",
+    complexity_rating: "Easy"
+  },
+  {
+    job_title: "Threads Engagement Task",
+    job_category: "Threads",
+    sub_job_category: "Social Threads Engage",
+    job_description: "Engage on Threads",
+    job_instructions: "Comment, like, follow posts",
+    amount: "₦35",
+    min_duration: "1–2 mins",
+    complexity_rating: "Easy"
+  },
+  {
+    job_title: "TikTok Engagement Task",
+    job_category: "Tiktok",
+    sub_job_category: "Follow/Engage/Video",
+    job_description: "Like, follow, comment, or create video",
+    job_instructions: "Engage with TikTok content",
+    amount: "₦17",
+    min_duration: "1–5 mins",
+    complexity_rating: "Easy"
+  },
+  {
+    job_title: "Twitter Engagement Task",
+    job_category: "Twitter [X]",
+    sub_job_category: "Likes/Retweets/Follow",
+    job_description: "Interact with posts or accounts",
+    job_instructions: "Like, retweet, or follow",
+    amount: "₦15",
+    min_duration: "1–2 mins",
+    complexity_rating: "Easy"
+  },
+  {
+    job_title: "UGC Creation Task",
+    job_category: "UGC",
+    sub_job_category: "User-Generated Content",
+    job_description: "Create videos/photos",
+    job_instructions: "Record content for brand promotion",
+    amount: "₦1,500",
+    min_duration: "10–20 mins",
+    complexity_rating: "Hard"
+  },
+  {
+    job_title: "Website Interaction Task",
+    job_category: "Website",
+    sub_job_category: "Visit website & click links",
+    job_description: "Open page & interact as instructed",
+    job_instructions: "Open website, click specified links, confirm completion",
+    amount: "₦35",
+    min_duration: "1–2 mins",
+    complexity_rating: "Easy"
+  },
+  {
+    job_title: "WhatsApp Engagement Task",
+    job_category: "Whatsapp",
+    sub_job_category: "Join groups, repost status",
+    job_description: "Join group & share content",
+    job_instructions: "Join group, repost status, confirm completion",
+    amount: "₦20",
+    min_duration: "1 min",
+    complexity_rating: "Easy"
+  },
+  {
+    job_title: "YouTube Engagement Task",
+    job_category: "Youtube",
+    sub_job_category: "Subscribe, watch, comment",
+    job_description: "Subscribe & interact with content",
+    job_instructions: "Subscribe, watch, and comment on videos",
+    amount: "₦17",
+    min_duration: "1–5 mins",
+    complexity_rating: "Easy"
+  }
+];
 
-const categoriesData = {
-  "Affiliate Rewards": [
-    "Top of Form",
-    "Mobile App Invites",
-    "Course Sale",
-    "Software Sales",
-    "Cashback Sale",
-  ],
-  "App Download": [
-    "Mobile Gameplay",
-    "Blogpost App Review",
-    "Mobile App Download",
-    "Sign Up & Review",
-    "Mobile App Download & Sign Up + Deposit",
-    "Mobile App Download, KYC Sign Up & Additional Task",
-  ],
-  "Artist Engagement": [
-    "Spotify Follow",
-    "Shazam Music",
-    "Shazam Follow",
-    "Boomplay Follow",
-    "AudioMack Follow",
-    "AudioMack Favorite",
-    "Boomplay Favourite",
-    "AudioMack Comment",
-    "Shazam Song & Follow Artist",
-    "Spotify Follow & Save playlist",
-    "Boomplay Favorite & Comment",
-    "AudioMack Favorite & Comment",
-    "Boomplay Follow, Favorite & Comment",
-    "AudioMack Follow, Favorite & Comment",
-  ],
-  "Content Rewards": [
-    "UGC Content",
-    "Reaction Video",
-    "Fanpage With 10 Posts",
-    "Fanpage With 50 Posts",
-    "Fanpage With 100 Posts",
-    "Create a Meme Series (10 Slides)",
-    "Public Reaction (Street Interview)",
-    "Behind-the-Scenes or Explainer Edit",
-    "UGC Content with 10K Views",
-    "UGC Content with 50K Views",
-    "UGC Content with 100K+ Views",
-  ],
-  Discord: ["Like/React", "Join Server", "Join Channel"],
-  Facebook: [
-    "Like",
-    "Share",
-    "Follow",
-    "Comment",
-    "Add Friend",
-    "Join Group",
-    "Like & Comment",
-    "Share & Comment",
-    "Post On Facebook",
-    "Like, Share & Comment",
-    "Follow Page & Like Post",
-  ],
-  Instagram: [
-    "Like",
-    "Save",
-    "Follow",
-    "Comment",
-    "Follow & Like",
-    "Like & Comment",
-    "Live Engagement",
-    "Repost To Insta-feed",
-    "Repost To Insta-Story",
-    "Like, Comment & Save",
-    "Watch Video & Comment",
-    "Like, Comment & Comment Likes + Reply",
-  ],
-  LinkedIn: [
-    "Like",
-    "Repost",
-    "Connect",
-    "Comment",
-    "Follow & Like",
-    "Follow, Like ",
-    "Follow, Like & Comment",
-  ],
-  "Online Vote": [
-    "Website Vote",
-    "Facebook Vote",
-    "Sign Up & Vote",
-    "Instagram Post Vote",
-    "Vote & Email Confirmation",
-    "Paid Vote",
-    "Vote Via SMS",
-    "Complex Vote (Multiple Survey, Email, Phone Verification)",
-  ],
-  Review: ["Facebook Page" ,"Google Review",
-      "Facebook Review",
-      "Trust Pilot Review",],
-  "Sign Up": [
-    "Forum Sign Up",
-    "Quick Email Sign Up",
-    "Sign Up & Submit KYC",
-    "Detailed Sign Up",
-    "Sign Up + Additional Task",
-    "Sign Up + Deposit",
-    "Verify Email & Mobile Number",
-  ],
-  Snapchat: ["View All Story (Public Only)", "Snapchat Follow/Subscribe"],
-  "Stream Music": [
-    "Stream on Boomplay & Share",
-    "Stream Music on Spotify & Share",
-    "Stream Music on Apple Music & Share",
-    "Stream on AudioMack & Share",
-    "Stream on YouTube Music & Share",
-    "Stream Music on Tidal & Share",
-    "Stream on Deezer & Share",
-  ],
-  Survey: [
-    "10 Questions",
-    "20 Questions",
-    "30 Questions",
-  ],
-  Telegram: ["Bot Join", "Group Join", "Simple Air Drop", "Complex Air Drop"],
-  Threads: ["Like", "Quote", "Follow", "Repost", "Comment", "Like & Comment"],
-  Tiktok: [
-    "Like",
-    "Follow",
-    "Comment",
-    "Like & Share",
-    "Like & Comment",
-    "Follow, Like & Comment",
-  ],
-  "Twitter [X]": [
-    "Vote",
-    "Like",
-    "Tweet",
-    "Follow",
-    "Retweet",
-    "Follow & Like",
-    "Reply (Tweet)",
-    "Retweet & Like",
-    "Retweet & Reply",
-    "Follow & Retweet",
-    "Retweet, Like & Reply",
-    "Follow, Like & Retweet",
-    "Vote On Twitter & Reply",
-  ],
-  UGC: ["UGC App Review", "UGC Product Review"],
-  "Video Watch Time": [
-    "Watch Video 3 Mins",
-    "Watch Video 6 Mins",
-    "Watch Video 9 Mins",
-    "Watch Video 20 Minutes",
-    "Watch Video 3 Mins, Like, Share & Comment",
-    "Watch Video 6 Mins, Like, Share & Comment",
-    "Watch Video 9 Mins, Like, Share & Comment",
-  ],
-  Website: [
-    "Visit Webpage Only",
-    "Blog Visit, Comment & Share",
-    "Website Visit & Search Keyword",
-    "Website Visit, Search Keyword + Click",
-    "Website Visit, Search Keyword + 2 Clicks",
-    "Google Search Keyword + Visit Website",
-  ],
-  Whatsapp: ["Save Contact", "Follow Channel"],
-  Youtube: [
-    "Like",
-    "Share",
-    "Comment",
-    "Like & Comment",
-    "Like, Comment & Share",
-    "Any 2 Video Task (Specify in Title)",
-  ],
-};
+// Create categories data from campaign types
+const categoriesData = campaignTypesData.reduce((acc, campaign) => {
+  if (!acc[campaign.job_category]) {
+    acc[campaign.job_category] = [];
+  }
+  if (!acc[campaign.job_category].includes(campaign.sub_job_category)) {
+    acc[campaign.job_category].push(campaign.sub_job_category);
+  }
+  return acc;
+}, {});
 const categoryOptions = Object.keys(categoriesData);
 const africanCountries = [
   "Algeria", "Angola", "Benin", "Botswana", "Burkina Faso", "Burundi", "Cabo Verde", "Cameroon",
@@ -248,7 +308,9 @@ export default function NewCampaign() {
 
   const [form, setForm] = useState(() => {
     const saved = localStorage.getItem('campaignDraft');
-    return saved ? JSON.parse(saved) : {
+    const selectedType = localStorage.getItem('selectedCampaignType');
+    
+    let initialForm = {
       title: "",
       jobDescription: "",
       instructions: "",
@@ -267,22 +329,48 @@ export default function NewCampaign() {
       attachment: [],
       uploadingImage: false,
       is_screenshot_required: false,
+      minDuration: "",
+      complexityRating: "",
+      fromCampaignType: false,
     };
+    
+    if (saved) {
+      initialForm = JSON.parse(saved);
+    }
+    
+    // Prefill from selected campaign type
+    if (selectedType) {
+      const typeData = JSON.parse(selectedType);
+      initialForm = {
+        ...initialForm,
+        title: typeData.jobTitle || "",
+        category: typeData.category,
+        subCategory: typeData.subCategory,
+        jobDescription: typeData.jobDescription,
+        instructions: typeData.instructions,
+        minDuration: typeData.minDuration,
+        complexityRating: typeData.complexityRating,
+        amountPerWorker: typeData.amount ? typeData.amount.replace('₦', '').replace(',', '') : "",
+        fromCampaignType: true,
+      };
+      // Clear the selected type from localStorage
+      localStorage.removeItem('selectedCampaignType');
+    }
+    
+    return initialForm;
   });
 
-  // Save draft to localStorage whenever form changes
-  React.useEffect(() => {
-    localStorage.setItem('campaignDraft', JSON.stringify(form));
-  }, [form]);
-  
-
-  
   const [countrySearch, setCountrySearch] = useState("");
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [categorySearch, setCategorySearch] = useState("");
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [approvalModeSearch, setApprovalModeSearch] = useState("");
   const [showApprovalModeDropdown, setShowApprovalModeDropdown] = useState(false);
+
+  // Save draft to localStorage whenever form changes
+  React.useEffect(() => {
+    localStorage.setItem('campaignDraft', JSON.stringify(form));
+  }, [form]);
   
   const filteredCountries = africanCountries.filter(country =>
     country.toLowerCase().includes(countrySearch.toLowerCase())
@@ -297,6 +385,17 @@ export default function NewCampaign() {
     mode.toLowerCase().includes(approvalModeSearch.toLowerCase())
   );
   
+  const subCategoryList = form.category
+    ? categoriesData[form.category] || []
+    : [];
+  const workersNeeded = parseInt(form.workersNeeded, 10) || 0;
+  const amountPerWorker = parseFloat(form.amountPerWorker) || 0;
+  const baseTotal = workersNeeded * amountPerWorker;
+  const platformCharge = baseTotal * PLATFORM_FEE_PERCENT;
+  const totalBudget = baseTotal + platformCharge;
+
+  const isClosed = form.reviewType === "Closed";
+
   // Close dropdowns when clicking outside
   React.useEffect(() => {
     const handleClickOutside = () => {
@@ -310,16 +409,11 @@ export default function NewCampaign() {
     }
   }, [showCountryDropdown, showCategoryDropdown, showApprovalModeDropdown]);
 
-  const subCategoryList = form.category
-    ? categoriesData[form.category] || []
-    : [];
-  const workersNeeded = parseInt(form.workersNeeded, 10) || 0;
-  const amountPerWorker = parseFloat(form.amountPerWorker) || 0;
-  const baseTotal = workersNeeded * amountPerWorker;
-  const platformCharge = baseTotal * PLATFORM_FEE_PERCENT;
-  const totalBudget = baseTotal + platformCharge;
-
-  const isClosed = form.reviewType === "Closed";
+  React.useEffect(() => {
+    if (!isClosed) {
+      setForm((prev) => ({ ...prev, closedReviewOptions: "" }));
+    }
+  }, [isClosed]);
   const closedOptions = (form.closedReviewOptions && typeof form.closedReviewOptions === 'string') 
     ? form.closedReviewOptions.split('\n').filter(Boolean) 
     : [];
@@ -327,11 +421,7 @@ export default function NewCampaign() {
   const hasClosedReviewContent = form.closedReviewOptions && typeof form.closedReviewOptions === 'string' && form.closedReviewOptions.trim().length > 0;
   const hasEnoughOptions = !isClosed || closedOptionsCount >= workersNeeded;
 
-  React.useEffect(() => {
-    if (!isClosed) {
-      setForm((prev) => ({ ...prev, closedReviewOptions: "" }));
-    }
-  }, [form.reviewType]);
+
 
   const nextStep = () => {
     if (step === 1 && (!form.category || !form.subCategory)) {
@@ -485,13 +575,13 @@ export default function NewCampaign() {
       sub_category: form.subCategory,
       instructions: form.instructions,
       country: form.country,
-      review_type: form.reviewType,
-      closed_review_options,
       reward: {
         currency: form.rewardCurrency,
         amount: Number(totalBudget),
         amount_per_worker: Number(form.amountPerWorker),
       },
+      min_duration: form.minDuration,
+      complexity_rating: form.complexityRating,
       slots: { max: Number(form.workersNeeded) },
       approval: {
         num_days: Number(form.approvalDays),
@@ -499,6 +589,12 @@ export default function NewCampaign() {
       },
       task_site: form.jobsLink || "",
     };
+    
+    // Only include review_type and closed_review_options for Review jobs
+    if (form.category === "Review") {
+      payload.review_type = form.reviewType;
+      payload.closed_review_options = closed_review_options;
+    }
     
     // Include attachment array if files were uploaded
     if (form.attachment.length > 0) {
@@ -897,6 +993,75 @@ export default function NewCampaign() {
                       />
                     </Form.Group>
                   </Col>
+
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label
+                        style={{
+                          fontWeight: "600",
+                          color: palette.text,
+                          marginBottom: "8px",
+                        }}
+                      >
+                        Min Duration
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="minDuration"
+                        value={form.minDuration}
+                        onChange={(e) =>
+                          setForm((f) => ({
+                            ...f,
+                            minDuration: e.target.value,
+                          }))
+                        }
+                        readOnly={form.fromCampaignType}
+                        placeholder="e.g. 1-2 mins"
+                        style={{
+                          color: form.fromCampaignType ? palette.label : palette.text,
+                          background: form.fromCampaignType ? palette.hoverBg : palette.input,
+                          border: `1px solid ${palette.border}`,
+                          borderRadius: "8px",
+                          padding: "10px 12px",
+                        }}
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label
+                        style={{
+                          fontWeight: "600",
+                          color: palette.text,
+                          marginBottom: "8px",
+                        }}
+                      >
+                        Complexity Rating
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="complexityRating"
+                        value={form.complexityRating}
+                        onChange={(e) =>
+                          setForm((f) => ({
+                            ...f,
+                            complexityRating: e.target.value,
+                          }))
+                        }
+                        readOnly={form.fromCampaignType}
+                        placeholder="e.g. Easy, Medium, Hard"
+                        style={{
+                          color: form.fromCampaignType ? palette.label : palette.text,
+                          background: form.fromCampaignType ? palette.hoverBg : palette.input,
+                          border: `1px solid ${palette.border}`,
+                          borderRadius: "8px",
+                          padding: "10px 12px",
+                        }}
+                      />
+                    </Form.Group>
+                  </Col>
+
                   {form.category === "Review" && (
                     <Col md={12}>
                       <Form.Group>
@@ -1526,6 +1691,8 @@ export default function NewCampaign() {
                       />
                     </Form.Group>
                   </Col>
+
+
 
                   {imagePreviews.length > 0 && (
                     <Col md={12}>

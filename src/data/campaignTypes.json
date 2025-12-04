@@ -1,0 +1,82 @@
+[
+  {
+    "job_title": "Affiliate Referral Task",
+    "job_category": "Affiliate Rewards",
+    "sub_job_category": "Referral Tasks",
+    "job_description": "Refer users, products or services",
+    "job_instructions": "Share referral links; track signups",
+    "amount": "₦7,000–50,000",
+    "min_duration": "1 day",
+    "complexity_rating": "Very Hard"
+  },
+  {
+    "job_title": "App Installation Task",
+    "job_category": "App Download",
+    "sub_job_category": "Install Tasks",
+    "job_description": "Download and install apps",
+    "job_instructions": "Install app & take screenshot as proof",
+    "amount": "₦50–300",
+    "min_duration": "2–5 mins",
+    "complexity_rating": "High"
+  },
+  {
+    "job_title": "Artist Engagement Task",
+    "job_category": "Artist Engagement",
+    "sub_job_category": "Music Promotion",
+    "job_description": "Engage with music artists",
+    "job_instructions": "Follow artists and interact on social media",
+    "amount": "₦20–70",
+    "min_duration": "1–2 mins",
+    "complexity_rating": "Easy"
+  },
+  {
+    "job_title": "Facebook Engagement Task",
+    "job_category": "Facebook",
+    "sub_job_category": "Page/Group/Engage",
+    "job_description": "Follow, like, comment, join group",
+    "job_instructions": "Like pages, join groups, comment on posts",
+    "amount": "₦10–15",
+    "min_duration": "1 min",
+    "complexity_rating": "Easy"
+  },
+  {
+    "job_title": "Instagram Engagement Task",
+    "job_category": "Instagram",
+    "sub_job_category": "Follow/Engage",
+    "job_description": "Follow pages, like posts",
+    "job_instructions": "Follow IG accounts, like posts, comment",
+    "amount": "₦10–20",
+    "min_duration": "1 min",
+    "complexity_rating": "Easy"
+  },
+  {
+    "job_title": "TikTok Engagement Task",
+    "job_category": "TikTok",
+    "sub_job_category": "Follow/Engage/Video",
+    "job_description": "Like, follow, comment, or create video",
+    "job_instructions": "Engage with TikTok content",
+    "amount": "₦10–25",
+    "min_duration": "1–5 mins",
+    "complexity_rating": "Easy"
+  },
+  {
+    "job_title": "Twitter Engagement Task",
+    "job_category": "Twitter [X]",
+    "sub_job_category": "Likes/Retweets/Follow",
+    "job_description": "Interact with posts or accounts",
+    "job_instructions": "Like, retweet, or follow",
+    "amount": "₦10–20",
+    "min_duration": "1–2 mins",
+    "complexity_rating": "Easy"
+  },
+  {
+    "job_title": "YouTube Engagement Task",
+    "job_category": "Youtube",
+    "sub_job_category": "Subscribe, watch, comment",
+    "job_description": "Subscribe & interact with content",
+    "job_instructions": "Subscribe, watch, and comment on videos",
+    "amount": "₦15–20",
+    "min_duration": "1–5 mins",
+    "complexity_rating": "Easy"
+  }
+]

@@ -12,6 +12,7 @@ import Login from "./pages/auth/Login/login";
 import KYCForm from "./pages/auth/Kyc/kyc";
 import ForgotPassword from "./pages/auth/ForgotPassword/forgotPassword";
 import NewCampaign from "./pages/Tasks/NewCampaign";
+import CampaignTypes from "./pages/Tasks/CampaignTypes";
 import Trainings from "./pages/Training/Trainings";
 import AdvertiserWallet from "./pages/Wallet/AdvertiserWallet";
 import AdvertiserSettings from "./pages/Settings/AdvertiserSettings";
@@ -71,6 +72,8 @@ export default function App() {
       <Route element={<Layout />}>
         <Route path="/dashboard" element={<ProtectedRoute><AdvertiserDashboard /></ProtectedRoute>} />
         <Route path="/jobs/my-campaigns" element={<MyCampaigns />} />
+        <Route path="/campaigns" element={<ProtectedRoute><CampaignTypes /></ProtectedRoute>} />
+        <Route path="/tasks/new-campaign" element={<NewCampaign />} />
         <Route path="/jobs/new" element={<NewCampaign />} />
         <Route path="/jobs/allcampaigns" element={<AllCampaigns />} />
         <Route path="/campaign-submissions/:taskId" element={<CampaignSubmissions />} />

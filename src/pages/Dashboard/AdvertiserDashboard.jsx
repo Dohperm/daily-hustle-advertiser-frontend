@@ -185,7 +185,7 @@ export default function AdvertiserDashboard() {
               className="bi bi-speedometer2"
               style={{ color: palette.red, fontSize: "1.8rem" }}
             ></i>
-            Advertiser Dashboard
+            Employer Dashboard
           </h1>
           <Button
             as={Link}
