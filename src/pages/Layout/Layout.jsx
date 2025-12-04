@@ -36,12 +36,12 @@ export default function Layout() {
   }, []);
 
   const menu = [
-    { to: "/", icon: "bi-house-door-fill", label: "Dashboard" },
-    { to: "/jobs/allcampaigns", icon: "bi-bullseye", label: "Campaigns" },
+    { to: "/dashboard", icon: "bi-house-door-fill", label: "Dashboard" },
+    { to: "/campaigns", icon: "bi-grid-3x3-gap", label: "Campaign Types" },
+    { to: "/jobs/allcampaigns", icon: "bi-bullseye", label: "All Campaigns" },
     { to: "/jobs/my-campaigns", icon: "bi-list", label: "My Campaigns" },
     { to: "/jobs/new", icon: "bi-plus-circle", label: "New Campaign" },
     { to: "/wallet", icon: "bi-wallet2", label: "Wallet" },
-    { to: "/signup", icon: "bi-person-plus", label: "QuickSignup" },
     { to: "/logout", icon: "bi-box-arrow-in-left", label: "Logout" },
   ];
 

@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Logo from "../../../public/dailyjhustleimage.png";
 export default function Sidebar() {
-  const [jobsOpen, setjobsOpen] = useState(false);
+  const [jobsOpen, setjobsOpen] = useState(true); // Temporarily always open
+
+  const handleJobsToggle = () => {
+    console.log('Jobs dropdown clicked, current state:', jobsOpen);
+    setjobsOpen((open) => !open);
+  };
 
   return (
     <aside className="sidebar">
@@ -13,20 +18,26 @@ export default function Sidebar() {
       <nav className="flex-grow-1">
         <ul className="nav flex-column gap-1">
           <li className="nav-item">
-            <NavLink to="/" className="nav-link" end>
+            <NavLink to="/dashboard" className="nav-link" end>
               <i className="bi bi-house-door-fill me-2" />
               Dashboard
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink to="/campaigns" className="nav-link">
+              <i className="bi bi-grid-3x3-gap me-2" />
+              Campaign Types
             </NavLink>
           </li>
           {/* jobs Dropdown */}
           <li className="nav-item">
             <button
               className="nav-link d-flex align-items-center w-100"
-              onClick={() => setjobsOpen((open) => !open)}
+              onClick={handleJobsToggle}
               aria-expanded={jobsOpen}
               type="button"
               tabIndex={0}
-              style={{ background: "none", border: "none", outline: "none" }}
+              style={{ background: "none", border: "none", outline: "none", cursor: "pointer" }}
             >
               <i className="bi bi-briefcase-fill me-2" />
               Jobs
@@ -48,6 +59,12 @@ export default function Sidebar() {
                   <NavLink to="/jobs/my-campaigns" className="nav-link">
                     <i className="bi bi-list-jobs me-2" />
                     My Campaigns
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/campaigns" className="nav-link">
+                    <i className="bi bi-grid-3x3-gap me-2" />
+                    Campaign Types
                   </NavLink>
                 </li>
                 <li>
