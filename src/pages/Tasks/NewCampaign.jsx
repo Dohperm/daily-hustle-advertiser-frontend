@@ -360,19 +360,17 @@ export default function NewCampaign() {
     return initialForm;
   });
 
-  // Save draft to localStorage whenever form changes
-  React.useEffect(() => {
-    localStorage.setItem('campaignDraft', JSON.stringify(form));
-  }, [form]);
-  
-
-  
   const [countrySearch, setCountrySearch] = useState("");
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [categorySearch, setCategorySearch] = useState("");
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [approvalModeSearch, setApprovalModeSearch] = useState("");
   const [showApprovalModeDropdown, setShowApprovalModeDropdown] = useState(false);
+
+  // Save draft to localStorage whenever form changes
+  React.useEffect(() => {
+    localStorage.setItem('campaignDraft', JSON.stringify(form));
+  }, [form]);
   
   const filteredCountries = africanCountries.filter(country =>
     country.toLowerCase().includes(countrySearch.toLowerCase())
@@ -387,6 +385,17 @@ export default function NewCampaign() {
     mode.toLowerCase().includes(approvalModeSearch.toLowerCase())
   );
   
+  const subCategoryList = form.category
+    ? categoriesData[form.category] || []
+    : [];
+  const workersNeeded = parseInt(form.workersNeeded, 10) || 0;
+  const amountPerWorker = parseFloat(form.amountPerWorker) || 0;
+  const baseTotal = workersNeeded * amountPerWorker;
+  const platformCharge = baseTotal * PLATFORM_FEE_PERCENT;
+  const totalBudget = baseTotal + platformCharge;
+
+  const isClosed = form.reviewType === "Closed";
+
   // Close dropdowns when clicking outside
   React.useEffect(() => {
     const handleClickOutside = () => {
@@ -400,16 +409,11 @@ export default function NewCampaign() {
     }
   }, [showCountryDropdown, showCategoryDropdown, showApprovalModeDropdown]);
 
-  const subCategoryList = form.category
-    ? categoriesData[form.category] || []
-    : [];
-  const workersNeeded = parseInt(form.workersNeeded, 10) || 0;
-  const amountPerWorker = parseFloat(form.amountPerWorker) || 0;
-  const baseTotal = workersNeeded * amountPerWorker;
-  const platformCharge = baseTotal * PLATFORM_FEE_PERCENT;
-  const totalBudget = baseTotal + platformCharge;
-
-  const isClosed = form.reviewType === "Closed";
+  React.useEffect(() => {
+    if (!isClosed) {
+      setForm((prev) => ({ ...prev, closedReviewOptions: "" }));
+    }
+  }, [isClosed]);
   const closedOptions = (form.closedReviewOptions && typeof form.closedReviewOptions === 'string') 
     ? form.closedReviewOptions.split('\n').filter(Boolean) 
     : [];
@@ -417,11 +421,7 @@ export default function NewCampaign() {
   const hasClosedReviewContent = form.closedReviewOptions && typeof form.closedReviewOptions === 'string' && form.closedReviewOptions.trim().length > 0;
   const hasEnoughOptions = !isClosed || closedOptionsCount >= workersNeeded;
 
-  React.useEffect(() => {
-    if (!isClosed) {
-      setForm((prev) => ({ ...prev, closedReviewOptions: "" }));
-    }
-  }, [form.reviewType]);
+
 
   const nextStep = () => {
     if (step === 1 && (!form.category || !form.subCategory)) {

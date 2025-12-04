@@ -672,22 +672,13 @@ export default function ViewCampaignPage() {
                   const currentCount = editMode ? (textValue ? textValue.split('\n').filter(Boolean).length : 0) : options.length;
                   const workersNeeded = parseInt(form.workersNeeded) || 0;
                   const needsMore = editMode && currentCount < workersNeeded;
-                  const [showAll, setShowAll] = React.useState(false);
-                  const rowCount = editMode ? Math.max(5, Math.min(15, currentCount + 2)) : (showAll ? Math.max(3, options.length) : 3);
+                  const rowCount = editMode ? Math.max(5, Math.min(15, currentCount + 2)) : Math.max(3, options.length);
                   return (
                     <Form.Group className="mb-3">
                       <div className="d-flex justify-content-between align-items-center">
                         <Form.Label>Closed Review Options ({currentCount} items{editMode && workersNeeded > 0 ? ` / ${workersNeeded} needed` : ''})</Form.Label>
                         <div className="d-flex gap-2">
-                          {!editMode && options.length > 3 && (
-                            <Button
-                              variant="outline-primary"
-                              size="sm"
-                              onClick={() => setShowAll(!showAll)}
-                            >
-                              {showAll ? "Show Less" : "See More"}
-                            </Button>
-                          )}
+
                           <Button
                             variant="outline-secondary"
                             size="sm"

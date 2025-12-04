@@ -97,7 +97,7 @@ export default function LandingPage() {
                 <h4 className="fw-bold mb-0" style={{ color: palette.text }}>
                   DailyHustle
                 </h4>
-                <small style={{ color: palette.red, fontWeight: "600" }}>for Advertisers</small>
+                <small style={{ color: palette.red, fontWeight: "600" }}>for Employers</small>
               </div>
             </div>
             <div className="d-flex gap-3">
@@ -148,7 +148,7 @@ export default function LandingPage() {
                 }}
               >
                 The Ultimate{" "}
-                <span style={{ color: palette.red }}>Advertiser Platform</span>{" "}
+                <span style={{ color: palette.red }}>Employer Platform</span>{" "}
                 for Campaign Success
               </h1>
               <p
@@ -159,7 +159,7 @@ export default function LandingPage() {
                   lineHeight: "1.6",
                 }}
               >
-                Designed specifically for advertisers to create powerful campaigns, connect with quality workers, and scale their marketing efforts with ease.
+                Designed specifically for employers to create powerful campaigns, connect with quality workers, and scale their marketing efforts with ease.
               </p>
               <div className="d-flex gap-3 mb-5">
                 <Link
@@ -269,10 +269,10 @@ export default function LandingPage() {
         <div className="container">
           <div className="text-center mb-5">
             <h2 className="fw-bold mb-3" style={{ color: palette.text, fontSize: "2.5rem" }}>
-              Built for Advertisers, By Advertisers
+              Built for Employers, By Employers
             </h2>
             <p style={{ color: palette.label, fontSize: "1.1rem" }}>
-              Everything you need to launch, manage, and optimize your advertising campaigns
+              Everything you need to launch, manage, and optimize your employer campaigns
             </p>
           </div>
           <div className="row g-4">
@@ -309,11 +309,11 @@ export default function LandingPage() {
             <div className="d-flex align-items-center justify-content-center gap-2 mb-3">
               <Megaphone size={24} style={{ color: palette.red }} />
               <h2 className="fw-bold mb-0" style={{ color: palette.red, fontSize: "1.5rem" }}>
-                Advertiser Plans
+                Employer Plans
               </h2>
             </div>
             <p style={{ color: palette.label, fontSize: "1.1rem" }}>
-              Choose the perfect plan to scale your advertising campaigns
+              Choose the perfect plan to scale your employer campaigns
             </p>
           </div>
           <div className="row g-4 justify-content-center">
@@ -605,7 +605,7 @@ export default function LandingPage() {
             Ready to Launch Your First Campaign?
           </h2>
           <p className="mb-4" style={{ color: "#fff", fontSize: "1.2rem", opacity: 0.9 }}>
-            Join thousands of advertisers who trust DailyHustle for their marketing needs
+            Join thousands of employers who trust DailyHustle for their marketing needs
           </p>
           <Link
             to="/signup"
@@ -653,7 +653,7 @@ export default function LandingPage() {
                 <h5 className="fw-bold mb-0" style={{ color: palette.text }}>
                   DailyHustle
                 </h5>
-                <small style={{ color: palette.red }}>Advertiser Platform</small>
+                <small style={{ color: palette.red }}>Employer Platform</small>
               </div>
             </div>
             <p style={{ color: palette.label, margin: 0 }}>
