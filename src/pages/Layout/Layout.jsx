@@ -71,38 +71,7 @@ export default function Layout() {
     </NavLink>
   );
 
-  const SidebarToggleBtn = () =>
-    isDesktop && (
-      <button
-        className="sidebar-toggle-btn"
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
-        style={{
-          position: "fixed",
-          top: "13px",
-          right: sidebarOpen ? "calc(260px - 58px)" : "10px",
-          zIndex: 1050,
-          width: "36px",
-          height: "36px",
-          borderRadius: "50%",
-          background: palette.red,
-          color: "#fff",
-          border: "none",
-          boxShadow: "0 2px 10px rgba(40,13,66,0.12)",
-          transition: "right 0.25s ease-in-out",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-        }}
-      >
-        <i
-          className={`bi ${
-            sidebarOpen ? "bi-chevron-left" : "bi-chevron-right"
-          }`}
-        ></i>
-      </button>
-    );
+  const SidebarToggleBtn = () => null;
 
   return (
     <div style={{ background: palette.bg, color: palette.text }}>
