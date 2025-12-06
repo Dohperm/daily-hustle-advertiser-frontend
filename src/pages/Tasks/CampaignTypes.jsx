@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Badge, Button, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../../context/ThemeContext';
 
 // All campaigns from your Excel sheet
 const campaignTypesData = [
@@ -228,6 +229,8 @@ const campaignTypesData = [
 
 export default function CampaignTypes() {
   const navigate = useNavigate();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   const [hoveredCampaign, setHoveredCampaign] = useState(null);
   const [search, setSearch] = useState("");
 
@@ -276,7 +279,12 @@ export default function CampaignTypes() {
   };
 
   return (
-    <div style={{ padding: '40px 20px', minHeight: '100vh' }}>
+    <div style={{ 
+      padding: '40px 20px', 
+      minHeight: '100vh',
+      background: isDark ? '#121212' : '#f8f9fa',
+      color: isDark ? '#f7f7fa' : '#212529'
+    }}>
       <div className="container">
         {/* Title Section */}
         <div className="text-center mb-5">
@@ -284,17 +292,17 @@ export default function CampaignTypes() {
             className="fw-bold mb-2"
             style={{
               fontSize: "2.5rem",
-              color: "#212529",
+              color: isDark ? '#f7f7fa' : '#212529',
               letterSpacing: "0.5px",
             }}
           >
             <i
               className="bi bi-grid-3x3-gap me-3"
-              style={{ color: '#ff4500', fontSize: "2rem" }}
+              style={{ color: '#e53e3e', fontSize: "2rem" }}
             ></i>
             Campaign Types
           </h1>
-          <p style={{ color: '#6c757d', fontSize: "1.05rem" }}>
+          <p style={{ color: isDark ? '#adb5bd' : '#6c757d', fontSize: "1.05rem" }}>
             Choose from available campaign types to create your task
           </p>
         </div>
@@ -307,25 +315,25 @@ export default function CampaignTypes() {
                 display: "flex",
                 alignItems: "center",
                 gap: "12px",
-                background: "#fff",
-                border: "2px solid #dee2e6",
+                background: isDark ? '#2d2d2d' : '#fff',
+                border: `2px solid ${isDark ? '#404040' : '#dee2e6'}`,
                 borderRadius: "12px",
                 padding: "12px 16px",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                 transition: "all 0.2s",
               }}
               onMouseOver={(e) => {
-                e.currentTarget.style.borderColor = '#ff4500';
-                e.currentTarget.style.boxShadow = "0 2px 12px #ff450020";
+                e.currentTarget.style.borderColor = '#e53e3e';
+                e.currentTarget.style.boxShadow = "0 2px 12px #e53e3e20";
               }}
               onMouseOut={(e) => {
-                e.currentTarget.style.borderColor = '#dee2e6';
+                e.currentTarget.style.borderColor = isDark ? '#404040' : '#dee2e6';
                 e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
               }}
             >
               <i
                 className="bi bi-search"
-                style={{ color: '#ff4500', fontSize: "1.1rem" }}
+                style={{ color: '#e53e3e', fontSize: "1.1rem" }}
               ></i>
               <input
                 type="text"
@@ -334,7 +342,7 @@ export default function CampaignTypes() {
                 onChange={(e) => setSearch(e.target.value)}
                 style={{
                   background: "transparent",
-                  color: "#212529",
+                  color: isDark ? '#f7f7fa' : '#212529',
                   border: "none",
                   outline: "none",
                   width: "100%",
@@ -352,7 +360,7 @@ export default function CampaignTypes() {
                 gridColumn: "1 / -1",
                 textAlign: "center",
                 padding: "40px 20px",
-                color: '#6c757d',
+                color: isDark ? '#adb5bd' : '#6c757d',
               }}
             >
               <i
@@ -370,11 +378,11 @@ export default function CampaignTypes() {
             <Col key={index} md={6} lg={4}>
               <div
                 style={{
-                  border: hoveredCampaign === index ? '2px solid #ff4500' : '1px solid #dee2e6',
+                  border: hoveredCampaign === index ? '2px solid #e53e3e' : `1px solid ${isDark ? '#404040' : '#dee2e6'}`,
                   borderRadius: '12px',
                   padding: '20px',
                   cursor: 'pointer',
-                  backgroundColor: 'white',
+                  backgroundColor: isDark ? '#2d2d2d' : 'white',
                   transition: 'all 0.3s ease',
                   transform: hoveredCampaign === index ? 'translateY(-5px)' : 'translateY(0)',
                   boxShadow: hoveredCampaign === index ? '0 8px 25px rgba(0,0,0,0.15)' : '0 4px 12px rgba(0,0,0,0.1)',
@@ -385,31 +393,31 @@ export default function CampaignTypes() {
                 onClick={() => handleCampaignClick(campaign)}
               >
                 <div className="d-flex align-items-center gap-2 mb-3">
-                  <i className={`bi ${getCategoryIcon(campaign.job_category)}`} style={{ color: '#ff4500', fontSize: '1.2rem' }}></i>
-                  <Badge style={{ backgroundColor: '#ff4500', border: 'none' }}>{campaign.job_category}</Badge>
+                  <i className={`bi ${getCategoryIcon(campaign.job_category)}`} style={{ color: '#e53e3e', fontSize: '1.2rem' }}></i>
+                  <Badge style={{ backgroundColor: '#e53e3e', border: 'none' }}>{campaign.job_category}</Badge>
                 </div>
-                <h5 className="fw-bold mb-2">{campaign.job_title}</h5>
-                <p className="text-muted mb-3">{campaign.sub_job_category}</p>
+                <h5 className="fw-bold mb-2" style={{ color: isDark ? '#f7f7fa' : '#212529' }}>{campaign.job_title}</h5>
+                <p className="mb-3" style={{ color: isDark ? '#adb5bd' : '#6c757d' }}>{campaign.sub_job_category}</p>
 
                 {hoveredCampaign === index && (
                   <div style={{ 
-                    background: '#f8f9fa', 
+                    background: isDark ? '#1a1a1a' : '#f8f9fa', 
                     padding: '16px', 
                     borderRadius: '8px', 
                     marginBottom: '16px',
-                    border: '1px solid #dee2e6'
+                    border: `1px solid ${isDark ? '#404040' : '#dee2e6'}`
                   }}>
                     <div className="mb-3">
                       <strong style={{ fontSize: '0.9rem' }}>Description:</strong>
-                      <p className="mb-0 small text-muted mt-1">{campaign.job_description}</p>
+                      <p className="mb-0 small mt-1" style={{ color: isDark ? '#adb5bd' : '#6c757d' }}>{campaign.job_description}</p>
                     </div>
                     <div className="mb-3">
                       <strong style={{ fontSize: '0.9rem' }}>Instructions:</strong>
-                      <p className="mb-0 small text-muted mt-1">{campaign.job_instructions}</p>
+                      <p className="mb-0 small mt-1" style={{ color: isDark ? '#adb5bd' : '#6c757d' }}>{campaign.job_instructions}</p>
                     </div>
                     <div className="mb-3">
                       <strong style={{ fontSize: '0.9rem' }}>Amount:</strong>
-                      <p className="mb-0 fw-bold mt-1" style={{ color: '#ff4500' }}>{campaign.amount}</p>
+                      <p className="mb-0 fw-bold mt-1" style={{ color: '#e53e3e' }}>{campaign.amount}</p>
                     </div>
                     <div className="row">
                       <div className="col-6">
@@ -435,8 +443,8 @@ export default function CampaignTypes() {
                   className="btn w-100 fw-bold"
                   style={{ 
                     marginTop: 'auto',
-                    backgroundColor: '#ff4500',
-                    borderColor: '#ff4500',
+                    backgroundColor: '#e53e3e',
+                    borderColor: '#e53e3e',
                     color: 'white'
                   }}
                 >
