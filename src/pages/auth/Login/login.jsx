@@ -6,10 +6,11 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "react-toastify/dist/ReactToastify.css";
 import { advertiserLogin } from "../../services/services";
 import { useAdvertiserData } from "../../hooks/useAppDataContext";
+import { useLoading } from "../../../context/LoadingContext";
 
 const Login = () => {
-  // Add this line:
   const { setUserLoggedIn } = useAdvertiserData();
+  const { showLoading, hideLoading } = useLoading();
   const [formData, setFormData] = useState({
     identifier: "",
     password: "",
@@ -30,6 +31,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    showLoading();
     setLoginError("");
     try {
       const res = await advertiserLogin(formData);
@@ -37,7 +39,6 @@ const Login = () => {
         toast.success("Login successful!");
         localStorage.setItem("token", res.data.data.token);
         localStorage.setItem("isAuth", "true");
-        // Add this line to update context:
         setUserLoggedIn(true);
         setTimeout(() => (window.location.href = "/"), 1200);
       } else {
@@ -51,116 +52,149 @@ const Login = () => {
       toast.error(msg);
     } finally {
       setLoading(false);
+      hideLoading();
     }
   };
 
   return (
     <div
-      className="d-flex justify-content-center align-items-center vh-100"
+      className="min-vh-100 d-flex align-items-center justify-content-center px-3"
       style={{
-        background: "linear-gradient(135deg, #fff, #ffe5e5)",
-        fontFamily: "Poppins, sans-serif",
+        background: "#f8f9fa",
+        fontFamily: "Poppins, system-ui, sans-serif",
       }}
     >
-      <ToastContainer position="top-center" theme="colored" autoClose={2400} />
+      <ToastContainer position="top-center" theme="light" autoClose={2400} />
+      
+      <Link
+        to="/"
+        className="position-absolute top-0 start-0 m-4 btn btn-outline-secondary rounded-pill px-4 py-2"
+      >
+        <i className="bi bi-arrow-left me-2"></i>
+        Back to Home
+      </Link>
+
       <div
-        className="card shadow-lg p-4"
+        className="bg-white rounded-4 shadow p-5 w-100"
         style={{
-          maxWidth: "400px",
-          borderRadius: "16px",
-          borderTop: "5px solid #dc3545",
+          maxWidth: "500px",
+          border: "1px solid #e9ecef"
         }}
       >
-        <h2 className="fw-bold text-center mb-3 text-danger">Welcome Back</h2>
+        <div className="text-center mb-4">
+          <div className="mb-3">
+            <i className="bi bi-person-circle" style={{ fontSize: '3rem', color: '#ff6b35' }}></i>
+          </div>
+          <h2 className="fw-bold mb-2" style={{ color: '#2c3e50' }}>
+            Welcome Back
+          </h2>
+          <p className="text-muted">Sign in to your DailyHustle account</p>
+        </div>
+
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label fw-semibold">Email or Username</label>
+            <label className="form-label fw-semibold text-dark mb-2">
+              Email or Username
+            </label>
             <input
               type="text"
               ref={idRef}
               name="identifier"
-              className="form-control rounded-3 py-2"
+              className="form-control form-control-lg py-3"
+              placeholder="Enter your email or username"
               value={formData.identifier}
               onChange={handleChange}
               required
               autoComplete="username"
               disabled={loading}
+              style={{
+                border: "2px solid #e9ecef",
+                borderRadius: "12px",
+                fontSize: "1rem"
+              }}
             />
           </div>
-          <div className="mb-2 position-relative">
-            <label className="form-label fw-semibold">Password</label>
+
+          <div className="mb-4 position-relative">
+            <label className="form-label fw-semibold text-dark mb-2">
+              Password
+            </label>
             <input
               type={showPassword ? "text" : "password"}
               name="password"
-              className="form-control rounded-3 py-2 pe-5"
+              className="form-control form-control-lg py-3 pe-5"
+              placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
               required
               autoComplete="current-password"
               disabled={loading}
+              style={{
+                border: "2px solid #e9ecef",
+                borderRadius: "12px",
+                fontSize: "1rem"
+              }}
             />
             <button
               type="button"
               tabIndex={-1}
-              className="btn btn-link p-0 position-absolute top-50 end-0 pe-3 translate-middle-y text-muted"
+              className="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3 text-muted"
               onClick={() => setShowPassword((v) => !v)}
-              style={{ fontSize: "1.3rem" }}
+              style={{ fontSize: "1.2rem", marginTop: "12px" }}
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
-              <i
-                className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}
-              ></i>
+              <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
             </button>
           </div>
+
           {loginError && (
-            <div className="alert alert-danger small py-2 mb-2 mt-2 text-center">
+            <div className="alert alert-danger py-2 mb-3 text-center" style={{ border: 'none', borderRadius: '12px' }}>
+              <i className="bi bi-exclamation-triangle-fill me-2"></i>
               {loginError}
             </div>
           )}
+
           <button
             type="submit"
-            className="btn btn-danger w-100 py-2 rounded-3 fw-semibold"
+            className="btn btn-lg w-100 py-3 fw-bold text-white mb-4"
             disabled={loading}
+            style={{
+              background: "#ff6b35",
+              border: "none",
+              borderRadius: "12px",
+              fontSize: "1.1rem"
+            }}
           >
             {loading ? (
               <>
                 <span className="spinner-border spinner-border-sm me-2"></span>
-                Logging in...
+                Signing in...
               </>
             ) : (
-              "Login"
+              "Sign In"
             )}
           </button>
-          <p className="text-center mt-3 mb-0">
-            Don’t have an account?{" "}
-            <a
-              href="/signup"
-              className="text-danger text-decoration-none fw-semibold"
-            >
-              Sign up
-            </a>
-          </p>
-          <div className="text-center mt-2">
-            <a
-              href="/forgotpassword"
-              className="small text-decoration-none text-danger fw-semibold"
-            >
-              Forgot Password?
-            </a>
-          </div>
-          <div className="text-center mt-3">
-            <Link
-              to="/"
-              className="btn btn-outline-secondary btn-sm"
-              style={{
-                borderRadius: "8px",
-                padding: "6px 16px",
-                textDecoration: "none"
-              }}
-            >
-              <i className="bi bi-house me-1"></i>
-              Back to Home
-            </Link>
+
+          <div className="text-center">
+            <p className="text-muted mb-0">
+              Don't have an account?{" "}
+              <Link
+                to="/signup"
+                className="text-decoration-none fw-semibold"
+                style={{ color: "#ff6b35" }}
+              >
+                Create one here
+              </Link>
+            </p>
+            <div className="mt-2">
+              <Link
+                to="/forgotpassword"
+                className="text-decoration-none"
+                style={{ color: "#6c757d", fontSize: "0.9rem" }}
+              >
+                Forgot your password?
+              </Link>
+            </div>
           </div>
         </form>
       </div>

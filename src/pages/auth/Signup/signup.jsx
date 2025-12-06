@@ -8,8 +8,9 @@ import {
   advertiserValidateRegistrationToken,
   advertiserLogin,
 } from "../../services/services";
-// Add this import:
-import {  useAdvertiserData } from "../../hooks/useAppDataContext"; // Adjust path as needed
+import { useAdvertiserData } from "../../hooks/useAppDataContext";
+import { useLoading } from "../../../context/LoadingContext";
+import Onboarding from "../Onboarding/onboarding";
 
 const getPasswordStrength = (pw) => {
   let score = 0;
@@ -22,28 +23,23 @@ const getPasswordStrength = (pw) => {
   return Math.min(score, 5);
 };
 const strengthLabels = ["Too Short", "Weak", "Fair", "Good", "Strong"];
-const strengthColors = ["#dc3545", "#ffc107", "#1ab7ea", "#198754", "#28a745"];
+const strengthColors = ["#dc3545", "#ffc107", "#17a2b8", "#28a745", "#28a745"];
 
 export default function QuickSignup() {
-  // Add this:
   const { setUserLoggedIn } = useAdvertiserData();
+  const { showLoading, hideLoading } = useLoading();
   const [searchParams] = useSearchParams();
 
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
-    username: "",
-    phone: "",
     email: "",
     password: "",
-    referral_code: "",
-    country: "Ghana",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [otpVerified, setOtpVerified] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   const passwordStrength = getPasswordStrength(formData.password);
   const otpRefs = useRef([...Array(6)].map(() => React.createRef()));
@@ -54,13 +50,6 @@ export default function QuickSignup() {
     }
   }, [step]);
 
-  useEffect(() => {
-    const referralCode = searchParams.get('referral_code');
-    if (referralCode) {
-      setFormData(prev => ({ ...prev, referral_code: referralCode }));
-    }
-  }, [searchParams]);
-
   const handleRegister = async (e) => {
     e.preventDefault();
     if (passwordStrength < 4) {
@@ -68,6 +57,7 @@ export default function QuickSignup() {
       return;
     }
     setLoading(true);
+    showLoading();
     try {
       await advertiserRegister(formData);
       toast.success("Registration successful! OTP sent to your email.");
@@ -76,6 +66,7 @@ export default function QuickSignup() {
       toast.error(err?.response?.data?.message || "Registration failed.");
     } finally {
       setLoading(false);
+      hideLoading();
     }
   };
 
@@ -98,6 +89,7 @@ export default function QuickSignup() {
       return;
     }
     setLoading(true);
+    showLoading();
     try {
       await advertiserValidateRegistrationToken({
         email: formData.email,
@@ -106,129 +98,122 @@ export default function QuickSignup() {
       toast.success("Account verified! Welcome aboard! 🎉");
       setOtpVerified(true);
 
-      // Automatic login
-      try {
-        const loginRes = await advertiserLogin({
-          identifier: formData.username || formData.email,
-          password: formData.password,
-        });
-        if (loginRes.status === 200 && loginRes.data.data?.token) {
-          toast.success("Login successful!");
-          localStorage.setItem("token", loginRes.data.data.token);
-          localStorage.setItem("isAuth", "true");
-          // Add this to trigger logged-in state:
-          setUserLoggedIn(true);
-          setTimeout(() => (window.location.href = "/"), 1200);
-        }
-      } catch (loginErr) {
-        toast.error(
-          loginErr?.response?.data?.message ||
-            "Autologin failed. Please try to log in manually."
-        );
-      }
+      setTimeout(() => setShowOnboarding(true), 800);
     } catch (err) {
       toast.error(err.response?.data?.message || "Invalid or expired OTP.");
       setOtp(["", "", "", "", "", ""]);
       otpRefs.current[0].current?.focus();
     } finally {
       setLoading(false);
+      hideLoading();
     }
   };
 
+  const handleOnboardingComplete = async () => {
+    showLoading();
+    try {
+      const loginRes = await advertiserLogin({
+        identifier: formData.email,
+        password: formData.password,
+      });
+      if (loginRes.status === 200 && loginRes.data.data?.token) {
+        toast.success("Welcome to DailyHustle!");
+        localStorage.setItem("token", loginRes.data.data.token);
+        localStorage.setItem("isAuth", "true");
+        setUserLoggedIn(true);
+        setTimeout(() => (window.location.href = "/"), 1200);
+      }
+    } catch (loginErr) {
+      toast.error("Please login manually to continue.");
+      setTimeout(() => (window.location.href = "/login"), 2000);
+    } finally {
+      hideLoading();
+    }
+  };
+
+  if (showOnboarding) {
+    return <Onboarding userEmail={formData.email} onComplete={handleOnboardingComplete} />;
+  }
+
   return (
     <>
-      <ToastContainer position="top-center" theme="colored" autoClose={3000} />
-      <div className="min-vh-100 d-flex align-items-center justify-content-center bg-gradient py-4 px-3">
-        <div
-          className="bg-white rounded-4 shadow-xl p-4 p-md-5 w-100"
-          style={{ maxWidth: "430px" }}
+      <ToastContainer position="top-center" theme="light" autoClose={3000} />
+      <div
+        className="min-vh-100 d-flex align-items-center justify-content-center px-3"
+        style={{ background: "#f8f9fa" }}
+      >
+        <Link
+          to="/"
+          className="position-absolute top-0 start-0 m-4 btn btn-outline-secondary rounded-pill px-4 py-2"
         >
-          <div className="mb-4 text-center">
-            <span className="badge rounded-pill bg-danger fs-6 mb-1">
-              {step === 0 ? "Step 1 of 2" : "Step 2 of 2"}
-            </span>
-            <h3 className="fw-bold mt-2 mb-0">
-              {step === 0 ? "Sign Up" : "Verify OTP"}
-            </h3>
+          <i className="bi bi-arrow-left me-2"></i>
+          Back to Home
+        </Link>
+
+        <div
+          className="bg-white rounded-4 shadow p-5 w-100"
+          style={{
+            maxWidth: "550px",
+            border: "1px solid #e9ecef"
+          }}
+        >
+          <div className="text-center mb-4">
+            <div className="mb-3">
+              <i className="bi bi-person-plus-fill" style={{ fontSize: '3rem', color: '#ff6b35' }}></i>
+            </div>
+            <h2 className="fw-bold mb-2" style={{ color: '#2c3e50' }}>
+              {step === 0 ? "Create Your Account" : "Verify Your Email"}
+            </h2>
+            <p className="text-muted mb-3">
+              {step === 0 ? "Join thousands of advertisers on DailyHustle" : "Enter the code sent to your email"}
+            </p>
+            <div className="progress mb-3" style={{ height: '6px', background: '#e9ecef' }}>
+              <div className="progress-bar" style={{ 
+                width: step === 0 ? '50%' : '100%',
+                background: '#ff6b35'
+              }}></div>
+            </div>
           </div>
+
           {step === 0 && (
             <form onSubmit={handleRegister}>
-              <div className="row g-3">
-                <div className="col-6">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="First Name"
-                    value={formData.first_name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, first_name: e.target.value })
-                    }
-                    required
-                    disabled={loading}
-                  />
-                </div>
-                <div className="col-6">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Last Name"
-                    value={formData.last_name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, last_name: e.target.value })
-                    }
-                    required
-                    disabled={loading}
-                  />
-                </div>
+              <div className="mb-3">
+                <label className="form-label fw-semibold text-dark mb-2">Email Address</label>
+                <input
+                  type="email"
+                  className="form-control form-control-lg py-3"
+                  placeholder="Enter your email address"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  required
+                  disabled={loading}
+                  style={{
+                    border: "2px solid #e9ecef",
+                    borderRadius: "12px",
+                    fontSize: "1rem"
+                  }}
+                />
               </div>
-              <input
-                type="text"
-                className="form-control mt-3"
-                placeholder="Username"
-                value={formData.username}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    username: e.target.value.replace(/\s/g, "").toLowerCase(),
-                  })
-                }
-                required
-                minLength={3}
-                disabled={loading}
-              />
-              <input
-                type="tel"
-                className="form-control mt-3"
-                placeholder="Phone Number"
-                value={formData.phone}
-                onChange={(e) =>
-                  setFormData({ ...formData, phone: e.target.value })
-                }
-                required
-                disabled={loading}
-              />
-              <input
-                type="email"
-                className="form-control mt-3"
-                placeholder="Email Address"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                required
-                disabled={loading}
-              />
-              <div className="position-relative mt-3">
+              
+              <div className="mb-4 position-relative">
+                <label className="form-label fw-semibold text-dark mb-2">Create Password</label>
                 <input
                   type={showPassword ? "text" : "password"}
-                  className="form-control pe-5"
-                  placeholder="Create Password"
+                  className="form-control form-control-lg py-3 pe-5"
+                  placeholder="Create a strong password"
                   value={formData.password}
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
                   required
                   disabled={loading}
+                  style={{
+                    border: "2px solid #e9ecef",
+                    borderRadius: "12px",
+                    fontSize: "1rem"
+                  }}
                 />
                 <button
                   type="button"
@@ -236,87 +221,68 @@ export default function QuickSignup() {
                   onClick={() => setShowPassword((v) => !v)}
                   tabIndex={-1}
                   aria-label={showPassword ? "Hide Password" : "Show Password"}
-                  style={{ boxShadow: "none" }}
+                  style={{ fontSize: "1.2rem", marginTop: "12px" }}
                 >
-                  <i
-                    className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}
-                  ></i>
+                  <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
                 </button>
-              </div>
-              <div className="mt-2">
-                <div className="progress" style={{ height: "6px" }}>
+                <div className="mt-2">
+                  <div className="progress" style={{ height: "6px", background: "#e9ecef" }}>
+                    <div
+                      className="progress-bar"
+                      style={{
+                        background: strengthColors[passwordStrength],
+                        width: `${(passwordStrength / 5) * 100}%`,
+                      }}
+                    ></div>
+                  </div>
                   <div
-                    className="progress-bar"
-                    style={{
-                      background: strengthColors[passwordStrength],
-                      width: `${(passwordStrength / 5) * 100}%`,
-                    }}
-                  ></div>
-                </div>
-                <div
-                  className="small mt-1 mb-0 text-end fw-semibold"
-                  style={{ color: strengthColors[passwordStrength] }}
-                >
-                  {strengthLabels[passwordStrength]}
+                    className="small mt-1 mb-0 text-end fw-semibold"
+                    style={{ color: strengthColors[passwordStrength] }}
+                  >
+                    {strengthLabels[passwordStrength]}
+                  </div>
                 </div>
               </div>
-              <input
-                type="text"
-                className="form-control mt-3"
-                placeholder="Referral Code (Optional)"
-                value={formData.referral_code}
-                onChange={(e) =>
-                  setFormData({ ...formData, referral_code: e.target.value })
-                }
-                disabled={loading}
-              />
-              <select
-                className="form-select mt-3"
-                value={formData.country}
-                onChange={(e) =>
-                  setFormData({ ...formData, country: e.target.value })
-                }
-                disabled={loading}
-              >
-                <option value="Ghana">Ghana</option>
-                <option value="Nigeria">Nigeria</option>
-                <option value="Kenya">Kenya</option>
-                <option value="USA">USA</option>
-              </select>
+
               <button
                 type="submit"
-                className="btn w-100 mt-4 py-2 fw-bold text-white btn-danger"
+                className="btn btn-lg w-100 py-3 fw-bold text-white mb-4"
                 disabled={loading || passwordStrength < 4}
+                style={{
+                  background: "#ff6b35",
+                  border: "none",
+                  borderRadius: "12px",
+                  fontSize: "1.1rem"
+                }}
               >
                 {loading ? (
                   <>
                     <span className="spinner-border spinner-border-sm me-2"></span>
-                    Processing...
+                    Creating Account...
                   </>
                 ) : (
-                  "Register"
+                  "Create Account"
                 )}
               </button>
+
+              <div className="text-center">
+                <p className="text-muted mb-0">
+                  Already have an account?{" "}
+                  <Link to="/login" className="text-decoration-none fw-semibold" style={{ color: "#ff6b35" }}>
+                    Sign in here
+                  </Link>
+                </p>
+              </div>
             </form>
           )}
           
-          {step === 0 && (
-            <div className="text-center mt-3">
-              <p className="text-muted small mb-0">
-                Already have an account?{" "}
-                <Link to="/login" className="text-decoration-none fw-semibold" style={{ color: "#dc3545" }}>
-                  Login here
-                </Link>
-              </p>
-            </div>
-          )}
           {step === 1 && (
             <div>
-              <p className="text-center text-muted small mb-3">
-                Enter the 6-digit code sent to:{" "}
-                <strong>{formData.email}</strong>
+              <p className="text-center text-muted mb-4">
+                Enter the 6-digit verification code sent to:<br/>
+                <strong style={{ color: '#ff6b35' }}>{formData.email}</strong>
               </p>
-              <div className="d-flex justify-content-center gap-2 mb-4">
+              <div className="d-flex justify-content-center gap-3 mb-5">
                 {otp.map((digit, idx) => (
                   <input
                     key={idx}
@@ -326,35 +292,42 @@ export default function QuickSignup() {
                     value={digit}
                     onChange={(e) => handleOtpChange(e.target.value, idx)}
                     onKeyDown={(e) => handleOtpKeyDown(e, idx)}
-                    className="form-control text-center fs-4 fw-bold"
+                    className="form-control text-center fw-bold"
                     style={{
-                      width: "48px",
-                      height: "54px",
-                      fontSize: "1.6rem",
+                      width: "50px",
+                      height: "50px",
+                      fontSize: "1.5rem",
                       borderRadius: "12px",
+                      border: "2px solid #e9ecef"
                     }}
                     disabled={loading}
                   />
                 ))}
               </div>
               <button
-                className="btn btn-success w-100 py-2 fw-bold"
+                className="btn btn-lg w-100 py-3 fw-bold text-white"
                 onClick={handleVerifyOtp}
                 disabled={loading || otp.join("").length !== 6}
+                style={{
+                  background: "#28a745",
+                  border: "none",
+                  borderRadius: "12px",
+                  fontSize: "1.1rem"
+                }}
               >
                 {loading ? (
                   <>
                     <span className="spinner-border spinner-border-sm me-2"></span>
-                    Verifying...
+                    Verifying Code...
                   </>
                 ) : (
-                  "Verify OTP"
+                  "Verify & Continue"
                 )}
               </button>
               {otpVerified && (
-                <div className="alert alert-success mt-3 text-center">
-                  <i className="bi bi-check-circle"></i> Account created
-                  successfully!
+                <div className="alert alert-success mt-4 text-center" style={{ border: 'none', borderRadius: '12px' }}>
+                  <i className="bi bi-check-circle-fill me-2"></i>
+                  Email verified successfully!
                 </div>
               )}
             </div>

@@ -11,6 +11,9 @@ import QuickSignup from "./pages/auth/Signup/signup";
 import Login from "./pages/auth/Login/login";
 import KYCForm from "./pages/auth/Kyc/kyc";
 import ForgotPassword from "./pages/auth/ForgotPassword/forgotPassword";
+import Onboarding from "./pages/auth/Onboarding/onboarding";
+import GlobalSpinner from "./components/GlobalSpinner";
+import { useLoading } from "./context/LoadingContext";
 import NewCampaign from "./pages/Tasks/NewCampaign";
 import CampaignTypes from "./pages/Tasks/CampaignTypes";
 import Trainings from "./pages/Training/Trainings";
@@ -54,14 +57,19 @@ function Logout() {
 }
 
 export default function App() {
+  const { isLoading } = useLoading();
+
   return (
-    <Routes>
+    <>
+      <GlobalSpinner isLoading={isLoading} />
+      <Routes>
       {/* ✅ HOME/LANDING PAGE */}
       <Route path="/" element={<HomeRoute />} />
 
       {/* ✅ AUTH ROUTES - NO LAYOUT */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<QuickSignup />} />
+      <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/forgotpassword" element={<ForgotPassword />} />
       <Route path="/kyc" element={<KYCForm />} />
 
@@ -87,6 +95,7 @@ export default function App() {
         <Route path="/settings" element={<AdvertiserSettings />} />
         <Route path="/support" element={<AdvertiserSupport />} />
       </Route>
-    </Routes>
+      </Routes>
+    </>
   );
 }

@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import ThemeProvider from "./context/ThemeContext.jsx";
 import AdvertiserDataProvider from "./context/Advertiser/AppDataProvider.jsx";
+import { LoadingProvider } from "./context/LoadingContext.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import { ToastContainer } from "react-toastify";
 
@@ -15,11 +16,12 @@ import "react-toastify/dist/ReactToastify.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AdvertiserDataProvider>
-      <ThemeProvider>
-        <ErrorBoundary>
-          <BrowserRouter>
-            <App />
+    <LoadingProvider>
+      <AdvertiserDataProvider>
+        <ThemeProvider>
+          <ErrorBoundary>
+            <BrowserRouter>
+              <App />
             <ToastContainer
               position="top-right"
               autoClose={3000}
@@ -29,9 +31,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               draggable
               theme="colored"
             />
-          </BrowserRouter>
-        </ErrorBoundary>
-      </ThemeProvider>
-    </AdvertiserDataProvider>
+            </BrowserRouter>
+          </ErrorBoundary>
+        </ThemeProvider>
+      </AdvertiserDataProvider>
+    </LoadingProvider>
   </React.StrictMode>
 );
