@@ -23,7 +23,7 @@ const getPasswordStrength = (pw) => {
   return Math.min(score, 5);
 };
 const strengthLabels = ["Too Short", "Weak", "Fair", "Good", "Strong"];
-const strengthColors = ["#dc3545", "#ffc107", "#17a2b8", "#28a745", "#28a745"];
+const strengthColors = ["#dc3545", "#ffc107", "#17a2b8", "#28a745", "#198754"];
 
 export default function QuickSignup() {
   const { setUserLoggedIn } = useAdvertiserData();
@@ -52,7 +52,7 @@ export default function QuickSignup() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    if (passwordStrength < 4) {
+    if (passwordStrength < 3) {
       toast.error("Please choose a stronger password.");
       return;
     }
@@ -76,6 +76,18 @@ export default function QuickSignup() {
     newOtp[index] = value.slice(-1);
     setOtp(newOtp);
     if (value && index < 5) otpRefs.current[index + 1].current?.focus();
+  };
+
+  const handleOtpPaste = (e, index) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (pastedData.length > 0) {
+      const newOtp = [...otp];
+      for (let i = 0; i < 6; i++) {
+        newOtp[i] = pastedData[i] || '';
+      }
+      setOtp(newOtp);
+    }
   };
   const handleOtpKeyDown = (e, index) => {
     if (e.key === "Backspace" && !otp[index] && index > 0)
@@ -247,7 +259,7 @@ export default function QuickSignup() {
               <button
                 type="submit"
                 className="btn btn-lg w-100 py-3 fw-bold text-white mb-4"
-                disabled={loading || passwordStrength < 4}
+                disabled={loading || passwordStrength < 3}
                 style={{
                   background: "#ff6b35",
                   border: "none",
@@ -292,6 +304,7 @@ export default function QuickSignup() {
                     value={digit}
                     onChange={(e) => handleOtpChange(e.target.value, idx)}
                     onKeyDown={(e) => handleOtpKeyDown(e, idx)}
+                    onPaste={(e) => handleOtpPaste(e, idx)}
                     className="form-control text-center fw-bold"
                     style={{
                       width: "50px",
@@ -309,7 +322,7 @@ export default function QuickSignup() {
                 onClick={handleVerifyOtp}
                 disabled={loading || otp.join("").length !== 6}
                 style={{
-                  background: "#28a745",
+                  background: "#ff6b35",
                   border: "none",
                   borderRadius: "12px",
                   fontSize: "1.1rem"
