@@ -132,11 +132,7 @@ export default function QuickSignup() {
     showLoading();
     try {
       const token = localStorage.getItem("token");
-      const response = await api.post("/auths/advertisers/onboarding", onboardingData, {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      });
+      const response = await api.post("/auths/advertisers/onboarding", onboardingData);
       
       if (response.status === 200) {
         toast.success("Welcome to DailyHustle!");

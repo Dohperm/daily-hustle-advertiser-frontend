@@ -39,8 +39,10 @@ function OnboardingProtectedRoute({ children }) {
   
   if (!token || isAuth !== 'true') return <Navigate to="/login" replace />;
   
-  const needsOnboarding = !user?.first_name || !user?.username;
-  if (needsOnboarding) return <Navigate to="/onboarding" replace />;
+  const needsOnboarding = !user?.first_name || !user?.username || user?.account_status === 'INCOMPLETE';
+  if (needsOnboarding) {
+    return <Navigate to="/onboarding" state={{ userProfile: user }} replace />;
+  }
   
   return children;
 }

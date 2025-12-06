@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { useLoading } from '../../../context/LoadingContext';
+import api from '../../services/api';
 
 const Onboarding = ({ userEmail, onComplete }) => {
+  const location = useLocation();
+  const existingProfile = location.state?.userProfile;
   const [loading, setLoading] = useState(false);
   const { showLoading, hideLoading } = useLoading();
   const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    username: '',
-    phone: '',
-    account_identifier: 'Individual',
-    country: 'Ghana',
-    referral_code: ''
+    first_name: existingProfile?.first_name || '',
+    last_name: existingProfile?.last_name || '',
+    username: existingProfile?.username || '',
+    phone: existingProfile?.phone || '',
+    account_identifier: existingProfile?.account_identifier || 'Individual',
+    country: existingProfile?.country || 'Ghana',
+    referral_code: existingProfile?.referral_code || ''
   });
 
   const handleChange = (e) => {
@@ -28,7 +31,16 @@ const Onboarding = ({ userEmail, onComplete }) => {
     showLoading();
     
     try {
-      await onComplete(formData);
+      if (onComplete) {
+        await onComplete(formData);
+      } else {
+        // Direct API call if no onComplete handler
+        const response = await api.post("/auths/advertisers/onboarding", formData);
+        if (response.status === 200) {
+          toast.success('Profile completed successfully! 🎉');
+          setTimeout(() => (window.location.href = '/'), 1500);
+        }
+      }
     } catch (err) {
       toast.error('Failed to complete profile. Please try again.');
     } finally {
@@ -43,13 +55,17 @@ const Onboarding = ({ userEmail, onComplete }) => {
       <div className="min-vh-100 d-flex align-items-center justify-content-center px-3 py-4" 
            style={{ background: '#f8f9fa', fontFamily: 'Poppins, system-ui, sans-serif' }}>
         
-        <Link
-          to="/"
+        <button
+          onClick={() => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('isAuth');
+            window.location.href = '/';
+          }}
           className="position-absolute top-0 start-0 m-4 btn btn-outline-secondary rounded-pill px-4 py-2"
         >
           <i className="bi bi-arrow-left me-2"></i>
           Back to Home
-        </Link>
+        </button>
 
         <div className="bg-white rounded-4 shadow p-5 w-100" style={{ maxWidth: '550px', border: '1px solid #e9ecef' }}>
           <div className="text-center mb-4">
