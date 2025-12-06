@@ -262,7 +262,7 @@ export default function AllCampaigns() {
       text: isDark ? "#f7f7fa" : "#212529",
       label: isDark ? "#adb5bd" : "#6c757d",
       border: isDark ? "#313843" : "#dee2e6",
-      red: "#ff4500",
+      red: "#e53e3e",
       primary: "#0d6efd",
     }),
     [isDark]
