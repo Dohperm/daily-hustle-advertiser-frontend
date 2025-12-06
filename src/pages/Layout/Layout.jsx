@@ -78,7 +78,7 @@ export default function Layout() {
       {/* MOBILE TOPBAR */}
       {!isDesktop && (
         <header
-          className="app-topbar mobile d-flex align-items-center justify-content-between"
+          className="app-topbar mobile d-flex align-items-center"
           style={{
             background: palette.cardBg,
             borderBottom: `1px solid ${palette.border}`,
@@ -88,8 +88,8 @@ export default function Layout() {
         >
           <button
             className="hamburger-btn"
-            onClick={() => setMobileSidebarOpen(true)}
-            aria-label="Open sidebar"
+            onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+            aria-label={mobileSidebarOpen ? "Close sidebar" : "Open sidebar"}
             style={{
               color: palette.red,
               background: "none",
@@ -100,7 +100,7 @@ export default function Layout() {
           >
             <i className="bi bi-list"></i>
           </button>
-          <div className="logo-topbar d-flex gap-2 align-items-center">
+          <div className="logo-topbar d-flex gap-2 align-items-center" style={{ flex: 1, justifyContent: "center" }}>
             <img
               src={Logo}
               alt="logo"
