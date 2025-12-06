@@ -268,6 +268,8 @@ export default function Layout() {
               boxShadow: "2px 0 16px 0 rgba(0,0,0,0.15)",
               transition: "left 0.25s",
               overflowY: "auto",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
             <div className="logo mb-4 d-flex justify-content-center align-items-center gap-2">
@@ -293,52 +295,10 @@ export default function Layout() {
             >
               {menu.map(renderNavLink)}
             </nav>
-            <div
-              className="user-section mt-4"
-              style={{
-                paddingTop: "20px",
-                borderTop: `1px solid ${isDark ? "#333" : "#555"}`,
-              }}
-            >
-              <div className="user-info d-flex align-items-center gap-2">
-                <div
-                  className="avatar"
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "50%",
-                    background: palette.red,
-                    color: "#fff",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontWeight: "bold",
-                    flexShrink: 0,
-                  }}
-                >
-                  {userAppData?.username?.[0]?.toUpperCase() || "U"}
-                </div>
-                <div>
-                  <div
-                    className="name fw-bold"
-                    style={{ color: "#fff", fontSize: "0.9rem" }}
-                  >
-                    {userAppData?.username || "User"}
-                  </div>
-                  <div
-                    className="email"
-                    style={{
-                      fontSize: "0.8rem",
-                      color: "#adb5bd",
-                    }}
-                  >
-                    {userAppData?.email || "user@dailyhustle.app"}
-                  </div>
-                </div>
-              </div>
+            <div style={{ marginTop: "auto", paddingTop: "20px", borderTop: `1px solid ${isDark ? "#333" : "#555"}` }}>
               <button
                 onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-                className="theme-toggle mt-3"
+                className="theme-toggle"
                 aria-label="Toggle theme"
                 style={{
                   color: "#fff",
@@ -353,6 +313,7 @@ export default function Layout() {
                   justifyContent: "center",
                   gap: "8px",
                   width: "100%",
+                  marginBottom: "10px",
                 }}
               >
                 <span>Theme</span>
@@ -364,7 +325,7 @@ export default function Layout() {
               </button>
               <NavLink
                 to="/logout"
-                className="nav-link-item mt-2"
+                className="nav-link-item"
                 onClick={() => setMobileSidebarOpen(false)}
                 style={{
                   display: "flex",
@@ -372,15 +333,15 @@ export default function Layout() {
                   padding: "12px 16px",
                   borderRadius: "10px",
                   gap: "10px",
-                  color: "#fff",
+                  color: isDark ? "#fff" : "#2c3e50",
                   textDecoration: "none",
                   transition: "all 0.2s",
                   fontWeight: "500",
                   background: "transparent",
                 }}
               >
-                <i className="bi bi-box-arrow-in-left"></i>
-                <span>Logout</span>
+                <i className="bi bi-box-arrow-right"></i>
+                <span>Log Out</span>
               </NavLink>
             </div>
           </aside>
