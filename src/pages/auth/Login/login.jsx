@@ -40,6 +40,7 @@ const Login = () => {
         localStorage.setItem("token", res.data.data.token);
         localStorage.setItem("isAuth", "true");
         setUserLoggedIn(true);
+        
         setTimeout(() => (window.location.href = "/"), 1200);
       } else {
         const msg = res.data?.message || "Invalid credentials";
@@ -64,7 +65,7 @@ const Login = () => {
         fontFamily: "Poppins, system-ui, sans-serif",
       }}
     >
-      <ToastContainer position="top-center" theme="light" autoClose={2400} />
+      <ToastContainer position="top-right" theme="light" autoClose={2400} />
       
       <Link
         to="/"

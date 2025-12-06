@@ -39,7 +39,7 @@ const Onboarding = ({ userEmail, onComplete }) => {
 
   return (
     <>
-      <ToastContainer position="top-center" theme="colored" autoClose={3000} />
+      <ToastContainer position="top-right" theme="colored" autoClose={3000} />
       <div className="min-vh-100 d-flex align-items-center justify-content-center px-3 py-4" 
            style={{ background: '#f8f9fa', fontFamily: 'Poppins, system-ui, sans-serif' }}>
         

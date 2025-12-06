@@ -547,3 +547,33 @@ select.form-select:hover { border-color: var(--bs-danger); }
 .btn:active {
   transform: translateY(0);
 }
+
+/* Toast Styling */
+.Toastify__toast {
+  font-family: "Poppins", system-ui, sans-serif !important;
+  border-radius: 12px !important;
+  font-weight: 500 !important;
+}
+
+.Toastify__toast--success {
+  background: #28a745 !important;
+  color: white !important;
+}
+
+.Toastify__toast--error {
+  background: #dc3545 !important;
+  color: white !important;
+}
+
+.Toastify__toast--success .Toastify__toast-icon,
+.Toastify__toast--error .Toastify__toast-icon {
+  color: white !important;
+}
+
+.Toastify__progress-bar--success {
+  background: rgba(255, 255, 255, 0.7) !important;
+}
+
+.Toastify__progress-bar--error {
+  background: rgba(255, 255, 255, 0.7) !important;
+}

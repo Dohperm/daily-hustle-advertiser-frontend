@@ -12,6 +12,7 @@ import Login from "./pages/auth/Login/login";
 import KYCForm from "./pages/auth/Kyc/kyc";
 import ForgotPassword from "./pages/auth/ForgotPassword/forgotPassword";
 import Onboarding from "./pages/auth/Onboarding/onboarding";
+import OnboardingProtectedRoute from "./components/OnboardingProtectedRoute";
 import GlobalSpinner from "./components/GlobalSpinner";
 import { useLoading } from "./context/LoadingContext";
 import NewCampaign from "./pages/Tasks/NewCampaign";
@@ -78,9 +79,9 @@ export default function App() {
 
       {/* ✅ APP ROUTES - WITH LAYOUT */}
       <Route element={<Layout />}>
-        <Route path="/dashboard" element={<ProtectedRoute><AdvertiserDashboard /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<OnboardingProtectedRoute><AdvertiserDashboard /></OnboardingProtectedRoute>} />
         <Route path="/jobs/my-campaigns" element={<MyCampaigns />} />
-        <Route path="/campaigns" element={<ProtectedRoute><CampaignTypes /></ProtectedRoute>} />
+        <Route path="/campaigns" element={<OnboardingProtectedRoute><CampaignTypes /></OnboardingProtectedRoute>} />
         <Route path="/tasks/new-campaign" element={<NewCampaign />} />
         <Route path="/jobs/new" element={<NewCampaign />} />
         <Route path="/jobs/allcampaigns" element={<AllCampaigns />} />

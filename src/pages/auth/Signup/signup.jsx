@@ -159,7 +159,7 @@ export default function QuickSignup() {
 
   return (
     <>
-      <ToastContainer position="top-center" theme="light" autoClose={3000} />
+      <ToastContainer position="top-right" theme="light" autoClose={3000} />
       <div
         className="min-vh-100 d-flex align-items-center justify-content-center px-3"
         style={{ background: "#f8f9fa" }}
