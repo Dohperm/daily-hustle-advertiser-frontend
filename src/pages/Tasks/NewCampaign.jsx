@@ -2120,6 +2120,13 @@ export default function NewCampaign() {
               width: 100%;
             }
           }
+          ${isDark ? `
+            input::placeholder,
+            textarea::placeholder {
+              color: #6c757d !important;
+              opacity: 1;
+            }
+          ` : ''}
         `}</style>
       </div>
     </div>
