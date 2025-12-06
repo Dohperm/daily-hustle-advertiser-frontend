@@ -62,7 +62,10 @@ const Login = () => {
 
   return (
     <div
-      className="min-vh-100 d-flex align-items-center justify-content-center px-3"
+      className="min-vh-100 d-flex align-items-center justify-content-center"
+      style={{
+        padding: window.innerWidth < 768 ? "20px 15px" : "0 20px",
+      }}
       style={{
         background: isDark ? "#1a1a1a" : "#f8f9fa",
         fontFamily: "Poppins, system-ui, sans-serif",
@@ -82,6 +85,7 @@ const Login = () => {
         className="rounded-4 shadow p-5 w-100"
         style={{
           maxWidth: "500px",
+          width: "100%",
           background: isDark ? "#2d2d2d" : "#ffffff",
           border: `1px solid ${isDark ? "#404040" : "#e9ecef"}`
         }}

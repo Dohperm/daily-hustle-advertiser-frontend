@@ -114,22 +114,7 @@ export default function Layout() {
               DailyHustle
             </span>
           </div>
-          <button
-            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-            className="theme-toggle"
-            aria-label="Toggle theme"
-            style={{
-              color: palette.red,
-              background: "none",
-              border: "none",
-              fontSize: "1.2rem",
-              cursor: "pointer",
-            }}
-          >
-            <i
-              className={`bi ${theme === "light" ? "bi-moon-stars" : "bi-sun"}`}
-            ></i>
-          </button>
+
         </header>
       )}
 
@@ -365,6 +350,7 @@ export default function Layout() {
                   transition: "all 0.2s",
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
                   gap: "8px",
                   width: "100%",
                 }}

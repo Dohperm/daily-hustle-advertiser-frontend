@@ -155,7 +155,7 @@ export default function AdvertiserDashboard() {
         background: palette.bg,
         color: palette.text,
         minHeight: "100vh",
-        padding: "40px 20px",
+        padding: window.innerWidth < 768 ? "20px 15px" : "40px 20px",
       }}
     >
       {/* Container */}
@@ -174,7 +174,7 @@ export default function AdvertiserDashboard() {
           <h1
             className="fw-bold mb-0"
             style={{
-              fontSize: "2rem",
+              fontSize: window.innerWidth < 768 ? "1.5rem" : "2rem",
               color: palette.text,
               display: "flex",
               alignItems: "center",
@@ -282,7 +282,7 @@ export default function AdvertiserDashboard() {
             {/* Latest Campaigns & Recent Activity */}
             <Row className="g-4">
               {/* Latest Campaigns */}
-              <Col md={7}>
+              <Col lg={7} md={12}>
                 <div
                   style={{
                     background: palette.cardBg,
@@ -473,7 +473,7 @@ export default function AdvertiserDashboard() {
                 </div>
               </Col>
               {/* Recent Activity */}
-              <Col md={5}>
+              <Col lg={5} md={12}>
                 <div
                   style={{
                     background: palette.cardBg,

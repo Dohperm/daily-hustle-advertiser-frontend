@@ -280,7 +280,7 @@ export default function CampaignTypes() {
 
   return (
     <div style={{ 
-      padding: '40px 20px', 
+      padding: window.innerWidth < 768 ? '20px 15px' : '40px 20px', 
       minHeight: '100vh',
       background: isDark ? '#121212' : '#f8f9fa',
       color: isDark ? '#f7f7fa' : '#212529'
@@ -291,7 +291,7 @@ export default function CampaignTypes() {
           <h1
             className="fw-bold mb-2"
             style={{
-              fontSize: "2.5rem",
+              fontSize: window.innerWidth < 768 ? "1.8rem" : "2.5rem",
               color: isDark ? '#f7f7fa' : '#212529',
               letterSpacing: "0.5px",
             }}
@@ -375,7 +375,7 @@ export default function CampaignTypes() {
             </div>
           ) : (
             filteredCampaigns.map((campaign, index) => (
-            <Col key={index} md={6} lg={4}>
+            <Col key={index} xs={12} sm={6} lg={4}>
               <div
                 style={{
                   border: hoveredCampaign === index ? '2px solid #e53e3e' : `1px solid ${isDark ? '#404040' : '#dee2e6'}`,

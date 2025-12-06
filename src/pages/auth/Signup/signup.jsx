@@ -161,7 +161,10 @@ export default function QuickSignup() {
       <ToastContainer position="top-right" theme="light" autoClose={3000} />
       <div
         className="min-vh-100 d-flex align-items-center justify-content-center px-3"
-        style={{ background: isDark ? "#1a1a1a" : "#f8f9fa" }}
+        style={{ 
+          background: isDark ? "#1a1a1a" : "#f8f9fa",
+          padding: window.innerWidth < 768 ? "20px 15px" : "0 20px"
+        }}
       >
         <Link
           to="/"
@@ -175,6 +178,7 @@ export default function QuickSignup() {
           className="rounded-4 shadow p-5 w-100"
           style={{
             maxWidth: "550px",
+            width: "100%",
             background: isDark ? "#2d2d2d" : "#ffffff",
             border: `1px solid ${isDark ? "#404040" : "#e9ecef"}`
           }}

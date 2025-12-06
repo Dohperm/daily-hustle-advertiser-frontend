@@ -56,7 +56,11 @@ const Onboarding = ({ userEmail, onComplete }) => {
     <>
       <ToastContainer position="top-right" theme="colored" autoClose={3000} />
       <div className="min-vh-100 d-flex align-items-center justify-content-center px-3 py-4" 
-           style={{ background: isDark ? '#1a1a1a' : '#f8f9fa', fontFamily: 'Poppins, system-ui, sans-serif' }}>
+           style={{ 
+             background: isDark ? '#1a1a1a' : '#f8f9fa', 
+             fontFamily: 'Poppins, system-ui, sans-serif',
+             padding: window.innerWidth < 768 ? '20px 15px' : '0 20px'
+           }}>
         
         <button
           onClick={() => {
@@ -71,7 +75,8 @@ const Onboarding = ({ userEmail, onComplete }) => {
         </button>
 
         <div className="rounded-4 shadow p-5 w-100" style={{ 
-          maxWidth: '550px', 
+          maxWidth: '550px',
+          width: '100%', 
           background: isDark ? '#2d2d2d' : '#ffffff',
           border: `1px solid ${isDark ? '#404040' : '#e9ecef'}` 
         }}>
@@ -88,7 +93,7 @@ const Onboarding = ({ userEmail, onComplete }) => {
 
           <form onSubmit={handleSubmit}>
             <div className="row g-3 mb-3">
-              <div className="col-6">
+              <div className="col-12 col-sm-6">
                 <label className="form-label fw-semibold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>First Name</label>
                 <input
                   type="text"
@@ -102,7 +107,7 @@ const Onboarding = ({ userEmail, onComplete }) => {
                   style={{ border: '2px solid #e9ecef', borderRadius: '12px', fontSize: '1rem' }}
                 />
               </div>
-              <div className="col-6">
+              <div className="col-12 col-sm-6">
                 <label className="form-label fw-semibold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>Last Name</label>
                 <input
                   type="text"
