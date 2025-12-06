@@ -147,7 +147,7 @@ export default function AdvertiserWallet() {
 
   return (
     <div
-      className="container-fluid py-5"
+      className="container py-4"
       style={{
         background: palette.bg,
         minHeight: "100vh",
