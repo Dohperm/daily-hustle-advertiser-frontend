@@ -183,6 +183,8 @@ export default function Layout() {
             boxShadow: isDark
               ? "2px 0 8px rgba(0,0,0,0.3)"
               : "2px 0 8px rgba(0,0,0,0.1)",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <SidebarToggleBtn />
@@ -222,6 +224,7 @@ export default function Layout() {
             <div style={{ 
               marginTop: "auto",
               paddingTop: "20px",
+              paddingBottom: "20px",
               borderTop: `1px solid ${isDark ? "#333" : "#e9ecef"}`
             }}>
               <div
