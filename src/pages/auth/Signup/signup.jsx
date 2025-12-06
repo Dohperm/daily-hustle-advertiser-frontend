@@ -11,6 +11,7 @@ import {
 import api from "../../services/api";
 import { useAdvertiserData } from "../../hooks/useAppDataContext";
 import { useLoading } from "../../../context/LoadingContext";
+import { useTheme } from "../../../context/ThemeContext";
 import Onboarding from "../Onboarding/onboarding";
 
 const getPasswordStrength = (pw) => {
@@ -29,6 +30,8 @@ const strengthColors = ["#dc3545", "#ffc107", "#17a2b8", "#28a745", "#198754"];
 export default function QuickSignup() {
   const { setUserLoggedIn } = useAdvertiserData();
   const { showLoading, hideLoading } = useLoading();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   const [searchParams] = useSearchParams();
 
   const [step, setStep] = useState(0);
@@ -158,7 +161,7 @@ export default function QuickSignup() {
       <ToastContainer position="top-right" theme="light" autoClose={3000} />
       <div
         className="min-vh-100 d-flex align-items-center justify-content-center px-3"
-        style={{ background: "#f8f9fa" }}
+        style={{ background: isDark ? "#1a1a1a" : "#f8f9fa" }}
       >
         <Link
           to="/"
@@ -169,26 +172,27 @@ export default function QuickSignup() {
         </Link>
 
         <div
-          className="bg-white rounded-4 shadow p-5 w-100"
+          className="rounded-4 shadow p-5 w-100"
           style={{
             maxWidth: "550px",
-            border: "1px solid #e9ecef"
+            background: isDark ? "#2d2d2d" : "#ffffff",
+            border: `1px solid ${isDark ? "#404040" : "#e9ecef"}`
           }}
         >
           <div className="text-center mb-4">
             <div className="mb-3">
-              <i className="bi bi-person-plus-fill" style={{ fontSize: '3rem', color: '#ff6b35' }}></i>
+              <i className="bi bi-person-plus-fill" style={{ fontSize: '3rem', color: '#e53e3e' }}></i>
             </div>
-            <h2 className="fw-bold mb-2" style={{ color: '#2c3e50' }}>
+            <h2 className="fw-bold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>
               {step === 0 ? "Create Your Account" : "Verify Your Email"}
             </h2>
-            <p className="text-muted mb-3">
+            <p className="mb-3" style={{ color: isDark ? '#b0b3c0' : '#6c757d' }}>
               {step === 0 ? "Join thousands of advertisers on DailyHustle" : "Enter the code sent to your email"}
             </p>
             <div className="progress mb-3" style={{ height: '6px', background: '#e9ecef' }}>
               <div className="progress-bar" style={{ 
                 width: step === 0 ? '50%' : '100%',
-                background: '#ff6b35'
+                background: '#e53e3e'
               }}></div>
             </div>
           </div>
@@ -267,7 +271,7 @@ export default function QuickSignup() {
                 className="btn btn-lg w-100 py-3 fw-bold text-white mb-4"
                 disabled={loading || passwordStrength < 3}
                 style={{
-                  background: "#ff6b35",
+                  background: "#e53e3e",
                   border: "none",
                   borderRadius: "12px",
                   fontSize: "1.1rem"
@@ -286,7 +290,7 @@ export default function QuickSignup() {
               <div className="text-center">
                 <p className="text-muted mb-0">
                   Already have an account?{" "}
-                  <Link to="/login" className="text-decoration-none fw-semibold" style={{ color: "#ff6b35" }}>
+                  <Link to="/login" className="text-decoration-none fw-semibold" style={{ color: "#e53e3e" }}>
                     Sign in here
                   </Link>
                 </p>
@@ -298,7 +302,7 @@ export default function QuickSignup() {
             <div>
               <p className="text-center text-muted mb-4">
                 Enter the 6-digit verification code sent to:<br/>
-                <strong style={{ color: '#ff6b35' }}>{formData.email}</strong>
+                <strong style={{ color: '#e53e3e' }}>{formData.email}</strong>
               </p>
               <div className="d-flex justify-content-center gap-3 mb-5">
                 {otp.map((digit, idx) => (
@@ -328,7 +332,7 @@ export default function QuickSignup() {
                 onClick={handleVerifyOtp}
                 disabled={loading || otp.join("").length !== 6}
                 style={{
-                  background: "#ff6b35",
+                  background: "#e53e3e",
                   border: "none",
                   borderRadius: "12px",
                   fontSize: "1.1rem"

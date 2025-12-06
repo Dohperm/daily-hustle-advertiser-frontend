@@ -4,7 +4,7 @@ import { useAdvertiserData } from "../hooks/useAppDataContext";
 import { useTheme } from "../../context/ThemeContext";
 import Logo from "/dailyjhustleimage.png";
 
-const BRAND_RED = "#ff4500";
+const BRAND_RED = "#e53e3e";
 
 export default function Layout() {
   const { theme, setTheme } = useTheme();
@@ -23,8 +23,8 @@ export default function Layout() {
       text: isDark ? "#f7f7fa" : "#212529",
       label: isDark ? "#adb5bd" : "#6c757d",
       border: isDark ? "#313843" : "#dee2e6",
-      sidebarBg: isDark ? "#0a0a0a" : "#181c29",
-      red: BRAND_RED,
+      sidebarBg: isDark ? "#2d2d2d" : "#ffffff",
+      red: "#e53e3e",
     }),
     [isDark]
   );
@@ -42,7 +42,6 @@ export default function Layout() {
     { to: "/jobs/my-campaigns", icon: "bi-list", label: "My Campaigns" },
     { to: "/jobs/new", icon: "bi-plus-circle", label: "New Campaign" },
     { to: "/wallet", icon: "bi-wallet2", label: "Wallet" },
-    { to: "/logout", icon: "bi-box-arrow-in-left", label: "Logout" },
   ];
 
   const renderNavLink = (item) => (
@@ -60,7 +59,7 @@ export default function Layout() {
         padding: "12px 16px",
         borderRadius: "10px",
         gap: "10px",
-        color: isActive ? "#fff" : "#fff", // ✅ Fixed: Always white text
+        color: isActive ? "#fff" : (isDark ? "#fff" : "#6c757d"),
         textDecoration: "none",
         transition: "all 0.2s",
         fontWeight: isActive ? "600" : "500",
@@ -179,7 +178,7 @@ export default function Layout() {
             height: "100vh",
             zIndex: 1040,
             background: palette.sidebarBg,
-            color: "#fff",
+            color: isDark ? "#fff" : "#2c3e50",
             padding: sidebarOpen ? "25px 20px" : "0px",
             boxShadow: isDark
               ? "2px 0 8px rgba(0,0,0,0.3)"
@@ -222,81 +221,82 @@ export default function Layout() {
           <div
             className="user-section mt-5"
             style={{
-              paddingTop: "20px",
-              borderTop: `1px solid ${isDark ? "#333" : "#555"}`,
               opacity: sidebarOpen ? 1 : 0,
             }}
           >
-            {/* <div className="user-info d-flex align-items-center gap-3">
-              <div
-                className="avatar"
-                style={{
-                  width: "48px",
-                  height: "48px",
-                  borderRadius: "50%",
-                  background: palette.red,
-                  color: "#fff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: "bold",
-                  fontSize: "1.2em",
-                  flexShrink: 0,
-                }}
-              >
-                {userAppData?.username?.[0]?.toUpperCase() || "U"}
-              </div>
-              {sidebarOpen && (
-                <div>
-                  <div
-                    className="name fw-bold"
-                    style={{ color: "#fff", fontSize: "0.95rem" }}
-                  >
-                    {userAppData?.username || "User"}
-                  </div>
-                  <div
-                    className="email"
+            {sidebarOpen && (
+              <div style={{ 
+                display: "flex", 
+                flexDirection: "column", 
+                gap: "12px", 
+                marginTop: "20px",
+                paddingTop: "20px",
+                borderTop: `1px solid ${isDark ? "#333" : "#e9ecef"}`
+              }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "12px 16px",
+                    color: isDark ? "#fff" : "#2c3e50",
+                  }}
+                >
+                  <span style={{ fontSize: "1rem", fontWeight: "500" }}>Theme</span>
+                  <button
+                    onClick={() => setTheme(theme === "light" ? "dark" : "light")}
                     style={{
-                      fontSize: "0.85rem",
-                      color: "#adb5bd",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      maxWidth: "150px",
+                      width: "40px",
+                      height: "20px",
+                      borderRadius: "10px",
+                      border: "none",
+                      background: theme === "dark" ? "#4a5568" : "#e2e8f0",
+                      position: "relative",
+                      cursor: "pointer",
+                      transition: "all 0.2s",
                     }}
                   >
-                    {userAppData?.email || "user@dailyhustle.app"}
-                  </div>
+                    <div
+                      style={{
+                        width: "16px",
+                        height: "16px",
+                        borderRadius: "50%",
+                        background: "#fff",
+                        position: "absolute",
+                        top: "2px",
+                        left: theme === "dark" ? "22px" : "2px",
+                        transition: "all 0.2s",
+                      }}
+                    />
+                  </button>
                 </div>
-              )}
-            </div> */}
-            {sidebarOpen && (
-              <button
-                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-                className="theme-toggle ms-2 mt-3"
-                aria-label="Toggle theme"
-                style={{
-                  color: "#fff",
-                  background: `${palette.red}20`,
-                  border: `1px solid ${palette.red}40`,
-                  padding: "8px 12px",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}
-                onMouseOver={(e) => {
-                  e.target.style.background = `${palette.red}30`;
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.background = `${palette.red}20`;
-                }}
-              >
-                <i
-                  className={`bi ${
-                    theme === "light" ? "bi-moon-stars" : "bi-sun"
-                  }`}
-                ></i>
-              </button>
+                <NavLink
+                  to="/logout"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "12px 16px",
+                    gap: "10px",
+                    color: isDark ? "#fff" : "#2c3e50",
+                    textDecoration: "none",
+                    fontSize: "1rem",
+                    fontWeight: "500",
+                    borderRadius: "10px",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.background = palette.red;
+                    e.target.style.color = "#fff";
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.background = "transparent";
+                    e.target.style.color = isDark ? "#fff" : "#2c3e50";
+                  }}
+                >
+                  <i className="bi bi-box-arrow-right"></i>
+                  <span>Log Out</span>
+                </NavLink>
+              </div>
             )}
           </div>
         </aside>
@@ -388,6 +388,51 @@ export default function Layout() {
                   </div>
                 </div>
               </div>
+              <button
+                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+                className="theme-toggle mt-3"
+                aria-label="Toggle theme"
+                style={{
+                  color: "#fff",
+                  background: `${palette.red}20`,
+                  border: `1px solid ${palette.red}40`,
+                  padding: "8px 12px",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  width: "100%",
+                }}
+              >
+                <span>Theme</span>
+                <i
+                  className={`bi ${
+                    theme === "light" ? "bi-moon-stars" : "bi-sun"
+                  }`}
+                ></i>
+              </button>
+              <NavLink
+                to="/logout"
+                className="nav-link-item mt-2"
+                onClick={() => setMobileSidebarOpen(false)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "12px 16px",
+                  borderRadius: "10px",
+                  gap: "10px",
+                  color: "#fff",
+                  textDecoration: "none",
+                  transition: "all 0.2s",
+                  fontWeight: "500",
+                  background: "transparent",
+                }}
+              >
+                <i className="bi bi-box-arrow-in-left"></i>
+                <span>Logout</span>
+              </NavLink>
             </div>
           </aside>
           <div
@@ -410,6 +455,8 @@ export default function Layout() {
           marginLeft: isDesktop && sidebarOpen ? "260px" : "0px",
           transition: "margin-left 0.22s cubic-bezier(.4,0,.2,1)",
           minHeight: "100vh",
+          background: palette.bg,
+          color: palette.text,
         }}
       >
         <Outlet />

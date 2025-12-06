@@ -1,6 +1,33 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useTheme } from "../../context/ThemeContext";
 import Logo from "../../../public/dailyjhustleimage.png";
+function ThemeToggle() {
+  const { theme, toggleTheme } = useTheme();
+  
+  return (
+    <button className="theme-toggle w-100" onClick={toggleTheme}>
+      <i className={`bi ${theme === 'dark' ? 'bi-sun-fill' : 'bi-moon-fill'}`}></i>
+      {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+    </button>
+  );
+}
+
+function LogoutButton() {
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('isAuth');
+    window.location.href = '/';
+  };
+  
+  return (
+    <button className="logout-btn w-100" onClick={handleLogout}>
+      <i className="bi bi-box-arrow-right"></i>
+      Logout
+    </button>
+  );
+}
+
 export default function Sidebar() {
   const [jobsOpen, setjobsOpen] = useState(true); // Temporarily always open
 
@@ -126,8 +153,10 @@ export default function Sidebar() {
           </li>
         </ul>
       </nav>
-      <div className="mt-4">
-        <small>DailyHustle • Advertiser</small>
+      <div className="mt-4 d-flex flex-column gap-3">
+        <ThemeToggle />
+        <LogoutButton />
+        <small className="text-center">DailyHustle • Advertiser</small>
       </div>
     </aside>
   );

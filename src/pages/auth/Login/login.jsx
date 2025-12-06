@@ -7,10 +7,13 @@ import "react-toastify/dist/ReactToastify.css";
 import { advertiserLogin } from "../../services/services";
 import { useAdvertiserData } from "../../hooks/useAppDataContext";
 import { useLoading } from "../../../context/LoadingContext";
+import { useTheme } from "../../../context/ThemeContext";
 
 const Login = () => {
   const { setUserLoggedIn } = useAdvertiserData();
   const { showLoading, hideLoading } = useLoading();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   const [formData, setFormData] = useState({
     identifier: "",
     password: "",
@@ -61,7 +64,7 @@ const Login = () => {
     <div
       className="min-vh-100 d-flex align-items-center justify-content-center px-3"
       style={{
-        background: "#f8f9fa",
+        background: isDark ? "#1a1a1a" : "#f8f9fa",
         fontFamily: "Poppins, system-ui, sans-serif",
       }}
     >
@@ -76,20 +79,21 @@ const Login = () => {
       </Link>
 
       <div
-        className="bg-white rounded-4 shadow p-5 w-100"
+        className="rounded-4 shadow p-5 w-100"
         style={{
           maxWidth: "500px",
-          border: "1px solid #e9ecef"
+          background: isDark ? "#2d2d2d" : "#ffffff",
+          border: `1px solid ${isDark ? "#404040" : "#e9ecef"}`
         }}
       >
         <div className="text-center mb-4">
           <div className="mb-3">
-            <i className="bi bi-person-circle" style={{ fontSize: '3rem', color: '#ff6b35' }}></i>
+            <i className="bi bi-person-circle" style={{ fontSize: '3rem', color: '#e53e3e' }}></i>
           </div>
-          <h2 className="fw-bold mb-2" style={{ color: '#2c3e50' }}>
+          <h2 className="fw-bold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>
             Welcome Back
           </h2>
-          <p className="text-muted">Sign in to your DailyHustle account</p>
+          <p style={{ color: isDark ? '#b0b3c0' : '#6c757d' }}>Sign in to your DailyHustle account</p>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -160,7 +164,7 @@ const Login = () => {
             className="btn btn-lg w-100 py-3 fw-bold text-white mb-4"
             disabled={loading}
             style={{
-              background: "#ff6b35",
+              background: "#e53e3e",
               border: "none",
               borderRadius: "12px",
               fontSize: "1.1rem"
@@ -182,7 +186,7 @@ const Login = () => {
               <Link
                 to="/signup"
                 className="text-decoration-none fw-semibold"
-                style={{ color: "#ff6b35" }}
+                style={{ color: "#e53e3e" }}
               >
                 Create one here
               </Link>

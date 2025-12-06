@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { useLoading } from '../../../context/LoadingContext';
+import { useTheme } from '../../../context/ThemeContext';
 import api from '../../services/api';
 
 const Onboarding = ({ userEmail, onComplete }) => {
@@ -11,6 +12,8 @@ const Onboarding = ({ userEmail, onComplete }) => {
   const existingProfile = location.state?.userProfile;
   const [loading, setLoading] = useState(false);
   const { showLoading, hideLoading } = useLoading();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   const [formData, setFormData] = useState({
     first_name: existingProfile?.first_name || '',
     last_name: existingProfile?.last_name || '',
@@ -53,7 +56,7 @@ const Onboarding = ({ userEmail, onComplete }) => {
     <>
       <ToastContainer position="top-right" theme="colored" autoClose={3000} />
       <div className="min-vh-100 d-flex align-items-center justify-content-center px-3 py-4" 
-           style={{ background: '#f8f9fa', fontFamily: 'Poppins, system-ui, sans-serif' }}>
+           style={{ background: isDark ? '#1a1a1a' : '#f8f9fa', fontFamily: 'Poppins, system-ui, sans-serif' }}>
         
         <button
           onClick={() => {
@@ -67,15 +70,19 @@ const Onboarding = ({ userEmail, onComplete }) => {
           Back to Home
         </button>
 
-        <div className="bg-white rounded-4 shadow p-5 w-100" style={{ maxWidth: '550px', border: '1px solid #e9ecef' }}>
+        <div className="rounded-4 shadow p-5 w-100" style={{ 
+          maxWidth: '550px', 
+          background: isDark ? '#2d2d2d' : '#ffffff',
+          border: `1px solid ${isDark ? '#404040' : '#e9ecef'}` 
+        }}>
           <div className="text-center mb-4">
             <div className="mb-3">
-              <i className="bi bi-person-check-fill" style={{ fontSize: '3rem', color: '#ff6b35' }}></i>
+              <i className="bi bi-person-check-fill" style={{ fontSize: '3rem', color: '#e53e3e' }}></i>
             </div>
-            <h2 className="fw-bold mb-2" style={{ color: '#2c3e50' }}>Complete Your Profile</h2>
-            <p className="text-muted">Just a few more details to get you started</p>
+            <h2 className="fw-bold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>Complete Your Profile</h2>
+            <p style={{ color: isDark ? '#b0b3c0' : '#6c757d' }}>Just a few more details to get you started</p>
             <div className="progress mb-3" style={{ height: '6px', background: '#e9ecef' }}>
-              <div className="progress-bar" style={{ width: '75%', background: '#ff6b35' }}></div>
+              <div className="progress-bar" style={{ width: '75%', background: '#e53e3e' }}></div>
             </div>
           </div>
 
@@ -164,9 +171,9 @@ const Onboarding = ({ userEmail, onComplete }) => {
                     htmlFor="individual"
                     style={{
                       borderRadius: '12px',
-                      border: formData.account_identifier === 'Individual' ? '2px solid #ff6b35' : '2px solid #e9ecef',
+                      border: formData.account_identifier === 'Individual' ? '2px solid #e53e3e' : '2px solid #e9ecef',
                       background: formData.account_identifier === 'Individual' ? '#fff5f0' : 'white',
-                      color: formData.account_identifier === 'Individual' ? '#ff6b35' : '#6c757d'
+                      color: formData.account_identifier === 'Individual' ? '#e53e3e' : '#6c757d'
                     }}
                   >
                     Individual
@@ -188,9 +195,9 @@ const Onboarding = ({ userEmail, onComplete }) => {
                     htmlFor="organization"
                     style={{
                       borderRadius: '12px',
-                      border: formData.account_identifier === 'Organization' ? '2px solid #ff6b35' : '2px solid #e9ecef',
+                      border: formData.account_identifier === 'Organization' ? '2px solid #e53e3e' : '2px solid #e9ecef',
                       background: formData.account_identifier === 'Organization' ? '#fff5f0' : 'white',
-                      color: formData.account_identifier === 'Organization' ? '#ff6b35' : '#6c757d'
+                      color: formData.account_identifier === 'Organization' ? '#e53e3e' : '#6c757d'
                     }}
                   >
                     Organization
@@ -235,7 +242,7 @@ const Onboarding = ({ userEmail, onComplete }) => {
               className="btn btn-lg w-100 py-3 fw-bold text-white mb-4"
               disabled={loading}
               style={{
-                background: '#ff6b35',
+                background: '#e53e3e',
                 border: 'none',
                 borderRadius: '12px',
                 fontSize: '1.1rem'
@@ -254,7 +261,7 @@ const Onboarding = ({ userEmail, onComplete }) => {
 
           <div className="text-center">
             <p className="text-muted mb-0">
-              Email: <strong style={{ color: '#ff6b35' }}>{userEmail}</strong>
+              Email: <strong style={{ color: '#e53e3e' }}>{userEmail}</strong>
             </p>
           </div>
         </div>
