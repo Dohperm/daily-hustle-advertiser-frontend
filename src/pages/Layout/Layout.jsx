@@ -280,12 +280,12 @@ export default function Layout() {
                   background: "transparent",
                 }}
                 onMouseOver={(e) => {
-                  e.target.style.background = palette.red;
-                  e.target.style.color = "#fff";
+                  e.currentTarget.style.background = palette.red;
+                  e.currentTarget.style.color = "#fff";
                 }}
                 onMouseOut={(e) => {
-                  e.target.style.background = "transparent";
-                  e.target.style.color = isDark ? "#fff" : "#2c3e50";
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.color = "";
                 }}
               >
                 <i className="bi bi-box-arrow-right"></i>
