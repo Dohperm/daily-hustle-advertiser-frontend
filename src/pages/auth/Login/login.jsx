@@ -98,7 +98,7 @@ const Login = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label fw-semibold text-dark mb-2">
+            <label className="form-label fw-semibold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>
               Email or Username
             </label>
             <input
@@ -113,15 +113,17 @@ const Login = () => {
               autoComplete="username"
               disabled={loading}
               style={{
-                border: "2px solid #e9ecef",
+                border: `2px solid ${isDark ? "#404040" : "#e9ecef"}`,
                 borderRadius: "12px",
-                fontSize: "1rem"
+                fontSize: "1rem",
+                background: isDark ? "#1a1a1a" : "#ffffff",
+                color: isDark ? "#ffffff" : "#2c3e50"
               }}
             />
           </div>
 
           <div className="mb-4 position-relative">
-            <label className="form-label fw-semibold text-dark mb-2">
+            <label className="form-label fw-semibold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>
               Password
             </label>
             <input
@@ -135,9 +137,11 @@ const Login = () => {
               autoComplete="current-password"
               disabled={loading}
               style={{
-                border: "2px solid #e9ecef",
+                border: `2px solid ${isDark ? "#404040" : "#e9ecef"}`,
                 borderRadius: "12px",
-                fontSize: "1rem"
+                fontSize: "1rem",
+                background: isDark ? "#1a1a1a" : "#ffffff",
+                color: isDark ? "#ffffff" : "#2c3e50"
               }}
             />
             <button
@@ -181,7 +185,7 @@ const Login = () => {
           </button>
 
           <div className="text-center">
-            <p className="text-muted mb-0">
+            <p className="mb-0" style={{ color: isDark ? '#b0b3c0' : '#6c757d' }}>
               Don't have an account?{" "}
               <Link
                 to="/signup"
@@ -195,7 +199,7 @@ const Login = () => {
               <Link
                 to="/forgotpassword"
                 className="text-decoration-none"
-                style={{ color: "#6c757d", fontSize: "0.9rem" }}
+                style={{ color: isDark ? '#b0b3c0' : '#6c757d', fontSize: "0.9rem" }}
               >
                 Forgot your password?
               </Link>

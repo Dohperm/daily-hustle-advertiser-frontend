@@ -200,7 +200,7 @@ export default function QuickSignup() {
           {step === 0 && (
             <form onSubmit={handleRegister}>
               <div className="mb-3">
-                <label className="form-label fw-semibold text-dark mb-2">Email Address</label>
+                <label className="form-label fw-semibold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>Email Address</label>
                 <input
                   type="email"
                   className="form-control form-control-lg py-3"
@@ -220,7 +220,7 @@ export default function QuickSignup() {
               </div>
               
               <div className="mb-4 position-relative">
-                <label className="form-label fw-semibold text-dark mb-2">Create Password</label>
+                <label className="form-label fw-semibold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>Create Password</label>
                 <input
                   type={showPassword ? "text" : "password"}
                   className="form-control form-control-lg py-3 pe-5"
@@ -288,7 +288,7 @@ export default function QuickSignup() {
               </button>
 
               <div className="text-center">
-                <p className="text-muted mb-0">
+                <p className="mb-0" style={{ color: isDark ? '#b0b3c0' : '#6c757d' }}>
                   Already have an account?{" "}
                   <Link to="/login" className="text-decoration-none fw-semibold" style={{ color: "#e53e3e" }}>
                     Sign in here
@@ -300,7 +300,7 @@ export default function QuickSignup() {
           
           {step === 1 && (
             <div>
-              <p className="text-center text-muted mb-4">
+              <p className="text-center mb-4" style={{ color: isDark ? '#b0b3c0' : '#6c757d' }}>
                 Enter the 6-digit verification code sent to:<br/>
                 <strong style={{ color: '#e53e3e' }}>{formData.email}</strong>
               </p>

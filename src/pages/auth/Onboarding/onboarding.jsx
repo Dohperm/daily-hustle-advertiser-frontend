@@ -89,7 +89,7 @@ const Onboarding = ({ userEmail, onComplete }) => {
           <form onSubmit={handleSubmit}>
             <div className="row g-3 mb-3">
               <div className="col-6">
-                <label className="form-label fw-semibold text-dark mb-2">First Name</label>
+                <label className="form-label fw-semibold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>First Name</label>
                 <input
                   type="text"
                   name="first_name"
@@ -103,7 +103,7 @@ const Onboarding = ({ userEmail, onComplete }) => {
                 />
               </div>
               <div className="col-6">
-                <label className="form-label fw-semibold text-dark mb-2">Last Name</label>
+                <label className="form-label fw-semibold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>Last Name</label>
                 <input
                   type="text"
                   name="last_name"
@@ -119,7 +119,7 @@ const Onboarding = ({ userEmail, onComplete }) => {
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-semibold text-dark mb-2">Username</label>
+              <label className="form-label fw-semibold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>Username</label>
               <input
                 type="text"
                 name="username"
@@ -138,7 +138,7 @@ const Onboarding = ({ userEmail, onComplete }) => {
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-semibold text-dark mb-2">Phone Number</label>
+              <label className="form-label fw-semibold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>Phone Number</label>
               <input
                 type="tel"
                 name="phone"
@@ -153,7 +153,7 @@ const Onboarding = ({ userEmail, onComplete }) => {
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-semibold text-dark mb-2">What do you identify as?</label>
+              <label className="form-label fw-semibold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>What do you identify as?</label>
               <div className="d-flex gap-3">
                 <div className="flex-fill">
                   <input
@@ -207,7 +207,7 @@ const Onboarding = ({ userEmail, onComplete }) => {
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-semibold text-dark mb-2">Country</label>
+              <label className="form-label fw-semibold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>Country</label>
               <select
                 name="country"
                 className="form-select form-select-lg py-3"
@@ -224,7 +224,7 @@ const Onboarding = ({ userEmail, onComplete }) => {
             </div>
 
             <div className="mb-4">
-              <label className="form-label fw-semibold text-dark mb-2">Referral Code (Optional)</label>
+              <label className="form-label fw-semibold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>Referral Code (Optional)</label>
               <input
                 type="text"
                 name="referral_code"
@@ -260,7 +260,7 @@ const Onboarding = ({ userEmail, onComplete }) => {
           </form>
 
           <div className="text-center">
-            <p className="text-muted mb-0">
+            <p className="mb-0" style={{ color: isDark ? '#b0b3c0' : '#6c757d' }}>
               Email: <strong style={{ color: '#e53e3e' }}>{userEmail}</strong>
             </p>
           </div>
