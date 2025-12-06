@@ -47,56 +47,68 @@ const Onboarding = ({ userEmail, onComplete }) => {
   return (
     <>
       <ToastContainer position="top-center" theme="colored" autoClose={3000} />
-      <div className="min-vh-100 d-flex align-items-center justify-content-center py-4 px-3" 
-           style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-        <div className="bg-white rounded-4 shadow-xl p-4 p-md-5 w-100" style={{ maxWidth: '500px' }}>
+      <div className="min-vh-100 d-flex align-items-center justify-content-center px-3 py-4" 
+           style={{ background: '#f8f9fa', fontFamily: 'Poppins, system-ui, sans-serif' }}>
+        
+        <Link
+          to="/"
+          className="position-absolute top-0 start-0 m-4 btn btn-outline-secondary rounded-pill px-4 py-2"
+        >
+          <i className="bi bi-arrow-left me-2"></i>
+          Back to Home
+        </Link>
+
+        <div className="bg-white rounded-4 shadow p-5 w-100" style={{ maxWidth: '550px', border: '1px solid #e9ecef' }}>
           <div className="text-center mb-4">
             <div className="mb-3">
-              <i className="bi bi-person-check-fill text-success" style={{ fontSize: '3rem' }}></i>
+              <i className="bi bi-person-check-fill" style={{ fontSize: '3rem', color: '#ff6b35' }}></i>
             </div>
-            <h2 className="fw-bold mb-2">Complete Your Profile</h2>
+            <h2 className="fw-bold mb-2" style={{ color: '#2c3e50' }}>Complete Your Profile</h2>
             <p className="text-muted">Just a few more details to get you started</p>
-            <div className="progress mb-3" style={{ height: '6px' }}>
-              <div className="progress-bar bg-success" style={{ width: '75%' }}></div>
+            <div className="progress mb-3" style={{ height: '6px', background: '#e9ecef' }}>
+              <div className="progress-bar" style={{ width: '75%', background: '#ff6b35' }}></div>
             </div>
           </div>
 
           <form onSubmit={handleSubmit}>
             <div className="row g-3 mb-3">
               <div className="col-6">
-                <label className="form-label fw-semibold text-dark">First Name</label>
+                <label className="form-label fw-semibold text-dark mb-2">First Name</label>
                 <input
                   type="text"
                   name="first_name"
-                  className="form-control form-control-lg rounded-3"
+                  className="form-control form-control-lg py-3"
+                  placeholder="Enter your first name"
                   value={formData.first_name}
                   onChange={handleChange}
                   required
                   disabled={loading}
-                  style={{ borderColor: '#e0e6ed' }}
+                  style={{ border: '2px solid #e9ecef', borderRadius: '12px', fontSize: '1rem' }}
                 />
               </div>
               <div className="col-6">
-                <label className="form-label fw-semibold text-dark">Last Name</label>
+                <label className="form-label fw-semibold text-dark mb-2">Last Name</label>
                 <input
                   type="text"
                   name="last_name"
-                  className="form-control form-control-lg rounded-3"
+                  className="form-control form-control-lg py-3"
+                  placeholder="Enter your last name"
                   value={formData.last_name}
                   onChange={handleChange}
                   required
                   disabled={loading}
-                  style={{ borderColor: '#e0e6ed' }}
+                  style={{ border: '2px solid #e9ecef', borderRadius: '12px', fontSize: '1rem' }}
                 />
               </div>
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-semibold text-dark">Username</label>
+              <label className="form-label fw-semibold text-dark mb-2">Username</label>
               <input
                 type="text"
                 name="username"
-                className="form-control form-control-lg rounded-3"
+                className="form-control form-control-lg py-3"
+                placeholder="Choose a username"
                 value={formData.username}
                 onChange={(e) => setFormData({
                   ...formData,
@@ -105,48 +117,88 @@ const Onboarding = ({ userEmail, onComplete }) => {
                 required
                 minLength={3}
                 disabled={loading}
-                style={{ borderColor: '#e0e6ed' }}
+                style={{ border: '2px solid #e9ecef', borderRadius: '12px', fontSize: '1rem' }}
               />
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-semibold text-dark">Phone Number</label>
+              <label className="form-label fw-semibold text-dark mb-2">Phone Number</label>
               <input
                 type="tel"
                 name="phone"
-                className="form-control form-control-lg rounded-3"
+                className="form-control form-control-lg py-3"
+                placeholder="Enter your phone number"
                 value={formData.phone}
                 onChange={handleChange}
                 required
                 disabled={loading}
-                style={{ borderColor: '#e0e6ed' }}
+                style={{ border: '2px solid #e9ecef', borderRadius: '12px', fontSize: '1rem' }}
               />
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-semibold text-dark">What do you identify as?</label>
-              <select
-                name="account_identifier"
-                className="form-select form-select-lg rounded-3"
-                value={formData.account_identifier}
-                onChange={handleChange}
-                disabled={loading}
-                style={{ borderColor: '#e0e6ed' }}
-              >
-                <option value="Individual">Individual</option>
-                <option value="Organization">Organization</option>
-              </select>
+              <label className="form-label fw-semibold text-dark mb-2">What do you identify as?</label>
+              <div className="d-flex gap-3">
+                <div className="flex-fill">
+                  <input
+                    type="radio"
+                    id="individual"
+                    name="account_identifier"
+                    value="Individual"
+                    checked={formData.account_identifier === 'Individual'}
+                    onChange={handleChange}
+                    className="btn-check"
+                    disabled={loading}
+                  />
+                  <label
+                    className="btn btn-outline-secondary w-100 py-3"
+                    htmlFor="individual"
+                    style={{
+                      borderRadius: '12px',
+                      border: formData.account_identifier === 'Individual' ? '2px solid #ff6b35' : '2px solid #e9ecef',
+                      background: formData.account_identifier === 'Individual' ? '#fff5f0' : 'white',
+                      color: formData.account_identifier === 'Individual' ? '#ff6b35' : '#6c757d'
+                    }}
+                  >
+                    Individual
+                  </label>
+                </div>
+                <div className="flex-fill">
+                  <input
+                    type="radio"
+                    id="organization"
+                    name="account_identifier"
+                    value="Organization"
+                    checked={formData.account_identifier === 'Organization'}
+                    onChange={handleChange}
+                    className="btn-check"
+                    disabled={loading}
+                  />
+                  <label
+                    className="btn btn-outline-secondary w-100 py-3"
+                    htmlFor="organization"
+                    style={{
+                      borderRadius: '12px',
+                      border: formData.account_identifier === 'Organization' ? '2px solid #ff6b35' : '2px solid #e9ecef',
+                      background: formData.account_identifier === 'Organization' ? '#fff5f0' : 'white',
+                      color: formData.account_identifier === 'Organization' ? '#ff6b35' : '#6c757d'
+                    }}
+                  >
+                    Organization
+                  </label>
+                </div>
+              </div>
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-semibold text-dark">Country</label>
+              <label className="form-label fw-semibold text-dark mb-2">Country</label>
               <select
                 name="country"
-                className="form-select form-select-lg rounded-3"
+                className="form-select form-select-lg py-3"
                 value={formData.country}
                 onChange={handleChange}
                 disabled={loading}
-                style={{ borderColor: '#e0e6ed' }}
+                style={{ border: '2px solid #e9ecef', borderRadius: '12px', fontSize: '1rem' }}
               >
                 <option value="Ghana">Ghana</option>
                 <option value="Nigeria">Nigeria</option>
@@ -156,26 +208,28 @@ const Onboarding = ({ userEmail, onComplete }) => {
             </div>
 
             <div className="mb-4">
-              <label className="form-label fw-semibold text-dark">Referral Code (Optional)</label>
+              <label className="form-label fw-semibold text-dark mb-2">Referral Code (Optional)</label>
               <input
                 type="text"
                 name="referral_code"
-                className="form-control form-control-lg rounded-3"
+                className="form-control form-control-lg py-3"
+                placeholder="Enter referral code (optional)"
                 value={formData.referral_code}
                 onChange={handleChange}
                 disabled={loading}
-                style={{ borderColor: '#e0e6ed' }}
+                style={{ border: '2px solid #e9ecef', borderRadius: '12px', fontSize: '1rem' }}
               />
             </div>
 
             <button
               type="submit"
-              className="btn btn-lg w-100 py-3 fw-bold text-white rounded-3"
+              className="btn btn-lg w-100 py-3 fw-bold text-white mb-4"
               disabled={loading}
-              style={{ 
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              style={{
+                background: '#ff6b35',
                 border: 'none',
-                boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)'
+                borderRadius: '12px',
+                fontSize: '1.1rem'
               }}
             >
               {loading ? (
@@ -189,9 +243,9 @@ const Onboarding = ({ userEmail, onComplete }) => {
             </button>
           </form>
 
-          <div className="text-center mt-4">
-            <p className="text-muted small mb-0">
-              Email: <strong>{userEmail}</strong>
+          <div className="text-center">
+            <p className="text-muted mb-0">
+              Email: <strong style={{ color: '#ff6b35' }}>{userEmail}</strong>
             </p>
           </div>
         </div>
