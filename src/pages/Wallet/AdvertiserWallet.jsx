@@ -395,10 +395,10 @@ export default function AdvertiserWallet() {
               <p className="mb-0">No transactions yet.</p>
             </div>
           ) : (
-            <div className="table-responsive">
+            <div className="table-responsive" style={{ backgroundColor: palette.cardBg }}>
               <table
                 className="table mb-0"
-                style={{ color: palette.text, backgroundColor: 'transparent' }}
+                style={{ color: palette.text, backgroundColor: palette.cardBg, '--bs-table-bg': palette.cardBg }}
               >
                 <thead style={{ borderColor: palette.border, backgroundColor: isDark ? '#2a2a2a' : '#f8f9fa' }}>
                   <tr style={{ borderBottom: `2px solid ${palette.border}` }}>
@@ -437,7 +437,7 @@ export default function AdvertiserWallet() {
                     </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style={{ backgroundColor: palette.cardBg }}>
                   {transactions.map((txn, index) => {
                     const isCredit = txn.type?.toLowerCase() === 'credit';
                     return (
@@ -446,16 +446,16 @@ export default function AdvertiserWallet() {
                         style={{
                           borderBottom: `1px solid ${palette.border}`,
                           transition: "background 0.2s",
-                          backgroundColor: 'transparent'
+                          backgroundColor: palette.cardBg
                         }}
                         onMouseOver={(e) =>
                           (e.currentTarget.style.backgroundColor = palette.bg)
                         }
                         onMouseOut={(e) =>
-                          (e.currentTarget.style.backgroundColor = 'transparent')
+                          (e.currentTarget.style.backgroundColor = palette.cardBg)
                         }
                       >
-                        <td style={{ padding: "16px" }}>
+                        <td style={{ padding: "16px", color: palette.text, backgroundColor: palette.cardBg }}>
                           <div className="d-flex align-items-center gap-2">
                             <div
                               style={{
@@ -482,7 +482,7 @@ export default function AdvertiserWallet() {
                             <span className="fw-semibold">{txn.description || txn.type || 'Transaction'}</span>
                           </div>
                         </td>
-                        <td style={{ padding: "16px", color: palette.label }}>
+                        <td style={{ padding: "16px", color: palette.label, backgroundColor: palette.cardBg }}>
                           <div className="d-flex align-items-center gap-1">
                             <Calendar size={16} />
                             {new Date(txn.createdAt || txn.date).toLocaleDateString("en-NG", {
@@ -498,6 +498,7 @@ export default function AdvertiserWallet() {
                             textAlign: "right",
                             fontWeight: "600",
                             color: isCredit ? palette.success : palette.danger,
+                            backgroundColor: palette.cardBg
                           }}
                         >
                           {isCredit ? "+" : "-"}₦
