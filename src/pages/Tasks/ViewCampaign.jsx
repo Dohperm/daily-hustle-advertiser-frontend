@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Form,
   Button,
@@ -26,6 +26,7 @@ import {
   Copy,
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTheme } from "../../context/ThemeContext";
 import {
   advertiserViewTask,
   advertiserUpdateTask,
@@ -56,6 +57,20 @@ function mapApprovalModeFromApi(val) {
 export default function ViewCampaignPage() {
   const { param: taskId } = useParams();
   const navigate = useNavigate();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+  
+  const palette = useMemo(
+    () => ({
+      bg: isDark ? "#121212" : "#f8f9fa",
+      cardBg: isDark ? "#1c1c1e" : "#fff",
+      text: isDark ? "#f7f7fa" : "#212529",
+      label: isDark ? "#adb5bd" : "#6c757d",
+      border: isDark ? "#313843" : "#dee2e6",
+    }),
+    [isDark]
+  );
+  
   const [editMode, setEditMode] = useState(false);
 
   const [form, setForm] = useState({
@@ -308,8 +323,8 @@ export default function ViewCampaignPage() {
   };
 
   return (
-    <div className="container py-4">
-      <Card className="shadow-sm mb-4 border-0">
+    <div className="container py-4" style={{ background: palette.bg, minHeight: "100vh" }}>
+      <Card className="shadow-sm mb-4 border-0" style={{ background: palette.cardBg, color: palette.text }}>
         <Card.Body>
           <div className="d-flex justify-content-between align-items-center mb-4">
             <div className="d-flex align-items-center">
@@ -340,39 +355,43 @@ export default function ViewCampaignPage() {
             <Row className="g-4">
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Job Title</Form.Label>
+                  <Form.Label style={{ color: palette.text }}>Job Title</Form.Label>
                   <Form.Control
                     name="title"
                     value={form.title || ""}
                     onChange={handleChange}
                     disabled
+                    style={{ backgroundColor: palette.bg, color: palette.text, borderColor: palette.border }}
                   />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Category</Form.Label>
+                  <Form.Label style={{ color: palette.text }}>Category</Form.Label>
                   <Form.Control
                     name="category"
                     value={form.category || ""}
                     onChange={handleChange}
                     disabled
+                    style={{ backgroundColor: palette.bg, color: palette.text, borderColor: palette.border }}
                   />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Subcategory</Form.Label>
+                  <Form.Label style={{ color: palette.text }}>Subcategory</Form.Label>
                   <Form.Control
                     name="sub_category"
                     value={form.sub_category || ""}
                     onChange={handleChange}
                     disabled
+                    style={{ backgroundColor: palette.bg, color: palette.text, borderColor: palette.border }}
                   />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Country</Form.Label>
+                  <Form.Label style={{ color: palette.text }}>Country</Form.Label>
                   <Form.Control
                     name="country"
                     value={form.country || ""}
                     onChange={handleChange}
                     disabled
+                    style={{ backgroundColor: palette.bg, color: palette.text, borderColor: palette.border }}
                   />
                 </Form.Group>
                 <Form.Group className="mb-3">
@@ -399,7 +418,7 @@ export default function ViewCampaignPage() {
                         value={form.workersNeeded || ""}
                         readOnly
                         className="mx-2 text-center"
-                        style={{ width: "80px" }}
+                        style={{ width: "80px", backgroundColor: palette.bg, color: palette.text, borderColor: palette.border }}
                       />
                       <Button
                         variant="outline-secondary"
@@ -421,11 +440,12 @@ export default function ViewCampaignPage() {
                       type="number"
                       value={form.workersNeeded || ""}
                       disabled
+                      style={{ backgroundColor: palette.bg, color: palette.text, borderColor: palette.border }}
                     />
                   )}
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>
+                  <Form.Label style={{ color: palette.text }}>
                     Amount Per Worker ({form.rewardCurrency || ""})
                   </Form.Label>
                   <Form.Control
@@ -434,15 +454,17 @@ export default function ViewCampaignPage() {
                     value={form.amountPerWorker || ""}
                     onChange={handleChange}
                     disabled={!editMode}
+                    style={{ backgroundColor: editMode ? palette.cardBg : palette.bg, color: palette.text, borderColor: palette.border }}
                   />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Reward Currency</Form.Label>
+                  <Form.Label style={{ color: palette.text }}>Reward Currency</Form.Label>
                   <Form.Select
                     name="rewardCurrency"
                     value={form.rewardCurrency || "NGN"}
                     onChange={handleChange}
                     disabled
+                    style={{ backgroundColor: palette.bg, color: palette.text, borderColor: palette.border }}
                   >
                     {CURRENCIES.map((cur) => (
                       <option value={cur} key={cur}>
@@ -452,8 +474,8 @@ export default function ViewCampaignPage() {
                   </Form.Select>
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Slot Info</Form.Label>
-                  <div>
+                  <Form.Label style={{ color: palette.text }}>Slot Info</Form.Label>
+                  <div style={{ color: palette.text }}>
                     Max: {form.slots?.max ?? "-"}, Used:{" "}
                     {form.slots?.used ?? "-"}
                   </div>
@@ -461,7 +483,7 @@ export default function ViewCampaignPage() {
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Job Description</Form.Label>
+                  <Form.Label style={{ color: palette.text }}>Job Description</Form.Label>
                   {editMode ? (
                     <Editor
                       apiKey={TINYMCE_API_KEY}
@@ -484,16 +506,18 @@ export default function ViewCampaignPage() {
                     <div
                       className="p-2"
                       style={{
-                        background: "#f8f9fa",
+                        background: palette.bg,
                         borderRadius: 8,
                         minHeight: 60,
+                        color: palette.text,
+                        border: `1px solid ${palette.border}`
                       }}
                       dangerouslySetInnerHTML={{ __html: form.description }}
                     />
                   )}
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Instructions</Form.Label>
+                  <Form.Label style={{ color: palette.text }}>Instructions</Form.Label>
                   {editMode ? (
                     <Editor
                       apiKey={TINYMCE_API_KEY}
@@ -516,16 +540,18 @@ export default function ViewCampaignPage() {
                     <div
                       className="p-2"
                       style={{
-                        background: "#f8f9fa",
+                        background: palette.bg,
                         borderRadius: 8,
                         minHeight: 60,
+                        color: palette.text,
+                        border: `1px solid ${palette.border}`
                       }}
                       dangerouslySetInnerHTML={{ __html: form.instructions }}
                     />
                   )}
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>
+                  <Form.Label style={{ color: palette.text }}>
                     Task Link{" "}
                     {!editMode && (form.jobsLink || form.task_site) && (
                       <a
@@ -548,10 +574,11 @@ export default function ViewCampaignPage() {
                     value={form.jobsLink || ""}
                     onChange={handleChange}
                     disabled={!editMode}
+                    style={{ backgroundColor: editMode ? palette.cardBg : palette.bg, color: palette.text, borderColor: palette.border }}
                   />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Attachment(s)</Form.Label>
+                  <Form.Label style={{ color: palette.text }}>Attachment(s)</Form.Label>
                   <div>
                     {form.attachment.length > 0 ? (
                       <div className="d-flex flex-wrap gap-2 mb-3">
@@ -634,12 +661,13 @@ export default function ViewCampaignPage() {
                   </div>
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Approval Mode</Form.Label>
+                  <Form.Label style={{ color: palette.text }}>Approval Mode</Form.Label>
                   <Form.Select
                     name="approvalMode"
                     value={form.approvalMode || ""}
                     onChange={handleChange}
                     disabled={!editMode}
+                    style={{ backgroundColor: editMode ? palette.cardBg : palette.bg, color: palette.text, borderColor: palette.border }}
                   >
                     <option value="">Select...</option>
                     {approvalModeOptions.map((opt) => (
@@ -648,21 +676,23 @@ export default function ViewCampaignPage() {
                   </Form.Select>
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Approval Days</Form.Label>
+                  <Form.Label style={{ color: palette.text }}>Approval Days</Form.Label>
                   <Form.Control
                     type="number"
                     name="approvalDays"
                     value={form.approvalDays || ""}
                     onChange={handleChange}
                     disabled={!editMode}
+                    style={{ backgroundColor: editMode ? palette.cardBg : palette.bg, color: palette.text, borderColor: palette.border }}
                   />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Review Type</Form.Label>
+                  <Form.Label style={{ color: palette.text }}>Review Type</Form.Label>
                   <Form.Control
                     value={form.review_type || "Closed"}
                     disabled
                     readOnly
+                    style={{ backgroundColor: palette.bg, color: palette.text, borderColor: palette.border }}
                   />
                 </Form.Group>
                 {form.review_type === "Closed" && (() => {
@@ -676,7 +706,7 @@ export default function ViewCampaignPage() {
                   return (
                     <Form.Group className="mb-3">
                       <div className="d-flex justify-content-between align-items-center">
-                        <Form.Label>Closed Review Options ({currentCount} items{editMode && workersNeeded > 0 ? ` / ${workersNeeded} needed` : ''})</Form.Label>
+                        <Form.Label style={{ color: palette.text }}>Closed Review Options ({currentCount} items{editMode && workersNeeded > 0 ? ` / ${workersNeeded} needed` : ''})</Form.Label>
                         <div className="d-flex gap-2">
 
                           <Button
@@ -696,6 +726,7 @@ export default function ViewCampaignPage() {
                         disabled={!editMode}
                         readOnly={!editMode}
                         placeholder={editMode ? "Enter review options, one per line..." : ""}
+                        style={{ backgroundColor: editMode ? palette.cardBg : palette.bg, color: palette.text, borderColor: palette.border }}
                       />
                       {needsMore && (
                         <small className="text-danger mt-1 d-block">
@@ -743,7 +774,7 @@ export default function ViewCampaignPage() {
         </Card.Body>
       </Card>
 
-      <Card className="shadow-sm border-0 mb-4">
+      <Card className="shadow-sm border-0 mb-4" style={{ background: palette.cardBg, color: palette.text }}>
         <Card.Body>
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h5 className="fw-bold mb-0">Submissions ({subsTotal})</h5>

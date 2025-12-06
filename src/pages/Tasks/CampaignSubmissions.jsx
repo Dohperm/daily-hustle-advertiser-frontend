@@ -198,9 +198,9 @@ export default function CampaignSubmissions() {
             }}
           >
             <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", backgroundColor: palette.cardBg }}>
                 <thead>
-                  <tr style={{ background: isDark ? "#2a2a2a" : "#f8f9fa" }}>
+                  <tr style={{ background: isDark ? "#2a2a2a" : "#f8f9fa", color: palette.text }}>
                     <th style={{ padding: "16px", textAlign: "left", color: palette.text, fontWeight: "600" }}>
                       Proof
                     </th>

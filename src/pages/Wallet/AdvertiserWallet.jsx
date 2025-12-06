@@ -397,10 +397,10 @@ export default function AdvertiserWallet() {
           ) : (
             <div className="table-responsive">
               <table
-                className="table table-hover mb-0"
-                style={{ color: palette.text }}
+                className="table mb-0"
+                style={{ color: palette.text, backgroundColor: 'transparent' }}
               >
-                <thead style={{ borderColor: palette.border }}>
+                <thead style={{ borderColor: palette.border, backgroundColor: isDark ? '#2a2a2a' : '#f8f9fa' }}>
                   <tr style={{ borderBottom: `2px solid ${palette.border}` }}>
                     <th
                       className="fw-bold small"
@@ -446,12 +446,13 @@ export default function AdvertiserWallet() {
                         style={{
                           borderBottom: `1px solid ${palette.border}`,
                           transition: "background 0.2s",
+                          backgroundColor: 'transparent'
                         }}
                         onMouseOver={(e) =>
-                          (e.currentTarget.style.background = palette.bg)
+                          (e.currentTarget.style.backgroundColor = palette.bg)
                         }
                         onMouseOut={(e) =>
-                          (e.currentTarget.style.background = "transparent")
+                          (e.currentTarget.style.backgroundColor = 'transparent')
                         }
                       >
                         <td style={{ padding: "16px" }}>
