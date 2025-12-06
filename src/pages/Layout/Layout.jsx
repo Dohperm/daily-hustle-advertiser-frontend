@@ -218,87 +218,78 @@ export default function Layout() {
           >
             {menu.map(renderNavLink)}
           </nav>
-          <div
-            className="user-section mt-5"
-            style={{
-              opacity: sidebarOpen ? 1 : 0,
-            }}
-          >
-            {sidebarOpen && (
-              <div style={{ 
-                display: "flex", 
-                flexDirection: "column", 
-                gap: "12px", 
-                marginTop: "20px",
-                paddingTop: "20px",
-                borderTop: `1px solid ${isDark ? "#333" : "#e9ecef"}`
-              }}>
-                <div
+          {sidebarOpen && (
+            <div style={{ 
+              marginTop: "auto",
+              paddingTop: "20px",
+              borderTop: `1px solid ${isDark ? "#333" : "#e9ecef"}`
+            }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "12px 16px",
+                  color: isDark ? "#fff" : "#2c3e50",
+                }}
+              >
+                <span style={{ fontSize: "1rem", fontWeight: "500" }}>Theme</span>
+                <button
+                  onClick={() => setTheme(theme === "light" ? "dark" : "light")}
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "12px 16px",
-                    color: isDark ? "#fff" : "#2c3e50",
-                  }}
-                >
-                  <span style={{ fontSize: "1rem", fontWeight: "500" }}>Theme</span>
-                  <button
-                    onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-                    style={{
-                      width: "40px",
-                      height: "20px",
-                      borderRadius: "10px",
-                      border: "none",
-                      background: theme === "dark" ? "#4a5568" : "#e2e8f0",
-                      position: "relative",
-                      cursor: "pointer",
-                      transition: "all 0.2s",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "16px",
-                        height: "16px",
-                        borderRadius: "50%",
-                        background: "#fff",
-                        position: "absolute",
-                        top: "2px",
-                        left: theme === "dark" ? "22px" : "2px",
-                        transition: "all 0.2s",
-                      }}
-                    />
-                  </button>
-                </div>
-                <NavLink
-                  to="/logout"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    padding: "12px 16px",
-                    gap: "10px",
-                    color: isDark ? "#fff" : "#2c3e50",
-                    textDecoration: "none",
-                    fontSize: "1rem",
-                    fontWeight: "500",
+                    width: "40px",
+                    height: "20px",
                     borderRadius: "10px",
+                    border: "none",
+                    background: theme === "dark" ? "#4a5568" : "#e2e8f0",
+                    position: "relative",
+                    cursor: "pointer",
                     transition: "all 0.2s",
                   }}
-                  onMouseOver={(e) => {
-                    e.target.style.background = palette.red;
-                    e.target.style.color = "#fff";
-                  }}
-                  onMouseOut={(e) => {
-                    e.target.style.background = "transparent";
-                    e.target.style.color = isDark ? "#fff" : "#2c3e50";
-                  }}
                 >
-                  <i className="bi bi-box-arrow-right"></i>
-                  <span>Log Out</span>
-                </NavLink>
+                  <div
+                    style={{
+                      width: "16px",
+                      height: "16px",
+                      borderRadius: "50%",
+                      background: "#fff",
+                      position: "absolute",
+                      top: "2px",
+                      left: theme === "dark" ? "22px" : "2px",
+                      transition: "all 0.2s",
+                    }}
+                  />
+                </button>
               </div>
-            )}
-          </div>
+              <NavLink
+                to="/logout"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "12px 16px",
+                  borderRadius: "10px",
+                  gap: "10px",
+                  color: isDark ? "#fff" : "#2c3e50",
+                  textDecoration: "none",
+                  fontSize: "1rem",
+                  fontWeight: "500",
+                  transition: "all 0.2s",
+                  background: "transparent",
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.background = palette.red;
+                  e.target.style.color = "#fff";
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.background = "transparent";
+                  e.target.style.color = isDark ? "#fff" : "#2c3e50";
+                }}
+              >
+                <i className="bi bi-box-arrow-right"></i>
+                <span>Log Out</span>
+              </NavLink>
+            </div>
+          )}
         </aside>
       )}
 
