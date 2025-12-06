@@ -8,6 +8,7 @@ import {
   advertiserValidateRegistrationToken,
   advertiserLogin,
 } from "../../services/services";
+import api from "../../services/api";
 import { useAdvertiserData } from "../../hooks/useAppDataContext";
 import { useLoading } from "../../../context/LoadingContext";
 import Onboarding from "../Onboarding/onboarding";
@@ -103,13 +104,19 @@ export default function QuickSignup() {
     setLoading(true);
     showLoading();
     try {
-      await advertiserValidateRegistrationToken({
+      const res = await advertiserValidateRegistrationToken({
         email: formData.email,
         verification_code: otpCode,
       });
       toast.success("Account verified! Welcome aboard! 🎉");
       setOtpVerified(true);
-
+      
+      // Store token from OTP verification
+      if (res.data.data?.token) {
+        localStorage.setItem("token", res.data.data.token);
+        localStorage.setItem("isAuth", "true");
+      }
+      
       setTimeout(() => setShowOnboarding(true), 800);
     } catch (err) {
       toast.error(err.response?.data?.message || "Invalid or expired OTP.");
@@ -121,23 +128,26 @@ export default function QuickSignup() {
     }
   };
 
-  const handleOnboardingComplete = async () => {
+  const handleOnboardingComplete = async (onboardingData) => {
     showLoading();
     try {
-      const loginRes = await advertiserLogin({
-        identifier: formData.email,
-        password: formData.password,
+      const token = localStorage.getItem("token");
+      const response = await api.post("/auths/advertisers/onboarding", onboardingData, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
       });
-      if (loginRes.status === 200 && loginRes.data.data?.token) {
+      
+      if (response.status === 200) {
         toast.success("Welcome to DailyHustle!");
-        localStorage.setItem("token", loginRes.data.data.token);
-        localStorage.setItem("isAuth", "true");
         setUserLoggedIn(true);
         setTimeout(() => (window.location.href = "/"), 1200);
+      } else {
+        toast.error(response.data?.message || "Onboarding failed");
       }
-    } catch (loginErr) {
-      toast.error("Please login manually to continue.");
-      setTimeout(() => (window.location.href = "/login"), 2000);
+
+    } catch (err) {
+      toast.error("Failed to complete onboarding");
     } finally {
       hideLoading();
     }

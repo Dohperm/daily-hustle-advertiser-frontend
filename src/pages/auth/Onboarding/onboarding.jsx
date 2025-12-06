@@ -28,14 +28,7 @@ const Onboarding = ({ userEmail, onComplete }) => {
     showLoading();
     
     try {
-      // Here you would typically make an API call to update the user profile
-      // For now, we'll simulate the API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast.success('Profile completed successfully! 🎉');
-      setTimeout(() => {
-        onComplete();
-      }, 1500);
+      await onComplete(formData);
     } catch (err) {
       toast.error('Failed to complete profile. Please try again.');
     } finally {
