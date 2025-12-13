@@ -103,11 +103,11 @@ export const advertiserUpdateTask = (taskId, data) =>
   api.patch(`/tasks/${taskId}/advertisers`, data);
 /**
  * List submissions for a task
- * GET /task-proof?task_id={taskId} 
+ * GET /tasks/submissions/advertisers?task_id={taskId} 
  * No body. Query param: task_id
  */
 export const advertiserListSubmissions = (taskId) =>
-  api.get("/task-proof", { params: { task_id: taskId } });
+  api.get("/tasks/submissions/advertisers", { params: { task_id: taskId } });
 
 /**
  * Get submission stats for a task
