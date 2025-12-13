@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { advertiserListSubmissions, advertiserUpdateTaskProofStatus } from "../services/services";
 import { useTheme } from "../../context/ThemeContext";
+import { Modal } from "react-bootstrap";
 
 export default function CampaignSubmissions() {
   const { taskId } = useParams();
@@ -29,6 +30,9 @@ export default function CampaignSubmissions() {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
+  const [imageZoom, setImageZoom] = useState(1);
 
   useEffect(() => {
     async function fetchSubmissions() {
@@ -65,6 +69,16 @@ export default function CampaignSubmissions() {
       console.error("Failed to update submission:", err);
     }
   };
+
+  const handleImageClick = (imageSrc) => {
+    setSelectedImage(imageSrc);
+    setImageZoom(1);
+    setShowImageModal(true);
+  };
+
+  const handleZoomIn = () => setImageZoom(prev => Math.min(prev + 0.5, 3));
+  const handleZoomOut = () => setImageZoom(prev => Math.max(prev - 0.5, 0.5));
+  const handleResetZoom = () => setImageZoom(1);
 
   const filteredSubmissions = submissions.filter(sub => {
     const workerName = sub.user ? `${sub.user.first_name} ${sub.user.last_name}`.toLowerCase() : "";
@@ -247,7 +261,7 @@ export default function CampaignSubmissions() {
                                 borderRadius: "8px",
                                 cursor: "pointer",
                               }}
-                              onClick={() => window.open(submission.src, "_blank")}
+                              onClick={() => handleImageClick(submission.src)}
                             />
                           ) : (
                             <span style={{ color: palette.label, fontStyle: "italic" }}>
@@ -368,6 +382,96 @@ export default function CampaignSubmissions() {
             )}
           </div>
         )}
+
+        {/* Image Modal */}
+        <Modal
+          show={showImageModal}
+          onHide={() => setShowImageModal(false)}
+          fullscreen
+          backdrop="static"
+          style={{
+            backdropFilter: "blur(10px)",
+            backgroundColor: "rgba(0,0,0,0.8)",
+          }}
+        >
+          <Modal.Header
+            style={{
+              background: palette.cardBg,
+              borderColor: palette.border,
+              color: palette.text,
+            }}
+            closeButton
+          >
+            <Modal.Title>Proof Image</Modal.Title>
+            <div style={{ marginLeft: "auto", display: "flex", gap: "8px", marginRight: "20px" }}>
+              <button
+                onClick={handleZoomOut}
+                style={{
+                  background: palette.cardBg,
+                  border: `1px solid ${palette.border}`,
+                  color: palette.text,
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                }}
+              >
+                <i className="bi bi-zoom-out"></i>
+              </button>
+              <button
+                onClick={handleResetZoom}
+                style={{
+                  background: palette.cardBg,
+                  border: `1px solid ${palette.border}`,
+                  color: palette.text,
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "0.8rem",
+                }}
+              >
+                {Math.round(imageZoom * 100)}%
+              </button>
+              <button
+                onClick={handleZoomIn}
+                style={{
+                  background: palette.cardBg,
+                  border: `1px solid ${palette.border}`,
+                  color: palette.text,
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                }}
+              >
+                <i className="bi bi-zoom-in"></i>
+              </button>
+            </div>
+          </Modal.Header>
+          <Modal.Body
+            style={{
+              background: "transparent",
+              padding: "20px",
+              textAlign: "center",
+              overflow: "auto",
+              height: "calc(100vh - 80px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <img
+              src={selectedImage}
+              alt="Proof"
+              style={{
+                maxWidth: "100%",
+                height: "auto",
+                transform: `scale(${imageZoom})`,
+                transition: "transform 0.2s ease",
+                cursor: imageZoom < 3 ? "zoom-in" : "zoom-out",
+              }}
+              onClick={imageZoom < 3 ? handleZoomIn : handleZoomOut}
+            />
+          </Modal.Body>
+        </Modal>
       </div>
     </div>
   );
