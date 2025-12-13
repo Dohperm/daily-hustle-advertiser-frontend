@@ -90,10 +90,7 @@ export const advertiserViewTask = (taskId) =>
  * }
  */
 export const advertiserUpdateTaskProofStatus = (taskProofId, data) =>
-  api.post("/tasks/submissions/advertisers", {
-    task_proof_id: taskProofId,
-    approval_status: data.approval_status
-  });
+  api.post("/tasks/submissions/advertisers", data);
 /**
  * Update a task
  * PATCH /tasks/{taskId}/advertisers 

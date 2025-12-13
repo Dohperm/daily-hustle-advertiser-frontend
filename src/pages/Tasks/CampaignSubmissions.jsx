@@ -33,6 +33,9 @@ export default function CampaignSubmissions() {
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
   const [imageZoom, setImageZoom] = useState(1);
+  const [showRejectionModal, setShowRejectionModal] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [pendingAction, setPendingAction] = useState(null);
 
   useEffect(() => {
     async function fetchSubmissions() {
@@ -51,10 +54,22 @@ export default function CampaignSubmissions() {
     if (taskId) fetchSubmissions();
   }, [taskId]);
 
-  const handleApproval = async (taskProofId, status) => {
+  const handleApproval = async (taskProofId, status, reason = null) => {
     try {
-      console.log('Updating submission:', taskProofId, 'to status:', status);
-      const response = await advertiserUpdateTaskProofStatus(taskProofId, { approval_status: status });
+      console.log('Updating submission:', taskProofId, 'to status:', status, 'with reason:', reason);
+      const payload = { 
+        approval_status: status, 
+        task_proof_id: taskProofId
+      };
+      if (reason && reason.trim()) {
+        payload.rejection_reason = reason.trim();
+        console.log('Added rejection_reason to payload:', reason.trim());
+      } else {
+        console.log('No reason provided or reason is empty:', reason);
+      }
+      console.log('Final payload:', payload);
+      
+      const response = await advertiserUpdateTaskProofStatus(taskProofId, payload);
       console.log('API response:', response);
       
       setSubmissions(prev =>
@@ -68,6 +83,26 @@ export default function CampaignSubmissions() {
     } catch (err) {
       console.error("Failed to update submission:", err);
     }
+  };
+
+  const handleRejectAction = (taskProofId, status) => {
+    if (status === "rejected") {
+      handleApproval(taskProofId, status);
+    } else {
+      setPendingAction({ taskProofId, status });
+      setRejectionReason("");
+      setShowRejectionModal(true);
+    }
+  };
+
+  const handleConfirmRejection = async () => {
+    if (!rejectionReason.trim()) return;
+    
+    console.log('Confirming rejection with reason:', rejectionReason);
+    await handleApproval(pendingAction.taskProofId, pendingAction.status, rejectionReason.trim());
+    setShowRejectionModal(false);
+    setPendingAction(null);
+    setRejectionReason("");
   };
 
   const handleImageClick = (imageSrc) => {
@@ -313,7 +348,7 @@ export default function CampaignSubmissions() {
                                 Approve
                               </button>
                               <button
-                                onClick={() => handleApproval(submission.task_proof_id, "resubmit")}
+                                onClick={() => handleRejectAction(submission.task_proof_id, "resubmit")}
                                 style={{
                                   background: palette.warning,
                                   color: "#000",
@@ -328,7 +363,7 @@ export default function CampaignSubmissions() {
                                 Resubmit
                               </button>
                               <button
-                                onClick={() => handleApproval(submission.task_proof_id, "rejected")}
+                                onClick={() => handleRejectAction(submission.task_proof_id, "rejected")}
                                 style={{
                                   background: palette.red,
                                   color: "#fff",
@@ -346,7 +381,7 @@ export default function CampaignSubmissions() {
                           )}
                           {submission.approval_status === "resubmit" && (
                             <button
-                              onClick={() => handleApproval(submission.task_proof_id, "rejected")}
+                              onClick={() => handleRejectAction(submission.task_proof_id, "rejected")}
                               style={{
                                 background: palette.red,
                                 color: "#fff",
@@ -382,6 +417,87 @@ export default function CampaignSubmissions() {
             )}
           </div>
         )}
+
+        {/* Rejection Reason Modal */}
+        <Modal
+          show={showRejectionModal}
+          onHide={() => setShowRejectionModal(false)}
+          centered
+          backdrop="static"
+        >
+          <Modal.Header
+            style={{
+              background: palette.cardBg,
+              borderColor: palette.border,
+              color: palette.text,
+            }}
+            closeButton
+          >
+            <Modal.Title>Request Resubmission</Modal.Title>
+          </Modal.Header>
+          <Modal.Body
+            style={{
+              background: palette.cardBg,
+              color: palette.text,
+            }}
+          >
+            <div className="mb-3">
+              <label style={{ color: palette.label, marginBottom: "8px", display: "block" }}>
+                Reason for resubmission:
+              </label>
+              <textarea
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                placeholder="Please provide a reason..."
+                rows={4}
+                style={{
+                  width: "100%",
+                  background: palette.bg,
+                  color: palette.text,
+                  border: `2px solid ${palette.border}`,
+                  borderRadius: "8px",
+                  padding: "12px",
+                  resize: "vertical",
+                }}
+              />
+            </div>
+          </Modal.Body>
+          <Modal.Footer
+            style={{
+              background: palette.cardBg,
+              borderColor: palette.border,
+            }}
+          >
+            <button
+              onClick={() => setShowRejectionModal(false)}
+              style={{
+                background: "transparent",
+                border: `2px solid ${palette.border}`,
+                color: palette.text,
+                padding: "8px 16px",
+                borderRadius: "6px",
+                cursor: "pointer",
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleConfirmRejection}
+              disabled={!rejectionReason.trim()}
+              style={{
+                background: rejectionReason.trim() ? palette.red : palette.secondary,
+                color: "#fff",
+                border: "none",
+                padding: "8px 16px",
+                borderRadius: "6px",
+                cursor: rejectionReason.trim() ? "pointer" : "not-allowed",
+                opacity: rejectionReason.trim() ? 1 : 0.6,
+              }}
+            >
+              Request Resubmit
+            </button>
+          </Modal.Footer>
+        </Modal>
 
         {/* Image Modal */}
         <Modal
