@@ -82,15 +82,18 @@ export const advertiserViewTask = (taskId) =>
 
 /**
  * Approve or reject a task proof
- * PATCH /task-proof/{taskProofId} 
+ * POST /tasks/submissions/advertisers 
  * Body:
  * {
- *   "status": "approved" | "rejected",
- *   // other fields if needed
+ *   "approval_status": "approved" | "rejected" | "resubmit",
+ *   "task_proof_id": "string"
  * }
  */
 export const advertiserUpdateTaskProofStatus = (taskProofId, data) =>
-  api.patch(`/task-proof/${taskProofId}`, data);
+  api.post("/tasks/submissions/advertisers", {
+    task_proof_id: taskProofId,
+    approval_status: data.approval_status
+  });
 /**
  * Update a task
  * PATCH /tasks/{taskId}/advertisers 

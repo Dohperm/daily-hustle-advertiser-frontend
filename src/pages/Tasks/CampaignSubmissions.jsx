@@ -51,15 +51,15 @@ export default function CampaignSubmissions() {
     if (taskId) fetchSubmissions();
   }, [taskId]);
 
-  const handleApproval = async (submissionId, status) => {
+  const handleApproval = async (taskProofId, status) => {
     try {
-      console.log('Updating submission:', submissionId, 'to status:', status);
-      const response = await advertiserUpdateTaskProofStatus(submissionId, { approval_status: status });
+      console.log('Updating submission:', taskProofId, 'to status:', status);
+      const response = await advertiserUpdateTaskProofStatus(taskProofId, { approval_status: status });
       console.log('API response:', response);
       
       setSubmissions(prev =>
         prev.map(sub =>
-          sub._id === submissionId
+          sub.task_proof_id === taskProofId
             ? { ...sub, approval_status: status, is_approved: status === "approved" }
             : sub
         )
@@ -237,7 +237,7 @@ export default function CampaignSubmissions() {
                     const statusInfo = getStatusColor(submission.approval_status);
                     return (
                       <tr
-                        key={submission._id}
+                        key={submission.task_proof_id}
                         style={{
                           borderBottom: `1px solid ${palette.border}`,
                           transition: "background 0.2s",
@@ -276,7 +276,7 @@ export default function CampaignSubmissions() {
                         </td>
                         <td style={{ padding: "16px" }}>
                           <span style={{ color: palette.text }}>
-                            {submission.date_submitted ? new Date(submission.date_submitted).toLocaleString('en-US', { hour12: true }) : "N/A"}
+                            {submission.date ? new Date(submission.date).toLocaleString('en-US', { hour12: true }) : "N/A"}
                           </span>
                         </td>
                         <td style={{ padding: "16px" }}>
@@ -298,7 +298,7 @@ export default function CampaignSubmissions() {
                           {submission.approval_status === "pending" && (
                             <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
                               <button
-                                onClick={() => handleApproval(submission._id, "approved")}
+                                onClick={() => handleApproval(submission.task_proof_id, "approved")}
                                 style={{
                                   background: palette.success,
                                   color: "#fff",
@@ -313,7 +313,7 @@ export default function CampaignSubmissions() {
                                 Approve
                               </button>
                               <button
-                                onClick={() => handleApproval(submission._id, "resubmit")}
+                                onClick={() => handleApproval(submission.task_proof_id, "resubmit")}
                                 style={{
                                   background: palette.warning,
                                   color: "#000",
@@ -328,7 +328,7 @@ export default function CampaignSubmissions() {
                                 Resubmit
                               </button>
                               <button
-                                onClick={() => handleApproval(submission._id, "rejected")}
+                                onClick={() => handleApproval(submission.task_proof_id, "rejected")}
                                 style={{
                                   background: palette.red,
                                   color: "#fff",
@@ -346,7 +346,7 @@ export default function CampaignSubmissions() {
                           )}
                           {submission.approval_status === "resubmit" && (
                             <button
-                              onClick={() => handleApproval(submission._id, "rejected")}
+                              onClick={() => handleApproval(submission.task_proof_id, "rejected")}
                               style={{
                                 background: palette.red,
                                 color: "#fff",
