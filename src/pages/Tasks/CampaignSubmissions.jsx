@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { advertiserListSubmissions, advertiserUpdateTaskProofStatus } from "../services/services";
 import { useTheme } from "../../context/ThemeContext";
 import { Modal } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 export default function CampaignSubmissions() {
   const { taskId } = useParams();
@@ -56,21 +57,15 @@ export default function CampaignSubmissions() {
 
   const handleApproval = async (taskProofId, status, reason = null) => {
     try {
-      console.log('Updating submission:', taskProofId, 'to status:', status, 'with reason:', reason);
       const payload = { 
         approval_status: status, 
         task_proof_id: taskProofId
       };
       if (reason && reason.trim()) {
         payload.rejection_reason = reason.trim();
-        console.log('Added rejection_reason to payload:', reason.trim());
-      } else {
-        console.log('No reason provided or reason is empty:', reason);
       }
-      console.log('Final payload:', payload);
       
       const response = await advertiserUpdateTaskProofStatus(taskProofId, payload);
-      console.log('API response:', response);
       
       setSubmissions(prev =>
         prev.map(sub =>
@@ -79,9 +74,10 @@ export default function CampaignSubmissions() {
             : sub
         )
       );
-      console.log('Local state updated successfully');
+      
+      toast.success(response.data?.message || `Submission ${status} successfully`);
     } catch (err) {
-      console.error("Failed to update submission:", err);
+      toast.error(err.response?.data?.message || "Failed to update submission");
     }
   };
 
@@ -98,7 +94,6 @@ export default function CampaignSubmissions() {
   const handleConfirmRejection = async () => {
     if (!rejectionReason.trim()) return;
     
-    console.log('Confirming rejection with reason:', rejectionReason);
     await handleApproval(pendingAction.taskProofId, pendingAction.status, rejectionReason.trim());
     setShowRejectionModal(false);
     setPendingAction(null);

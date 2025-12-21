@@ -1,6 +1,8 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./pages/Layout/Layout";
 import { useEffect } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // Page imports
 import ViewCampaign from "./pages/Tasks/ViewCampaign";
 import AllCampaigns from "./pages/Tasks/AllCampaigns";
@@ -63,6 +65,18 @@ export default function App() {
   return (
     <>
       <GlobalSpinner isLoading={isLoading} />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <Routes>
       {/* ✅ HOME/LANDING PAGE */}
       <Route path="/" element={<HomeRoute />} />
