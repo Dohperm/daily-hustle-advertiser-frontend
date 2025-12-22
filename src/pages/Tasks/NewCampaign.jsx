@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useTheme } from "../../context/ThemeContext";
+import { useSearchParams } from "react-router-dom";
 import {
   Form,
   Button,
@@ -27,6 +28,7 @@ import {
 } from "lucide-react";
 import Papa from "papaparse";
 import { advertiserCreateTask, uploadFile } from "../services/services";
+import { toast } from "react-toastify";
 
 // Campaign types data from CampaignTypes.jsx
 const campaignTypesData = [
@@ -281,6 +283,7 @@ const TINYMCE_API_KEY = "hibj0zuw254t339ddq36gppxwz01azujueckegndkz5ag3q4";
 export default function NewCampaign() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const [searchParams] = useSearchParams();
 
   // ✅ THEME PALETTE
   const palette = useMemo(
@@ -334,12 +337,33 @@ export default function NewCampaign() {
       fromCampaignType: false,
     };
     
-    if (saved) {
-      initialForm = JSON.parse(saved);
-    }
+    // Check URL parameters first
+    const urlTitle = searchParams.get('title');
+    const urlCategory = searchParams.get('category');
+    const urlSubcategory = searchParams.get('subcategory');
+    const urlDescription = searchParams.get('description');
+    const urlInstructions = searchParams.get('instructions');
+    const urlAmount = searchParams.get('amount');
+    const urlDuration = searchParams.get('duration');
+    const urlComplexity = searchParams.get('complexity');
     
-    // Prefill from selected campaign type
-    if (selectedType) {
+    if (urlTitle || urlCategory) {
+      initialForm = {
+        ...initialForm,
+        title: urlTitle || "",
+        category: urlCategory || "",
+        subCategory: urlSubcategory || "",
+        jobDescription: urlDescription || "",
+        instructions: urlInstructions || "",
+        minDuration: urlDuration || "",
+        complexityRating: urlComplexity || "",
+        amountPerWorker: urlAmount ? urlAmount.replace(/[^0-9.]/g, '') : "",
+        fromCampaignType: true,
+      };
+    } else if (saved) {
+      initialForm = JSON.parse(saved);
+    } else if (selectedType) {
+      // Prefill from selected campaign type
       const typeData = JSON.parse(selectedType);
       initialForm = {
         ...initialForm,
@@ -425,24 +449,24 @@ export default function NewCampaign() {
 
   const nextStep = () => {
     if (step === 1 && (!form.category || !form.subCategory)) {
-      alert("Please select a job category and subcategory.");
+      toast.error("Please select a job category and subcategory.");
       return;
     }
     if (step === 2) {
       if (!form.workersNeeded || workersNeeded < 10) {
-        alert("Workers needed must be at least 10.");
+        toast.error("Workers needed must be at least 10.");
         return;
       }
       if (!form.amountPerWorker) {
-        alert("Amount per worker is required.");
+        toast.error("Amount per worker is required.");
         return;
       }
       if (form.category === "Review" && isClosed && !hasClosedReviewContent) {
-        alert("Closed Review requires review options (either paste text or upload file).");
+        toast.error("Closed Review requires review options (either paste text or upload file).");
         return;
       }
       if (form.category === "Review" && isClosed && closedOptionsCount < workersNeeded) {
-        alert(`You need at least ${workersNeeded} options but only have ${closedOptionsCount}. Please add ${workersNeeded - closedOptionsCount} more options.`);
+        toast.error(`You need at least ${workersNeeded} options but only have ${closedOptionsCount}. Please add ${workersNeeded - closedOptionsCount} more options.`);
         return;
       }
     }
@@ -502,7 +526,7 @@ export default function NewCampaign() {
   const finalizeBulk = (lines) => {
     if (!Array.isArray(lines) || lines.length === 0) {
       setBulkStatus("bad");
-      alert(`No valid options found in file.`);
+      toast.error(`No valid options found in file.`);
       setTimeout(() => setBulkStatus(null), 3000);
       return;
     }
@@ -561,7 +585,7 @@ export default function NewCampaign() {
         ? form.closedReviewOptions.split('\n').map(l => l.trim()).filter(l => l)
         : [];
       if (!closed_review_options.length) {
-        alert("Closed Review requires review options.");
+        toast.error("Closed Review requires review options.");
         setSubmitting(false);
         return;
       }
@@ -613,7 +637,7 @@ export default function NewCampaign() {
         window.location.reload();
       }, 2000);
     } catch (err) {
-      alert("Failed: " + (err.response?.data?.message || err.message));
+      toast.error("Failed: " + (err.response?.data?.message || err.message));
     } finally {
       setSubmitting(false);
     }

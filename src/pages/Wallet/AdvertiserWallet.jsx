@@ -10,6 +10,7 @@ import {
   ArrowUpRight,
   ArrowDownLeft,
 } from "lucide-react";
+import { toast } from "react-toastify";
 
 export default function AdvertiserWallet() {
   const { theme } = useTheme();
@@ -672,11 +673,11 @@ export default function AdvertiserWallet() {
       if (authUrl) {
         window.location.href = authUrl;
       } else {
-        alert('Payment initialization failed. Please try again.');
+        toast.error('Payment initialization failed. Please try again.');
       }
     } catch (error) {
       console.error('Payment error:', error);
-      alert('Payment initialization failed. Please try again.');
+      toast.error('Payment initialization failed. Please try again.');
     } finally {
       setPaymentLoading(false);
     }

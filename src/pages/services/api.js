@@ -23,6 +23,19 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Check for 401 "Please login." response
+    if (error.response?.status === 401 && error.response?.data?.message === "Please login.") {
+      // Clear stored auth data
+      localStorage.removeItem("token");
+      localStorage.removeItem("isAuth");
+      localStorage.removeItem("user");
+      localStorage.removeItem("userData");
+      
+      // Redirect to login page
+      window.location.href = "/login";
+      return Promise.reject(error);
+    }
+    
     if (error.response?.data?.message) {
       toast.error(error.response.data.message);
     }

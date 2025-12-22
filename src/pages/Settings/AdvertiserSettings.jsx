@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useTheme } from "../../context/ThemeContext";
+import { toast } from "react-toastify";
 export default function AdvertiserSettings() {
   const { theme, toggleTheme } = useTheme();
   const [profile, setProfile] = useState({
@@ -25,7 +26,7 @@ export default function AdvertiserSettings() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Settings saved!");
+    toast.success("Settings saved!");
   };
 
   return (

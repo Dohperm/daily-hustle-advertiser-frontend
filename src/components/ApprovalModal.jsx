@@ -1,17 +1,18 @@
 // src/components/ApprovalModal.jsx
 import React from "react";
 import { FaCheckCircle, FaTimesCircle, FaTimes } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 export default function ApprovalModal({ user, onClose }) {
   const isImageProof = user.proof.startsWith("http");
 
   const handleApprove = () => {
-    alert(`✅ ${user.name} has been approved!`);
+    toast.success(`✅ ${user.name} has been approved!`);
     onClose();
   };
 
   const handleReject = () => {
-    alert(`❌ ${user.name} has been rejected.`);
+    toast.error(`❌ ${user.name} has been rejected.`);
     onClose();
   };
 

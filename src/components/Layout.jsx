@@ -22,6 +22,7 @@ import {
   ThumbsDown,
   Trash2,
 } from "lucide-react";
+import { toast } from "react-toastify";
 
 // --- DEMO DATA for categories, etc. ---
 const categoriesData = {
@@ -144,7 +145,7 @@ export default function ViewCampaignPage() {
   }
   function handleSave(e) {
     e.preventDefault();
-    alert("Campaign updated!");
+    toast.success("Campaign updated!");
   }
   function handleCancel() {
     setForm(initialCampaign);

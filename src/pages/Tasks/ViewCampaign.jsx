@@ -34,6 +34,7 @@ import {
   advertiserUpdateTaskProofStatus,
   uploadFile,
 } from "../services/services";
+import { toast } from "react-toastify";
 
 const PLATFORM_FEE_PERCENT = 0.1;
 const TINYMCE_API_KEY = "hibj0zuw254t339ddq36gppxwz01azujueckegndkz5ag3q4";
@@ -207,7 +208,7 @@ export default function ViewCampaignPage() {
       closedReviewOptions = form.closed_review_options.split('\n').map(l => l.trim()).filter(l => l);
       const workersNeeded = parseInt(form.workersNeeded) || 0;
       if (closedReviewOptions.length < workersNeeded) {
-        alert(`Need ${workersNeeded - closedReviewOptions.length} more closed review options`);
+        toast.error(`Need ${workersNeeded - closedReviewOptions.length} more closed review options`);
         return;
       }
     } else {
