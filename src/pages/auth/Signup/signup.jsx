@@ -7,12 +7,14 @@ import {
   advertiserRegister,
   advertiserValidateRegistrationToken,
   advertiserLogin,
+  advertiserOauthLogin,
 } from "../../services/services";
 import api from "../../services/api";
 import { useAdvertiserData } from "../../hooks/useAppDataContext";
 import { useLoading } from "../../../context/LoadingContext";
 import { useTheme } from "../../../context/ThemeContext";
 import Onboarding from "../Onboarding/onboarding";
+import { signInWithGoogle } from "../../../config/firebase";
 
 const getPasswordStrength = (pw) => {
   let score = 0;
@@ -53,6 +55,27 @@ export default function QuickSignup() {
       otpRefs.current[0].current.focus();
     }
   }, [step]);
+
+  const handleGoogleSignUp = async () => {
+    showLoading();
+    try {
+      const result = await signInWithGoogle();
+      const idToken = await result.user.getIdToken();
+      
+      const res = await advertiserOauthLogin(idToken);
+      
+      if (res.status === 200 && res.data.data?.token) {
+        toast.success("Registration successful!");
+        localStorage.setItem("token", res.data.data.token);
+        localStorage.setItem("isAuth", "true");
+        setShowOnboarding(true);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Google sign-up failed");
+    } finally {
+      hideLoading();
+    }
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -290,6 +313,28 @@ export default function QuickSignup() {
                   "Create Account"
                 )}
               </button>
+
+              <div className="text-center mb-3">
+                <div className="d-flex align-items-center mb-3">
+                  <hr className="flex-grow-1" style={{ borderColor: isDark ? '#404040' : '#e9ecef' }} />
+                  <span className="px-3" style={{ color: isDark ? '#b0b3c0' : '#6c757d', fontSize: '0.9rem' }}>or continue with</span>
+                  <hr className="flex-grow-1" style={{ borderColor: isDark ? '#404040' : '#e9ecef' }} />
+                </div>
+                <button
+                  type="button"
+                  onClick={handleGoogleSignUp}
+                  className="btn btn-lg w-100 py-3 fw-semibold mb-3"
+                  style={{
+                    background: isDark ? "#2d2d2d" : "#ffffff",
+                    border: `2px solid ${isDark ? "#404040" : "#e9ecef"}`,
+                    borderRadius: "12px",
+                    color: isDark ? "#ffffff" : "#2c3e50"
+                  }}
+                >
+                  <i className="bi bi-google me-2" style={{ color: '#DB4437' }}></i>
+                  Sign up with Google
+                </button>
+              </div>
 
               <div className="text-center">
                 <p className="mb-0" style={{ color: isDark ? '#b0b3c0' : '#6c757d' }}>

@@ -43,6 +43,17 @@ export const advertiserValidateRegistrationToken = (data) =>
 export const advertiserLogin = (data) =>
   api.post("/auths/advertisers/login", data);
 
+/**
+ * OAuth login with Google/Facebook for advertisers
+ * POST /auths/advertisers/oauth-login
+ * Body:
+ * {
+ *   "firebase_token": "string"
+ * }
+ */
+export const advertiserOauthLogin = (firebaseToken) =>
+  api.post("/auths/advertisers/oauth-login", { firebase_token: firebaseToken });
+
 /* -------------------------------------------------------------------------- */
 /*                                   TASKS                                    */
 /* -------------------------------------------------------------------------- */

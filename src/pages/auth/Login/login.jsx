@@ -4,10 +4,11 @@ import { toast, ToastContainer } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "react-toastify/dist/ReactToastify.css";
-import { advertiserLogin } from "../../services/services";
+import { advertiserLogin, advertiserOauthLogin } from "../../services/services";
 import { useAdvertiserData } from "../../hooks/useAppDataContext";
 import { useLoading } from "../../../context/LoadingContext";
 import { useTheme } from "../../../context/ThemeContext";
+import { signInWithGoogle } from "../../../config/firebase";
 
 const Login = () => {
   const { setUserLoggedIn } = useAdvertiserData();
@@ -29,6 +30,28 @@ const Login = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleGoogleSignIn = async () => {
+    showLoading();
+    try {
+      const result = await signInWithGoogle();
+      const idToken = await result.user.getIdToken();
+      
+      const res = await advertiserOauthLogin(idToken);
+      
+      if (res.status === 200 && res.data.data?.token) {
+        toast.success("Login successful!");
+        localStorage.setItem("token", res.data.data.token);
+        localStorage.setItem("isAuth", "true");
+        setUserLoggedIn(true);
+        setTimeout(() => (window.location.href = "/"), 1200);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Google sign-in failed");
+    } finally {
+      hideLoading();
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -187,6 +210,28 @@ const Login = () => {
               "Sign In"
             )}
           </button>
+
+          <div className="text-center mb-3">
+            <div className="d-flex align-items-center mb-3">
+              <hr className="flex-grow-1" style={{ borderColor: isDark ? '#404040' : '#e9ecef' }} />
+              <span className="px-3" style={{ color: isDark ? '#b0b3c0' : '#6c757d', fontSize: '0.9rem' }}>or continue with</span>
+              <hr className="flex-grow-1" style={{ borderColor: isDark ? '#404040' : '#e9ecef' }} />
+            </div>
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              className="btn btn-lg w-100 py-3 fw-semibold mb-3"
+              style={{
+                background: isDark ? "#2d2d2d" : "#ffffff",
+                border: `2px solid ${isDark ? "#404040" : "#e9ecef"}`,
+                borderRadius: "12px",
+                color: isDark ? "#ffffff" : "#2c3e50"
+              }}
+            >
+              <i className="bi bi-google me-2" style={{ color: '#DB4437' }}></i>
+              Sign in with Google
+            </button>
+          </div>
 
           <div className="text-center">
             <p className="mb-0" style={{ color: isDark ? '#b0b3c0' : '#6c757d' }}>
