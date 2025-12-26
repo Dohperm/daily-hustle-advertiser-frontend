@@ -54,6 +54,13 @@ export const advertiserLogin = (data) =>
 export const advertiserOauthLogin = (firebaseToken) =>
   api.post("/auths/advertisers/oauth-login", { firebase_token: firebaseToken });
 
+/**
+ * Get advertiser profile
+ * GET /advertisers/me
+ * No params or body
+ */
+export const advertiserProfile = () => api.get("/advertisers/me");
+
 /* -------------------------------------------------------------------------- */
 /*                                   TASKS                                    */
 /* -------------------------------------------------------------------------- */

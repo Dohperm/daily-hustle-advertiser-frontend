@@ -4,7 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "react-toastify/dist/ReactToastify.css";
-import { advertiserLogin, advertiserOauthLogin } from "../../services/services";
+import { advertiserLogin, advertiserOauthLogin, advertiserProfile } from "../../services/services";
 import { useAdvertiserData } from "../../hooks/useAppDataContext";
 import { useLoading } from "../../../context/LoadingContext";
 import { useTheme } from "../../../context/ThemeContext";
@@ -32,6 +32,22 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const checkProfileAndRedirect = async () => {
+    try {
+      const profileRes = await advertiserProfile();
+      const accountStatus = profileRes.data?.data?.account_status;
+      
+      if (accountStatus === "INCOMPLETE") {
+        window.location.href = "/onboarding";
+      } else {
+        window.location.href = "/";
+      }
+    } catch (err) {
+      // If profile check fails, redirect to dashboard by default
+      window.location.href = "/";
+    }
+  };
+
   const handleGoogleSignIn = async () => {
     showLoading();
     try {
@@ -45,7 +61,7 @@ const Login = () => {
         localStorage.setItem("token", res.data.data.token);
         localStorage.setItem("isAuth", "true");
         setUserLoggedIn(true);
-        setTimeout(() => (window.location.href = "/"), 1200);
+        setTimeout(() => checkProfileAndRedirect(), 1200);
       }
     } catch (err) {
       toast.error(err.response?.data?.message || "Google sign-in failed");
@@ -67,7 +83,7 @@ const Login = () => {
         localStorage.setItem("isAuth", "true");
         setUserLoggedIn(true);
         
-        setTimeout(() => (window.location.href = "/"), 1200);
+        setTimeout(() => checkProfileAndRedirect(), 1200);
       } else {
         const msg = res.data?.message || "Invalid credentials";
         setLoginError(msg);
