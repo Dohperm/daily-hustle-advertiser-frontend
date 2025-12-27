@@ -233,20 +233,37 @@ const Login = () => {
               <span className="px-3" style={{ color: isDark ? '#b0b3c0' : '#6c757d', fontSize: '0.9rem' }}>or continue with</span>
               <hr className="flex-grow-1" style={{ borderColor: isDark ? '#404040' : '#e9ecef' }} />
             </div>
-            <button
-              type="button"
-              onClick={handleGoogleSignIn}
-              className="btn btn-lg w-100 py-3 fw-semibold mb-3"
-              style={{
-                background: isDark ? "#2d2d2d" : "#ffffff",
-                border: `2px solid ${isDark ? "#404040" : "#e9ecef"}`,
-                borderRadius: "12px",
-                color: isDark ? "#ffffff" : "#2c3e50"
-              }}
-            >
-              <i className="bi bi-google me-2" style={{ color: '#DB4437' }}></i>
-              Sign in with Google
-            </button>
+            <div className="d-flex gap-3">
+              <button
+                type="button"
+                onClick={handleGoogleSignIn}
+                className="btn flex-fill py-3 fw-semibold d-flex align-items-center justify-content-center"
+                style={{
+                  background: isDark ? "#2d2d2d" : "#ffffff",
+                  border: `2px solid ${isDark ? "#404040" : "#e9ecef"}`,
+                  borderRadius: "12px",
+                  color: isDark ? "#ffffff" : "#2c3e50"
+                }}
+              >
+                <i className="bi bi-google me-2" style={{ color: '#DB4437' }}></i>
+                Google
+              </button>
+              <button
+                type="button"
+                disabled
+                className="btn flex-fill py-3 fw-semibold d-flex align-items-center justify-content-center"
+                style={{
+                  background: isDark ? "#1a1a1a" : "#f8f9fa",
+                  border: `2px solid ${isDark ? "#2d2d2d" : "#dee2e6"}`,
+                  borderRadius: "12px",
+                  color: isDark ? "#666" : "#adb5bd",
+                  cursor: "not-allowed"
+                }}
+              >
+                <i className="bi bi-facebook me-2" style={{ color: '#1877F2' }}></i>
+                Facebook
+              </button>
+            </div>
           </div>
 
           <div className="text-center">

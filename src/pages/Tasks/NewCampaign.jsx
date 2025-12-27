@@ -1029,8 +1029,7 @@ export default function NewCampaign() {
                       >
                         Min Duration
                       </Form.Label>
-                      <Form.Control
-                        type="text"
+                      <Form.Select
                         name="minDuration"
                         value={form.minDuration}
                         onChange={(e) =>
@@ -1039,8 +1038,7 @@ export default function NewCampaign() {
                             minDuration: e.target.value,
                           }))
                         }
-                        readOnly={form.fromCampaignType}
-                        placeholder="e.g. 1-2 mins"
+                        disabled={form.fromCampaignType}
                         style={{
                           color: form.fromCampaignType ? palette.label : palette.text,
                           background: form.fromCampaignType ? palette.hoverBg : palette.input,
@@ -1048,7 +1046,15 @@ export default function NewCampaign() {
                           borderRadius: "8px",
                           padding: "10px 12px",
                         }}
-                      />
+                      >
+                        <option value="">Select duration</option>
+                        <option value="Less than 1 minute">Less than 1 minute</option>
+                        <option value="1-5 minutes">1-5 minutes</option>
+                        <option value="5-10 minutes">5-10 minutes</option>
+                        <option value="10-30 minutes">10-30 minutes</option>
+                        <option value="30-60 minutes">30-60 minutes</option>
+                        <option value="More than 1 hour">More than 1 hour</option>
+                      </Form.Select>
                     </Form.Group>
                   </Col>
 
@@ -1063,8 +1069,7 @@ export default function NewCampaign() {
                       >
                         Complexity Rating
                       </Form.Label>
-                      <Form.Control
-                        type="text"
+                      <Form.Select
                         name="complexityRating"
                         value={form.complexityRating}
                         onChange={(e) =>
@@ -1073,8 +1078,7 @@ export default function NewCampaign() {
                             complexityRating: e.target.value,
                           }))
                         }
-                        readOnly={form.fromCampaignType}
-                        placeholder="e.g. Easy, Medium, Hard"
+                        disabled={form.fromCampaignType}
                         style={{
                           color: form.fromCampaignType ? palette.label : palette.text,
                           background: form.fromCampaignType ? palette.hoverBg : palette.input,
@@ -1082,7 +1086,13 @@ export default function NewCampaign() {
                           borderRadius: "8px",
                           padding: "10px 12px",
                         }}
-                      />
+                      >
+                        <option value="">Select complexity</option>
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                        <option value="Very Hard">Very Hard</option>
+                      </Form.Select>
                     </Form.Group>
                   </Col>
 
