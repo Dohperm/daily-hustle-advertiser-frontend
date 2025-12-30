@@ -17,6 +17,14 @@ export const advertiserRegister = (data) =>
   api.post("/auths/advertisers/register", data);
 
 /**
+ * Verify if username is available
+ * POST /auths/advertisers/verify-username
+ * Body: { "username": "string" }
+ */
+export const advertiserVerifyUsername = (username) =>
+  api.post("/auths/advertisers/verify-username", { username });
+
+/**
  * Validate advertiser registration token
  * POST /auths/advertisers/register/validate-token
  * 

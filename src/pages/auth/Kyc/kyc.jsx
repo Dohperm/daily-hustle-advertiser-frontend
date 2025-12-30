@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -87,7 +87,6 @@ const KYCForm = () => {
       className="container py-5"
       style={{ fontFamily: "Poppins, sans-serif" }}
     >
-      <ToastContainer position="top-center" theme="colored" autoClose={2400} />
       {!agreedToTerms ? (
         // 1. DATA PRIVACY NOTICE
         <div

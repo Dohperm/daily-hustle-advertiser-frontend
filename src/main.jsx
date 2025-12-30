@@ -7,7 +7,6 @@ import ThemeProvider from "./context/ThemeContext.jsx";
 import AdvertiserDataProvider from "./context/Advertiser/AppDataProvider.jsx";
 import { LoadingProvider } from "./context/LoadingContext.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
-import { ToastContainer } from "react-toastify";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -22,15 +21,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <ErrorBoundary>
             <BrowserRouter>
               <App />
-            <ToastContainer
-              position="top-right"
-              autoClose={3000}
-              hideProgressBar={false}
-              closeOnClick
-              pauseOnHover
-              draggable
-              theme="colored"
-            />
             </BrowserRouter>
           </ErrorBoundary>
         </ThemeProvider>

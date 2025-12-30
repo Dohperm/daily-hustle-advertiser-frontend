@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { Link, useSearchParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,7 +15,7 @@ import { useAdvertiserData } from "../../hooks/useAppDataContext";
 import { useLoading } from "../../../context/LoadingContext";
 import { useTheme } from "../../../context/ThemeContext";
 import Onboarding from "../Onboarding/onboarding";
-import { signInWithGoogle } from "../../../config/firebase";
+import { signInWithGoogle, signInWithFacebook } from "../../../config/firebase";
 
 const getPasswordStrength = (pw) => {
   let score = 0;
@@ -109,6 +109,53 @@ export default function QuickSignup() {
     }
   };
 
+  const handleFacebookSignUp = async () => {
+    showLoading();
+    try {
+      const result = await signInWithFacebook();
+      const idToken = await result.user.getIdToken();
+      
+      const res = await advertiserOauthLogin(idToken);
+      
+      if (res.status === 200 && res.data.data?.token) {
+        localStorage.setItem("token", res.data.data.token);
+        localStorage.setItem("isAuth", "true");
+        
+        try {
+          const profileRes = await advertiserProfile();
+          const accountStatus = profileRes.data?.data?.account_status;
+          
+          if (accountStatus === "INCOMPLETE") {
+            toast.success("Registration successful!");
+            const facebookUser = result.user;
+            const displayName = facebookUser.displayName || "";
+            const [firstName = "", ...lastNameParts] = displayName.split(" ");
+            const lastName = lastNameParts.join(" ");
+            
+            setFormData(prev => ({
+              ...prev,
+              email: facebookUser.email || "",
+              first_name: firstName,
+              last_name: lastName
+            }));
+            setShowOnboarding(true);
+          } else {
+            toast.success("Login successful!");
+            setUserLoggedIn(true);
+            setTimeout(() => (window.location.href = "/"), 1200);
+          }
+        } catch (profileErr) {
+          toast.success("Registration successful!");
+          setShowOnboarding(true);
+        }
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Facebook sign-up failed");
+    } finally {
+      hideLoading();
+    }
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
     if (passwordStrength < 3) {
@@ -118,7 +165,12 @@ export default function QuickSignup() {
     setLoading(true);
     showLoading();
     try {
-      await advertiserRegister(formData);
+      // Only send email and password for signup
+      const signupPayload = {
+        email: formData.email,
+        password: formData.password
+      };
+      await advertiserRegister(signupPayload);
       toast.success("Registration successful! OTP sent to your email.");
       setTimeout(() => setStep(1), 600);
     } catch (err) {
@@ -216,7 +268,6 @@ export default function QuickSignup() {
 
   return (
     <>
-      <ToastContainer position="top-right" theme="light" autoClose={3000} />
       <div
         className="min-vh-100 d-flex align-items-center justify-content-center px-3"
         style={{ 
@@ -372,14 +423,13 @@ export default function QuickSignup() {
                   </button>
                   <button
                     type="button"
-                    disabled
+                    onClick={handleFacebookSignUp}
                     className="btn flex-fill py-3 fw-semibold d-flex align-items-center justify-content-center"
                     style={{
-                      background: isDark ? "#1a1a1a" : "#f8f9fa",
-                      border: `2px solid ${isDark ? "#2d2d2d" : "#dee2e6"}`,
+                      background: isDark ? "#2d2d2d" : "#ffffff",
+                      border: `2px solid ${isDark ? "#404040" : "#e9ecef"}`,
                       borderRadius: "12px",
-                      color: isDark ? "#666" : "#adb5bd",
-                      cursor: "not-allowed"
+                      color: isDark ? "#ffffff" : "#2c3e50"
                     }}
                   >
                     <i className="bi bi-facebook me-2" style={{ color: '#1877F2' }}></i>

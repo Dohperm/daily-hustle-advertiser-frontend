@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,7 +8,7 @@ import { advertiserLogin, advertiserOauthLogin, advertiserProfile } from "../../
 import { useAdvertiserData } from "../../hooks/useAppDataContext";
 import { useLoading } from "../../../context/LoadingContext";
 import { useTheme } from "../../../context/ThemeContext";
-import { signInWithGoogle } from "../../../config/firebase";
+import { signInWithGoogle, signInWithFacebook } from "../../../config/firebase";
 
 const Login = () => {
   const { setUserLoggedIn } = useAdvertiserData();
@@ -70,6 +70,28 @@ const Login = () => {
     }
   };
 
+  const handleFacebookSignIn = async () => {
+    showLoading();
+    try {
+      const result = await signInWithFacebook();
+      const idToken = await result.user.getIdToken();
+      
+      const res = await advertiserOauthLogin(idToken);
+      
+      if (res.status === 200 && res.data.data?.token) {
+        toast.success("Login successful!");
+        localStorage.setItem("token", res.data.data.token);
+        localStorage.setItem("isAuth", "true");
+        setUserLoggedIn(true);
+        setTimeout(() => checkProfileAndRedirect(), 1200);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Facebook sign-in failed");
+    } finally {
+      hideLoading();
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -110,7 +132,6 @@ const Login = () => {
         fontFamily: "Poppins, system-ui, sans-serif",
       }}
     >
-      <ToastContainer position="top-right" theme="light" autoClose={2400} />
       
       <Link
         to="/"
@@ -250,14 +271,13 @@ const Login = () => {
               </button>
               <button
                 type="button"
-                disabled
+                onClick={handleFacebookSignIn}
                 className="btn flex-fill py-3 fw-semibold d-flex align-items-center justify-content-center"
                 style={{
-                  background: isDark ? "#1a1a1a" : "#f8f9fa",
-                  border: `2px solid ${isDark ? "#2d2d2d" : "#dee2e6"}`,
+                  background: isDark ? "#2d2d2d" : "#ffffff",
+                  border: `2px solid ${isDark ? "#404040" : "#e9ecef"}`,
                   borderRadius: "12px",
-                  color: isDark ? "#666" : "#adb5bd",
-                  cursor: "not-allowed"
+                  color: isDark ? "#ffffff" : "#2c3e50"
                 }}
               >
                 <i className="bi bi-facebook me-2" style={{ color: '#1877F2' }}></i>

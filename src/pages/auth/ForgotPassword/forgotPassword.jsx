@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -73,7 +73,6 @@ export default function ForgotPassword() {
       className="d-flex justify-content-center align-items-center vh-100 bg-light"
       style={{ fontFamily: "Poppins, sans-serif" }}
     >
-      <ToastContainer position="top-center" theme="colored" autoClose={2200} />
       <div
         className="card shadow-lg p-4"
         style={{

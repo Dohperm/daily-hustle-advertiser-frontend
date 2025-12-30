@@ -1,31 +1,79 @@
-import React, { useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { Link, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { useLoading } from '../../../context/LoadingContext';
 import { useTheme } from '../../../context/ThemeContext';
+import { advertiserProfile, advertiserVerifyUsername } from '../../services/services';
 import api from '../../services/api';
 
-const Onboarding = ({ userEmail, onComplete }) => {
+const Onboarding = ({ userEmail, preFilledData, onComplete }) => {
   const location = useLocation();
   const existingProfile = location.state?.userProfile;
   const [loading, setLoading] = useState(false);
+  const [isOAuthUser, setIsOAuthUser] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
   const { showLoading, hideLoading } = useLoading();
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [formData, setFormData] = useState({
-    first_name: existingProfile?.first_name || '',
-    last_name: existingProfile?.last_name || '',
+    first_name: existingProfile?.first_name || preFilledData?.first_name || '',
+    last_name: existingProfile?.last_name || preFilledData?.last_name || '',
     username: existingProfile?.username || '',
     phone: existingProfile?.phone || '',
     account_identifier: existingProfile?.account_identifier || 'Individual',
-    country: existingProfile?.country || 'Ghana',
+    country: existingProfile?.country || 'Nigeria',
     referral_code: existingProfile?.referral_code || ''
   });
+  const [usernameStatus, setUsernameStatus] = useState({ checking: false, available: null, message: '' });
+
+  // Check if user is from OAuth and fetch profile
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await advertiserProfile();
+        const profile = response.data?.data;
+        setUserProfile(profile);
+        
+        if (profile?.auth_provider && (profile.auth_provider === 'google' || profile.auth_provider === 'facebook')) {
+          setIsOAuthUser(true);
+          setFormData(prev => ({
+            ...prev,
+            first_name: profile.first_name || prev.first_name,
+            last_name: profile.last_name || prev.last_name
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+    
+    fetchUserProfile();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const checkUsernameAvailability = async (username) => {
+    if (!username || username.length < 3) {
+      setUsernameStatus({ checking: false, available: null, message: '' });
+      return;
+    }
+    
+    setUsernameStatus({ checking: true, available: null, message: 'Checking...' });
+    try {
+      const response = await advertiserVerifyUsername(username);
+      const isAvailable = response.data?.data?.isAvailable;
+      setUsernameStatus({
+        checking: false,
+        available: isAvailable,
+        message: isAvailable ? 'Username is available!' : 'Username is already taken'
+      });
+    } catch (error) {
+      setUsernameStatus({ checking: false, available: false, message: 'Error checking username' });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -54,7 +102,6 @@ const Onboarding = ({ userEmail, onComplete }) => {
 
   return (
     <>
-      <ToastContainer position="top-right" theme="colored" autoClose={3000} />
       <div className="min-vh-100 d-flex align-items-center justify-content-center px-3 py-4" 
            style={{ 
              background: isDark ? '#1a1a1a' : '#f8f9fa', 
@@ -103,8 +150,13 @@ const Onboarding = ({ userEmail, onComplete }) => {
                   value={formData.first_name}
                   onChange={handleChange}
                   required
-                  disabled={loading}
-                  style={{ border: '2px solid #e9ecef', borderRadius: '12px', fontSize: '1rem' }}
+                  disabled={loading || isOAuthUser}
+                  style={{ 
+                    border: '2px solid #e9ecef', 
+                    borderRadius: '12px', 
+                    fontSize: '1rem',
+                    ...(isOAuthUser ? { backgroundColor: '#f8f9fa', cursor: 'not-allowed' } : {})
+                  }}
                 />
               </div>
               <div className="col-12 col-sm-6">
@@ -117,29 +169,56 @@ const Onboarding = ({ userEmail, onComplete }) => {
                   value={formData.last_name}
                   onChange={handleChange}
                   required
-                  disabled={loading}
-                  style={{ border: '2px solid #e9ecef', borderRadius: '12px', fontSize: '1rem' }}
+                  disabled={loading || isOAuthUser}
+                  style={{ 
+                    border: '2px solid #e9ecef', 
+                    borderRadius: '12px', 
+                    fontSize: '1rem',
+                    ...(isOAuthUser ? { backgroundColor: '#f8f9fa', cursor: 'not-allowed' } : {})
+                  }}
                 />
               </div>
             </div>
 
             <div className="mb-3">
               <label className="form-label fw-semibold mb-2" style={{ color: isDark ? '#ffffff' : '#2c3e50' }}>Username</label>
-              <input
-                type="text"
-                name="username"
-                className="form-control form-control-lg py-3"
-                placeholder="Choose a username"
-                value={formData.username}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  username: e.target.value.replace(/\s/g, '').toLowerCase()
-                })}
-                required
-                minLength={3}
-                disabled={loading}
-                style={{ border: '2px solid #e9ecef', borderRadius: '12px', fontSize: '1rem' }}
-              />
+              <div className="position-relative">
+                <input
+                  type="text"
+                  name="username"
+                  className="form-control form-control-lg py-3 pe-5"
+                  placeholder="Choose a username"
+                  value={formData.username}
+                  onChange={(e) => {
+                    const username = e.target.value.replace(/\s/g, '').toLowerCase();
+                    setFormData({ ...formData, username });
+                    checkUsernameAvailability(username);
+                  }}
+                  required
+                  minLength={3}
+                  disabled={loading}
+                  style={{ 
+                    border: `2px solid ${usernameStatus.available === false ? '#dc3545' : usernameStatus.available === true ? '#28a745' : '#e9ecef'}`, 
+                    borderRadius: '12px', 
+                    fontSize: '1rem' 
+                  }}
+                />
+                {usernameStatus.checking && (
+                  <div className="position-absolute end-0 top-50 translate-middle-y pe-3">
+                    <div className="spinner-border spinner-border-sm" style={{ width: '1rem', height: '1rem' }}></div>
+                  </div>
+                )}
+                {!usernameStatus.checking && usernameStatus.available !== null && (
+                  <div className="position-absolute end-0 top-50 translate-middle-y pe-3">
+                    <i className={`bi ${usernameStatus.available ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger'}`}></i>
+                  </div>
+                )}
+              </div>
+              {usernameStatus.message && (
+                <div className={`small mt-1 ${usernameStatus.available ? 'text-success' : 'text-danger'}`}>
+                  {usernameStatus.message}
+                </div>
+              )}
             </div>
 
             <div className="mb-3">
@@ -245,7 +324,7 @@ const Onboarding = ({ userEmail, onComplete }) => {
             <button
               type="submit"
               className="btn btn-lg w-100 py-3 fw-bold text-white mb-4"
-              disabled={loading}
+              disabled={loading || usernameStatus.available === false}
               style={{
                 background: '#e53e3e',
                 border: 'none',
