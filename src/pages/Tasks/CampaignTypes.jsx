@@ -383,7 +383,7 @@ export default function CampaignTypes() {
                   padding: '20px',
                   cursor: 'pointer',
                   backgroundColor: isDark ? '#2d2d2d' : 'white',
-                  transition: 'all 0.3s ease',
+                  transition: 'all 1s ease',
                   transform: hoveredCampaign === index ? 'translateY(-5px)' : 'translateY(0)',
                   boxShadow: hoveredCampaign === index ? '0 8px 25px rgba(0,0,0,0.15)' : '0 4px 12px rgba(0,0,0,0.1)',
                   minHeight: '300px'
@@ -405,7 +405,8 @@ export default function CampaignTypes() {
                     padding: '16px', 
                     borderRadius: '8px', 
                     marginBottom: '16px',
-                    border: `1px solid ${isDark ? '#404040' : '#dee2e6'}`
+                    border: `1px solid ${isDark ? '#404040' : '#dee2e6'}`,
+                    animation: 'slideDown 0.8s ease-out'
                   }}>
                     <div className="mb-3">
                       <strong style={{ fontSize: '0.9rem' }}>Description:</strong>
@@ -457,6 +458,21 @@ export default function CampaignTypes() {
           )}
         </Row>
       </div>
+      
+      <style>{`
+        @keyframes slideDown {
+          0% {
+            opacity: 0;
+            transform: translateY(-20px);
+            max-height: 0;
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+            max-height: 300px;
+          }
+        }
+      `}</style>
     </div>
   );
 }
