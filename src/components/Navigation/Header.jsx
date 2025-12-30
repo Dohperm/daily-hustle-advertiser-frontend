@@ -208,6 +208,7 @@ export default function MobileHeader({ user, onLogout }) {
                   onClick={() => {
                     setExpanded(false);
                     onLogout?.();
+                    localStorage.clear();
                   }}
                 >
                   <i className="bi bi-box-arrow-right me-2" />

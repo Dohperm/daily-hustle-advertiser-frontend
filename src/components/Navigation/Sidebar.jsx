@@ -15,8 +15,7 @@ function ThemeToggle() {
 
 function LogoutButton() {
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('isAuth');
+    localStorage.clear();
     window.location.href = '/';
   };
   

@@ -429,6 +429,61 @@ const categoriesData = {
     "Any 2 Video Task (Specify in Title)",
   ],
 };
+
+// Default content for each category
+const categoryDefaults = {
+  "Facebook": {
+    title: "Facebook Engagement Campaign",
+    description: "Engage with Facebook content to increase visibility and reach. Help boost social media presence through authentic interactions.",
+    instructions: "<ol><li>Navigate to the specified Facebook page or post</li><li>Complete the required action (like, share, follow, comment)</li><li>Take a clear screenshot showing the completed action</li><li>Submit the screenshot as proof of completion</li></ol>"
+  },
+  "Instagram": {
+    title: "Instagram Engagement Campaign",
+    description: "Boost Instagram presence through likes, follows, comments and saves. Help increase engagement and visibility.",
+    instructions: "<ol><li>Go to the specified Instagram account or post</li><li>Perform the required action (like, follow, comment, save)</li><li>Take a screenshot as proof</li><li>Submit your completed task</li></ol>"
+  },
+  "Twitter [X]": {
+    title: "Twitter/X Engagement Campaign",
+    description: "Increase Twitter engagement through likes, retweets, follows and replies. Boost social media reach.",
+    instructions: "<ol><li>Visit the specified Twitter/X profile or tweet</li><li>Complete the required engagement (like, retweet, follow, reply)</li><li>Screenshot your action</li><li>Submit proof of completion</li></ol>"
+  },
+  "Youtube": {
+    title: "YouTube Engagement Campaign",
+    description: "Support YouTube content through subscriptions, likes, comments and shares. Help creators grow their audience.",
+    instructions: "<ol><li>Navigate to the specified YouTube channel or video</li><li>Perform the required action (subscribe, like, comment, share)</li><li>Take a screenshot showing completion</li><li>Submit your proof</li></ol>"
+  },
+  "Tiktok": {
+    title: "TikTok Engagement Campaign",
+    description: "Engage with TikTok content through likes, follows, comments and shares. Boost creator visibility.",
+    instructions: "<ol><li>Open the specified TikTok profile or video</li><li>Complete the required engagement action</li><li>Screenshot the completed action</li><li>Submit your proof</li></ol>"
+  },
+  "Review": {
+    title: "Review Campaign",
+    description: "Write honest reviews for apps, websites, or services. Help businesses improve their online reputation.",
+    instructions: "<ol><li>Visit the specified platform (Google, Facebook, etc.)</li><li>Write an honest, detailed review</li><li>Rate according to your experience</li><li>Screenshot your published review</li><li>Submit proof of completion</li></ol>"
+  },
+  "App Download": {
+    title: "App Download Campaign",
+    description: "Download and install mobile applications. Help apps increase their download numbers and user base.",
+    instructions: "<ol><li>Download the specified app from App Store/Play Store</li><li>Install and open the app</li><li>Complete any required sign-up or initial setup</li><li>Take screenshots of download and app opened</li><li>Submit proof of installation</li></ol>"
+  },
+  "Sign Up": {
+    title: "Registration Campaign",
+    description: "Register accounts on websites or platforms. Help businesses grow their user base.",
+    instructions: "<ol><li>Visit the specified website or platform</li><li>Complete the registration process</li><li>Verify email if required</li><li>Take screenshot of successful registration</li><li>Submit proof of account creation</li></ol>"
+  },
+  "Survey": {
+    title: "Survey Completion Campaign",
+    description: "Complete surveys and questionnaires to provide valuable feedback and insights.",
+    instructions: "<ol><li>Access the survey link provided</li><li>Answer all questions honestly and completely</li><li>Submit the completed survey</li><li>Take screenshot of completion confirmation</li><li>Submit proof of survey completion</li></ol>"
+  },
+  "Website": {
+    title: "Website Interaction Campaign",
+    description: "Visit websites and perform specific interactions to increase traffic and engagement.",
+    instructions: "<ol><li>Navigate to the specified website</li><li>Perform required actions (browse, click links, search)</li><li>Spend the minimum required time on site</li><li>Take screenshots of your interactions</li><li>Submit proof of website visit</li></ol>"
+  }
+};
+
 const categoryOptions = Object.keys(categoriesData);
 const africanCountries = [
   "Algeria", "Angola", "Benin", "Botswana", "Burkina Faso", "Burundi", "Cabo Verde", "Cameroon",
@@ -473,36 +528,10 @@ export default function NewCampaign() {
   const [bulkStatus, setBulkStatus] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [generatingDescription, setGeneratingDescription] = useState(false);
+  const [generatingInstructions, setGeneratingInstructions] = useState(false);
 
   const [form, setForm] = useState(() => {
-    const saved = localStorage.getItem('campaignDraft');
-    const selectedType = localStorage.getItem('selectedCampaignType');
-    
-    let initialForm = {
-      title: "",
-      jobDescription: "",
-      instructions: "",
-      country: "Nigeria",
-      category: "",
-      subCategory: "",
-      workersNeeded: "",
-      amountPerWorker: "",
-      approvalDays: 3,
-      jobsLink: "",
-      approvalMode: "",
-      file: null,
-      reviewType: "Open",
-      closedReviewOptions: "",
-      rewardCurrency: "NGN",
-      attachment: [],
-      uploadingImage: false,
-      is_screenshot_required: false,
-      minDuration: "",
-      complexityRating: "",
-      fromCampaignType: false,
-    };
-    
-    // Check URL parameters first
     const urlTitle = searchParams.get('title');
     const urlCategory = searchParams.get('category');
     const urlSubcategory = searchParams.get('subcategory');
@@ -512,6 +541,31 @@ export default function NewCampaign() {
     const urlDuration = searchParams.get('duration');
     const urlComplexity = searchParams.get('complexity');
     
+    let initialForm = {
+      title: "",
+      jobDescription: "",
+      instructions: "",
+      country: "Nigeria",
+      category: "",
+      subCategory: "",
+      workersNeeded: "10",
+      amountPerWorker: "50",
+      approvalDays: 3,
+      jobsLink: "",
+      approvalMode: "Self Approval",
+      file: null,
+      reviewType: "Open",
+      closedReviewOptions: "",
+      rewardCurrency: "NGN",
+      attachment: [],
+      uploadingImage: false,
+      is_screenshot_required: false,
+      minDuration: "1-5 minutes",
+      complexityRating: "",
+      fromCampaignType: false,
+    };
+    
+    // If coming from campaign types (has URL params), use those
     if (urlTitle || urlCategory) {
       initialForm = {
         ...initialForm,
@@ -520,30 +574,14 @@ export default function NewCampaign() {
         subCategory: urlSubcategory || "",
         jobDescription: urlDescription || "",
         instructions: urlInstructions || "",
-        minDuration: urlDuration || "",
+        minDuration: urlDuration || "1-5 minutes",
         complexityRating: urlComplexity || "",
-        amountPerWorker: urlAmount ? urlAmount.replace(/[^0-9.]/g, '') : "",
+        amountPerWorker: urlAmount ? urlAmount.replace(/[^0-9.]/g, '') : "50",
         fromCampaignType: true,
       };
-    } else if (saved) {
-      initialForm = JSON.parse(saved);
-    } else if (selectedType) {
-      // Prefill from selected campaign type
-      const typeData = JSON.parse(selectedType);
-      initialForm = {
-        ...initialForm,
-        title: typeData.jobTitle || "",
-        category: typeData.category,
-        subCategory: typeData.subCategory,
-        jobDescription: typeData.jobDescription,
-        instructions: typeData.instructions,
-        minDuration: typeData.minDuration,
-        complexityRating: typeData.complexityRating,
-        amountPerWorker: typeData.amount ? typeData.amount.replace('₦', '').replace(',', '') : "",
-        fromCampaignType: true,
-      };
-      // Clear the selected type from localStorage
-      localStorage.removeItem('selectedCampaignType');
+    } else {
+      // Normal way - clear any existing draft and use defaults
+      localStorage.removeItem('campaignDraft');
     }
     
     return initialForm;
@@ -737,6 +775,40 @@ export default function NewCampaign() {
       setImagePreviews(prev => [...prev, ...newPreviews]);
     } catch {
       setForm((prev) => ({ ...prev, uploadingImage: false }));
+    }
+  };
+
+  const generateAIContent = async (type) => {
+    if (!form.category || !form.title) {
+      toast.error("Please select a category and enter a title first");
+      return;
+    }
+
+    const setLoading = type === 'description' ? setGeneratingDescription : setGeneratingInstructions;
+    setLoading(true);
+
+    try {
+      const prompt = type === 'description' 
+        ? `Generate a professional job description for a ${form.category} campaign titled "${form.title}". Make it clear, concise, and engaging. Focus on what the task involves and its purpose.`
+        : `Generate step-by-step instructions for a ${form.category} campaign titled "${form.title}". Make the instructions clear, actionable, and easy to follow. Include any necessary verification steps.`;
+
+      // Simulate AI API call - replace with actual AI service
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const mockContent = type === 'description'
+        ? `This ${form.category.toLowerCase()} campaign involves engaging with content to increase visibility and reach. Participants will help boost social media presence through authentic interactions that align with platform guidelines and best practices.`
+        : `<ol><li>Navigate to the specified platform or website</li><li>Complete the required action (like, follow, comment, etc.)</li><li>Take a clear screenshot showing the completed action</li><li>Submit the screenshot as proof of completion</li><li>Wait for approval from the campaign owner</li></ol>`;
+
+      setForm(prev => ({
+        ...prev,
+        [type === 'description' ? 'jobDescription' : 'instructions']: mockContent
+      }));
+      
+      toast.success(`AI ${type} generated successfully!`);
+    } catch (error) {
+      toast.error(`Failed to generate ${type}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -992,7 +1064,15 @@ export default function NewCampaign() {
                                   e.target.style.background = "transparent";
                                 }}
                                 onClick={() => {
-                                  setForm((f) => ({ ...f, category, subCategory: "" }));
+                                  const defaults = categoryDefaults[category];
+                                  setForm((f) => ({ 
+                                    ...f, 
+                                    category, 
+                                    subCategory: "",
+                                    title: defaults?.title || "",
+                                    jobDescription: defaults?.description || "",
+                                    instructions: defaults?.instructions || ""
+                                  }));
                                   setCategorySearch("");
                                   setShowCategoryDropdown(false);
                                 }}
@@ -1203,10 +1283,10 @@ export default function NewCampaign() {
                             minDuration: e.target.value,
                           }))
                         }
-                        disabled={form.fromCampaignType}
+                        disabled={false}
                         style={{
-                          color: form.fromCampaignType ? palette.label : palette.text,
-                          background: form.fromCampaignType ? palette.hoverBg : palette.input,
+                          color: palette.text,
+                          background: palette.input,
                           border: `1px solid ${palette.border}`,
                           borderRadius: "8px",
                           padding: "10px 12px",
@@ -1577,15 +1657,41 @@ export default function NewCampaign() {
 
                   <Col md={12}>
                     <Form.Group>
-                      <Form.Label
-                        style={{
-                          fontWeight: "600",
-                          color: palette.text,
-                          marginBottom: "8px",
-                        }}
-                      >
-                        Job Description
-                      </Form.Label>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                        <Form.Label
+                          style={{
+                            fontWeight: "600",
+                            color: palette.text,
+                            margin: 0,
+                          }}
+                        >
+                          Job Description
+                        </Form.Label>
+                        <Button
+                          size="sm"
+                          disabled={generatingDescription || !form.category || !form.title}
+                          onClick={() => generateAIContent('description')}
+                          style={{
+                            background: palette.red,
+                            border: "none",
+                            padding: "6px 12px",
+                            fontSize: "0.8rem",
+                            opacity: (!form.category || !form.title) ? 0.5 : 1
+                          }}
+                        >
+                          {generatingDescription ? (
+                            <>
+                              <Spinner size="sm" style={{ marginRight: "6px" }} />
+                              Generating...
+                            </>
+                          ) : (
+                            <>
+                              <i className="bi bi-magic" style={{ marginRight: "6px" }}></i>
+                              AI Generate
+                            </>
+                          )}
+                        </Button>
+                      </div>
                       <Editor
                         apiKey={TINYMCE_API_KEY}
                         value={form.jobDescription}
@@ -1617,15 +1723,41 @@ export default function NewCampaign() {
 
                   <Col md={12}>
                     <Form.Group>
-                      <Form.Label
-                        style={{
-                          fontWeight: "600",
-                          color: palette.text,
-                          marginBottom: "8px",
-                        }}
-                      >
-                        Instructions
-                      </Form.Label>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                        <Form.Label
+                          style={{
+                            fontWeight: "600",
+                            color: palette.text,
+                            margin: 0,
+                          }}
+                        >
+                          Instructions
+                        </Form.Label>
+                        <Button
+                          size="sm"
+                          disabled={generatingInstructions || !form.category || !form.title}
+                          onClick={() => generateAIContent('instructions')}
+                          style={{
+                            background: palette.red,
+                            border: "none",
+                            padding: "6px 12px",
+                            fontSize: "0.8rem",
+                            opacity: (!form.category || !form.title) ? 0.5 : 1
+                          }}
+                        >
+                          {generatingInstructions ? (
+                            <>
+                              <Spinner size="sm" style={{ marginRight: "6px" }} />
+                              Generating...
+                            </>
+                          ) : (
+                            <>
+                              <i className="bi bi-magic" style={{ marginRight: "6px" }}></i>
+                              AI Generate
+                            </>
+                          )}
+                        </Button>
+                      </div>
                       <Editor
                         apiKey={TINYMCE_API_KEY}
                         value={form.instructions}

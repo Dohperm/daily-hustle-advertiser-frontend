@@ -257,30 +257,6 @@ function CampaignsTable({ campaigns, palette, isDark, navigate, onDelete, onStat
                           <i className="bi bi-play-circle"></i>
                         </button>
                       )}
-                      <button
-                        onClick={() => handleAction("delete", c)}
-                        title="Delete Campaign"
-                        style={{
-                          background: "none",
-                          border: "none",
-                          color: palette.text,
-                          fontSize: "1rem",
-                          cursor: "pointer",
-                          padding: "6px",
-                          borderRadius: "4px",
-                          transition: "all 0.2s",
-                        }}
-                        onMouseOver={(e) => {
-                          e.currentTarget.style.background = palette.border;
-                          e.currentTarget.style.color = palette.red;
-                        }}
-                        onMouseOut={(e) => {
-                          e.currentTarget.style.background = "none";
-                          e.currentTarget.style.color = palette.text;
-                        }}
-                      >
-                        <i className="bi bi-trash"></i>
-                      </button>
                     </div>
                   </td>
                 </tr>
@@ -869,31 +845,6 @@ export default function MyCampaigns() {
                             <i className="bi bi-play-circle"></i>
                           </button>
                         )}
-                        <button
-                          onClick={() => {
-                            setCampaignToDelete(c);
-                            setShowDeleteModal(true);
-                          }}
-                          title="Delete Campaign"
-                          style={{
-                            background: "none",
-                            border: "none",
-                            color: palette.red,
-                            fontSize: "1rem",
-                            cursor: "pointer",
-                            padding: "4px",
-                            borderRadius: "4px",
-                            transition: "all 0.2s",
-                          }}
-                          onMouseOver={(e) => {
-                            e.currentTarget.style.background = palette.border;
-                          }}
-                          onMouseOut={(e) => {
-                            e.currentTarget.style.background = "none";
-                          }}
-                        >
-                          <i className="bi bi-trash"></i>
-                        </button>
                         <span
                           style={{
                             background: statusInfo.bg,
