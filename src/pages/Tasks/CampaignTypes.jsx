@@ -241,17 +241,16 @@ export default function CampaignTypes() {
   );
 
   const handleCampaignClick = (campaign) => {
-    localStorage.setItem('selectedCampaignType', JSON.stringify({
-      jobTitle: campaign.job_title,
+    const params = new URLSearchParams({
+      title: campaign.job_title,
       category: campaign.job_category,
-      subCategory: campaign.sub_job_category,
-      jobDescription: campaign.job_description,
+      description: campaign.job_description,
       instructions: campaign.job_instructions,
-      minDuration: campaign.min_duration,
-      complexityRating: campaign.complexity_rating,
-      amount: campaign.amount
-    }));
-    navigate('/jobs/new');
+      amount: campaign.amount.replace(/[^0-9.]/g, ''),
+      duration: campaign.min_duration,
+      complexity: campaign.complexity_rating
+    });
+    navigate(`/jobs/new?${params.toString()}`);
   };
 
   const getCategoryIcon = (category) => {

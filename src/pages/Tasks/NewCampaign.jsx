@@ -1223,44 +1223,6 @@ export default function NewCampaign() {
                     </Form.Group>
                   </Col>
 
-                  <Col md={6}>
-                    <Form.Group>
-                      <Form.Label
-                        style={{
-                          fontWeight: "600",
-                          color: palette.text,
-                          marginBottom: "8px",
-                        }}
-                      >
-                        Complexity Rating
-                      </Form.Label>
-                      <Form.Select
-                        name="complexityRating"
-                        value={form.complexityRating}
-                        onChange={(e) =>
-                          setForm((f) => ({
-                            ...f,
-                            complexityRating: e.target.value,
-                          }))
-                        }
-                        disabled={form.fromCampaignType}
-                        style={{
-                          color: form.fromCampaignType ? palette.label : palette.text,
-                          background: form.fromCampaignType ? palette.hoverBg : palette.input,
-                          border: `1px solid ${palette.border}`,
-                          borderRadius: "8px",
-                          padding: "10px 12px",
-                        }}
-                      >
-                        <option value="">Select complexity</option>
-                        <option value="Easy">Easy</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Hard">Hard</option>
-                        <option value="Very Hard">Very Hard</option>
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-
                   {form.category === "Review" && (
                     <Col md={12}>
                       <Form.Group>
