@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useTheme } from "../../context/ThemeContext";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import {
   Form,
   Button,
@@ -504,6 +504,7 @@ export default function NewCampaign() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   // ✅ THEME PALETTE
   const palette = useMemo(
@@ -890,6 +891,25 @@ export default function NewCampaign() {
       }}
     >
       <div className="container" style={{ maxWidth: "900px" }}>
+        {/* Back Button */}
+        <Button
+          onClick={() => navigate(-1)}
+          style={{
+            background: "transparent",
+            border: `1px solid ${palette.border}`,
+            color: palette.text,
+            padding: "8px 16px",
+            borderRadius: "8px",
+            marginBottom: "20px",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px"
+          }}
+        >
+          <i className="bi bi-arrow-left"></i>
+          Back
+        </Button>
+
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "40px" }}>
           <h1

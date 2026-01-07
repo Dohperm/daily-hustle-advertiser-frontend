@@ -286,24 +286,43 @@ export default function CampaignTypes() {
     }}>
       <div className="container">
         {/* Title Section */}
-        <div className="text-center mb-5">
-          <h1
-            className="fw-bold mb-2"
-            style={{
-              fontSize: window.innerWidth < 768 ? "1.8rem" : "2.5rem",
-              color: isDark ? '#f7f7fa' : '#212529',
-              letterSpacing: "0.5px",
-            }}
-          >
-            <i
-              className="bi bi-grid-3x3-gap me-3"
-              style={{ color: '#e53e3e', fontSize: "2rem" }}
-            ></i>
-            Campaign Types
-          </h1>
-          <p style={{ color: isDark ? '#adb5bd' : '#6c757d', fontSize: "1.05rem" }}>
-            Choose from available campaign types to create your task
-          </p>
+        <div className="mb-5">
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <div className="text-center flex-grow-1">
+              <h1
+                className="fw-bold mb-2"
+                style={{
+                  fontSize: window.innerWidth < 768 ? "1.8rem" : "2.5rem",
+                  color: isDark ? '#f7f7fa' : '#212529',
+                  letterSpacing: "0.5px",
+                }}
+              >
+                <i
+                  className="bi bi-grid-3x3-gap me-3"
+                  style={{ color: '#e53e3e', fontSize: "2rem" }}
+                ></i>
+                Campaign Types
+              </h1>
+              <p style={{ color: isDark ? '#adb5bd' : '#6c757d', fontSize: "1.05rem" }}>
+                Choose from available campaign types to create your task
+              </p>
+            </div>
+            <Button
+              onClick={() => navigate('/jobs/new')}
+              style={{
+                backgroundColor: '#e53e3e',
+                borderColor: '#e53e3e',
+                color: 'white',
+                padding: '12px 24px',
+                fontSize: '1rem',
+                fontWeight: 'bold',
+                borderRadius: '8px'
+              }}
+            >
+              <i className="bi bi-plus-circle me-2"></i>
+              New Campaign
+            </Button>
+          </div>
         </div>
 
         {/* Search Field */}
