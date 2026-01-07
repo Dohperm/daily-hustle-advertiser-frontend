@@ -41,6 +41,7 @@ export default function Layout() {
     { to: "/jobs/allcampaigns", icon: "bi-bullseye", label: "All Campaigns" },
     { to: "/jobs/my-campaigns", icon: "bi-list", label: "My Campaigns" },
     { to: "/wallet", icon: "bi-wallet2", label: "Wallet" },
+    { to: "/support", icon: "bi-headset", label: "Support" },
   ];
 
   const renderNavLink = (item) => (
