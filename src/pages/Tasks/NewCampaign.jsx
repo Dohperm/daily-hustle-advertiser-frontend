@@ -843,7 +843,6 @@ export default function NewCampaign() {
         amount_per_worker: Number(form.amountPerWorker),
       },
       min_duration: form.minDuration,
-      complexity_rating: form.complexityRating,
       slots: { max: Number(form.workersNeeded) },
       approval: {
         num_days: Number(form.approvalDays),
