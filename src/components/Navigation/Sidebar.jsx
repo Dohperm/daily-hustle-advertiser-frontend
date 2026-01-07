@@ -76,12 +76,6 @@ export default function Sidebar() {
             {jobsOpen && (
               <ul className="nav flex-column ms-3">
                 <li>
-                  <NavLink to="/jobs/allcampaigns" className="nav-link">
-                    <i className="bi bi-bullseye me-2" />
-                    All Campaigns
-                  </NavLink>
-                </li>
-                <li>
                   <NavLink to="/jobs/my-campaigns" className="nav-link">
                     <i className="bi bi-list-jobs me-2" />
                     My Campaigns
