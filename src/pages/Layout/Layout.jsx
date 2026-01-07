@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, Link } from "react-router-dom";
 import { useAdvertiserData } from "../hooks/useAppDataContext";
 import { useTheme } from "../../context/ThemeContext";
 import Logo from "/dailyjhustleimage.png";
@@ -141,9 +141,17 @@ export default function Layout() {
           }}
         >
           <SidebarToggleBtn />
-          <div
+          <Link
+            to="/"
             className="logo mb-4 d-flex justify-content-center align-items-center gap-2"
-            style={{ opacity: sidebarOpen ? 1 : 0 }}
+            style={{ 
+              opacity: sidebarOpen ? 1 : 0,
+              textDecoration: "none",
+              cursor: "pointer"
+            }}
+            onClick={() => {
+              localStorage.clear();
+            }}
           >
             <img
               src={Logo}
@@ -162,7 +170,7 @@ export default function Layout() {
                 DailyHustle
               </span>
             )}
-          </div>
+          </Link>
           <nav
             className="nav-links d-flex flex-column gap-1 mt-2"
             style={{
@@ -271,7 +279,17 @@ export default function Layout() {
               flexDirection: "column",
             }}
           >
-            <div className="logo mb-4 d-flex justify-content-center align-items-center gap-2">
+            <Link
+              to="/"
+              className="logo mb-4 d-flex justify-content-center align-items-center gap-2"
+              style={{
+                textDecoration: "none",
+                cursor: "pointer"
+              }}
+              onClick={() => {
+                localStorage.clear();
+              }}
+            >
               <img
                 src={Logo}
                 alt="logo"
@@ -283,7 +301,7 @@ export default function Layout() {
               >
                 DailyHustle
               </span>
-            </div>
+            </Link>
             <nav
               className="nav-links mobile-nav-scroll mt-2"
               style={{
