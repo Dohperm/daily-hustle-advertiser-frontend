@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Outlet, NavLink, Link } from "react-router-dom";
 import { useAdvertiserData } from "../hooks/useAppDataContext";
 import { useTheme } from "../../context/ThemeContext";
+import LiveChat from "../../components/LiveChat";
 import Logo from "/dailyjhustleimage.png";
 
 const BRAND_RED = "#e53e3e";
@@ -37,8 +38,8 @@ export default function Layout() {
 
   const menu = [
     { to: "/dashboard", icon: "bi-house-door-fill", label: "Dashboard" },
-    { to: "/campaigns", icon: "bi-grid-3x3-gap", label: "Create New Campaign" },
     { to: "/jobs/allcampaigns", icon: "bi-bullseye", label: "All Campaigns" },
+    { to: "/campaigns", icon: "bi-grid-3x3-gap", label: "Create New Campaign" },
     { to: "/jobs/my-campaigns", icon: "bi-list", label: "My Campaigns" },
     { to: "/wallet", icon: "bi-wallet2", label: "Wallet" },
     { to: "/support", icon: "bi-headset", label: "Support" },
@@ -389,6 +390,9 @@ export default function Layout() {
       >
         <Outlet />
       </main>
+      
+      {/* Live Chat Component */}
+      <LiveChat />
     </div>
   );
 }

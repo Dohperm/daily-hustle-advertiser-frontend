@@ -148,7 +148,7 @@ export default function AdvertiserSupport() {
 
         {/* FAQ Tab */}
         {activeTab === 'faq' && (
-          <div>
+          <div style={{ minHeight: '60vh', padding: '0 40px' }}>
             {/* Search Bar */}
             <div className="row justify-content-center mb-4">
               <div className="col-md-8">
@@ -221,7 +221,7 @@ export default function AdvertiserSupport() {
 
         {/* Support Tickets Tab */}
         {activeTab === 'tickets' && (
-          <div className="row justify-content-center">
+          <div className="row justify-content-center" style={{ minHeight: '60vh', padding: '0 40px' }}>
             <div className="col-lg-8">
               <Card style={{
                 background: palette.cardBg,
@@ -308,7 +308,7 @@ export default function AdvertiserSupport() {
 
         {/* Contact Tab */}
         {activeTab === 'contact' && (
-          <div className="row justify-content-center">
+          <div className="row justify-content-center" style={{ minHeight: '60vh', padding: '0 40px' }}>
             <div className="col-lg-10">
               <Row className="g-4">
                 <Col md={6}>

@@ -439,20 +439,9 @@ export default function CampaignTypes() {
                       <p className="mb-0 fw-bold mt-1" style={{ color: '#e53e3e' }}>{campaign.amount}</p>
                     </div>
                     <div className="row">
-                      <div className="col-6">
+                      <div className="col-12">
                         <strong style={{ fontSize: '0.85rem' }}>Duration:</strong>
                         <p className="mb-0 small mt-1">{campaign.min_duration}</p>
-                      </div>
-                      <div className="col-6">
-                        <strong style={{ fontSize: '0.85rem' }}>Complexity:</strong>
-                        <br />
-                        <Badge 
-                          bg={campaign.complexity_rating === 'Easy' ? 'success' : 
-                              campaign.complexity_rating === 'Medium' ? 'warning' : 'danger'} 
-                          className="mt-1"
-                        >
-                          {campaign.complexity_rating}
-                        </Badge>
                       </div>
                     </div>
                   </div>
