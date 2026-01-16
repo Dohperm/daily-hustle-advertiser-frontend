@@ -29,6 +29,7 @@ import {
 import Papa from "papaparse";
 import { advertiserCreateTask, uploadFile } from "../services/services";
 import { toast } from "react-toastify";
+import { getPrice } from "../../data/pricingData";
 
 // Campaign types data from CampaignTypes.jsx
 const campaignTypesData = [
@@ -257,7 +258,7 @@ const campaignTypesData = [
 // Comprehensive categories data from AllCampaigns
 const categoriesData = {
   "Affiliate Rewards": [
-    "Top of Form",
+    "Top of Form (Pay Per Lead)",
     "Mobile App Invites",
     "Course Sale",
     "Software Sales",
@@ -267,9 +268,11 @@ const categoriesData = {
     "Mobile Gameplay",
     "Blogpost App Review",
     "Mobile App Download",
-    "Sign Up & Review",
+    "Mobile App Sign Up & Review",
     "Mobile App Download & Sign Up + Deposit",
     "Mobile App Download, KYC Sign Up & Additional Task",
+    "Mobile Web Sign-Up",
+    "Mobile Web Sign-Up & Deposit",
   ],
   "Artist Engagement": [
     "Spotify Follow",
@@ -313,6 +316,10 @@ const categoriesData = {
     "Post On Facebook",
     "Like, Share & Comment",
     "Follow Page & Like Post",
+    "Reel Comment",
+    "Reel Like",
+    "Reel Share",
+    "Reel Like & Share",
   ],
   "Instagram": [
     "Like",
@@ -327,6 +334,10 @@ const categoriesData = {
     "Like, Comment & Save",
     "Watch Video & Comment",
     "Like, Comment & Comment Likes + Reply",
+    "Reel Comment",
+    "Reel Like",
+    "Reel Share",
+    "Reel Like & Share",
   ],
   "LinkedIn": [
     "Like",
@@ -361,7 +372,7 @@ const categoriesData = {
     "Sign Up + Deposit",
     "Verify Email & Mobile Number",
   ],
-  "Snapchat": ["View All Story (Public Only)", "Snapchat Follow/Subscribe"],
+  "Snapchat": ["View All Stories (Public Only)", "Snapchat Follow/Subscribe"],
   "Stream Music": [
     "Stream on Boomplay & Share",
     "Stream Music on Spotify & Share",
@@ -375,9 +386,22 @@ const categoriesData = {
     "10 Questions",
     "20 Questions",
     "30 Questions",
+    "40 Questions",
+    "50 Questions",
+    "100 Questions",
+    "500 Questions",
+    "1000 Questions",
   ],
   "Telegram": ["Bot Join", "Group Join", "Simple Air Drop", "Complex Air Drop"],
-  "Threads": ["Like", "Quote", "Follow", "Repost", "Comment", "Like & Comment"],
+  "Threads": [
+    "Like",
+    "Quote",
+    "Follow",
+    "Repost",
+    "Comment",
+    "Like & Comment",
+    "Follow, Like & Comment",
+  ],
   "Tiktok": [
     "Like",
     "Follow",
@@ -401,7 +425,7 @@ const categoriesData = {
     "Follow, Like & Retweet",
     "Vote On Twitter & Reply",
   ],
-  "UGC": ["UGC App Review", "UGC Product Review"],
+  "UGC": ["UGC Photo", "UGC Video"],
   "Video Watch Time": [
     "Watch Video 3 Mins",
     "Watch Video 6 Mins",
@@ -419,14 +443,43 @@ const categoriesData = {
     "Website Visit, Search Keyword + 2 Clicks",
     "Google Search Keyword + Visit Website",
   ],
-  "Whatsapp": ["Save Contact", "Follow Channel"],
+  "Whatsapp": [
+    "Join groups",
+    "Repost status",
+    "Save Contact",
+    "Follow Channel",
+    "Post Picture on Status",
+    "Post Video on Status",
+    "Use Picture as DM",
+    "Use Animation as DM",
+    "Repost status with 10 views",
+    "Repost status with 25 views",
+    "Repost status with 50 views",
+    "Repost status with 100 views",
+    "Repost status with 200 views",
+    "Repost status with 500 views",
+    "Repost status with 1000 views",
+  ],
   "Youtube": [
+    "Subscribe",
+    "Comment",
+    "Watch Video 3 Mins",
+    "Watch Video 6 Mins",
+    "Watch Video 9 Mins",
+    "Watch Video 20 Minutes",
+    "Watch Video 3 Mins, Like, Share & Comment",
+    "Watch Video 6 Mins, Like, Share & Comment",
+    "Watch Video 9 Mins, Like, Share & Comment",
     "Like",
     "Share",
-    "Comment",
     "Like & Comment",
+    "Like & Share",
     "Like, Comment & Share",
     "Any 2 Video Task (Specify in Title)",
+  ],
+  "TikTok Reward Task": [
+    "Dance Challenge",
+    "Create Content Reward",
   ],
 };
 
@@ -461,6 +514,16 @@ const categoryDefaults = {
     title: "Review Campaign",
     description: "Write honest reviews for apps, websites, or services. Help businesses improve their online reputation.",
     instructions: "<ol><li>Visit the specified platform (Google, Facebook, etc.)</li><li>Write an honest, detailed review</li><li>Rate according to your experience</li><li>Screenshot your published review</li><li>Submit proof of completion</li></ol>"
+  },
+  "Survey": {
+    title: "Survey Completion Campaign",
+    description: "Complete surveys and questionnaires to provide valuable feedback and insights.",
+    instructions: "<ol><li>Access the survey link provided</li><li>Answer all questions honestly and completely</li><li>Submit the completed survey</li><li>Take screenshot of completion confirmation</li><li>Submit proof of survey completion</li></ol>"
+  },
+  "TikTok Reward Task": {
+    title: "TikTok Reward Campaign",
+    description: "Create engaging TikTok content including dance challenges and creative videos.",
+    instructions: "<ol><li>Review the campaign requirements</li><li>Create the specified content</li><li>Post to your TikTok account</li><li>Screenshot your post with engagement metrics</li><li>Submit proof of completion</li></ol>"
   },
   "App Download": {
     title: "App Download Campaign",
@@ -1124,35 +1187,62 @@ export default function NewCampaign() {
                             gap: "8px",
                           }}
                         >
-                          {subCategoryList.map((sub) => (
-                            <Badge
-                              key={sub}
-                              pill
-                              style={{
-                                background:
-                                  form.subCategory === sub
-                                    ? palette.red
-                                    : palette.hoverBg,
-                                color:
-                                  form.subCategory === sub
-                                    ? "#fff"
-                                    : palette.text,
-                                padding: "8px 16px",
-                                fontSize: "0.9rem",
-                                cursor: "pointer",
-                                transition: "all 0.2s",
-                                border: `1px solid ${palette.border}`,
-                              }}
-                              onClick={() =>
-                                setForm((f) => ({
-                                  ...f,
-                                  subCategory: sub,
-                                }))
-                              }
-                            >
-                              {sub}
-                            </Badge>
-                          ))}
+                          {subCategoryList.map((sub) => {
+                            const price = getPrice(form.category, sub);
+                            return (
+                              <Badge
+                                key={sub}
+                                pill
+                                style={{
+                                  background:
+                                    form.subCategory === sub
+                                      ? palette.red
+                                      : palette.hoverBg,
+                                  color:
+                                    form.subCategory === sub
+                                      ? "#fff"
+                                      : palette.text,
+                                  padding: "8px 16px",
+                                  fontSize: "0.9rem",
+                                  cursor: "pointer",
+                                  transition: "all 0.2s",
+                                  border: `1px solid ${palette.border}`,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "8px",
+                                }}
+                                onClick={() => {
+                                  setForm((f) => ({
+                                    ...f,
+                                    subCategory: sub,
+                                    amountPerWorker: price ? price.toString() : f.amountPerWorker,
+                                  }));
+                                }}
+                              >
+                                <span>{sub}</span>
+                                {price && (
+                                  <span
+                                    style={{
+                                      background:
+                                        form.subCategory === sub
+                                          ? "rgba(255,255,255,0.2)"
+                                          : palette.red,
+                                      color:
+                                        form.subCategory === sub
+                                          ? "#fff"
+                                          : "#fff",
+                                      padding: "2px 8px",
+                                      borderRadius: "12px",
+                                      fontSize: "0.8rem",
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    ₦{price}
+                                  </span>
+                                )}
+                              </Badge>
+                            );
+                          })}
                         </div>
                         {form.subCategory && (
                           <small
