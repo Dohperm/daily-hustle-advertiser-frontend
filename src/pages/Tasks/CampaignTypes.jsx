@@ -434,10 +434,6 @@ export default function CampaignTypes() {
                       <strong style={{ fontSize: '0.9rem' }}>Instructions:</strong>
                       <p className="mb-0 small mt-1" style={{ color: isDark ? '#adb5bd' : '#6c757d' }}>{campaign.job_instructions}</p>
                     </div>
-                    <div className="mb-3">
-                      <strong style={{ fontSize: '0.9rem' }}>Amount:</strong>
-                      <p className="mb-0 fw-bold mt-1" style={{ color: '#e53e3e' }}>{campaign.amount}</p>
-                    </div>
                     <div className="row">
                       <div className="col-12">
                         <strong style={{ fontSize: '0.85rem' }}>Duration:</strong>
