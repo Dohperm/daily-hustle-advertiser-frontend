@@ -126,8 +126,6 @@ const Login = () => {
       className="min-vh-100 d-flex align-items-center justify-content-center"
       style={{
         padding: window.innerWidth < 768 ? "20px 15px" : "0 20px",
-      }}
-      style={{
         background: isDark ? "#1a1a1a" : "#f8f9fa",
         fontFamily: "Poppins, system-ui, sans-serif",
       }}

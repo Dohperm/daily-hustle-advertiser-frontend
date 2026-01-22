@@ -336,22 +336,39 @@ export default function AllCampaigns() {
           <div className="row justify-content-center mb-5">
             <div className="col-12 col-md-8 col-lg-6">
               <div className="d-flex flex-column flex-md-row gap-3">
-                 <Link
-                  to="/jobss/new"
-                  className="btn btn-primary d-md-none mb-3"
-                  style={{
-                    background: palette.red,
-                    border: "none",
-                    borderRadius: "12px",
-                    padding: "12px",
-                    fontWeight: "bold",
-                    color: "#fff",
-                    textAlign: "center"
-                  }}
-                >
-                  <i className="bi bi-plus-circle me-2"></i>
-                  Create New Campaign
-                </Link>
+                  <Link
+                    to="/jobs/new"
+                    className="btn btn-primary d-md-none mb-3"
+                    style={{
+                      background: palette.red,
+                      border: "none",
+                      borderRadius: "12px",
+                      padding: "12px",
+                      fontWeight: "bold",
+                      color: "#fff",
+                      textAlign: "center"
+                    }}
+                  >
+                    <i className="bi bi-plus-circle me-2"></i>
+                    Create New Campaign
+                  </Link>
+                  <div className="d-none d-md-flex align-items-center mb-3">
+                    <Link
+                      to="/jobs/new"
+                      className="btn btn-primary"
+                      style={{
+                        background: palette.red,
+                        border: "none",
+                        borderRadius: "12px",
+                        padding: "10px 24px",
+                        fontWeight: "bold",
+                        color: "#fff",
+                      }}
+                    >
+                      <i className="bi bi-plus-circle me-2"></i>
+                      Create New Campaign
+                    </Link>
+                  </div>
               
                 <div
                   style={{
