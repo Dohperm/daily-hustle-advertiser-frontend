@@ -545,6 +545,7 @@ export default function MyCampaigns() {
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             {/* View Toggle */}
             <div
+              className="d-none d-md-flex"
               style={{
                 display: "flex",
                 background: palette.cardBg,

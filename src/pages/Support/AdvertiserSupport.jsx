@@ -80,7 +80,7 @@ export default function AdvertiserSupport() {
       background: palette.bg, 
       color: palette.text, 
       minHeight: '100vh',
-      padding: '40px 20px'
+      padding: window.innerWidth < 768 ? '20px 10px' : '40px 20px'
     }}>
       <div className="container" style={{ maxWidth: '1200px' }}>
         {/* Header */}
@@ -113,7 +113,7 @@ export default function AdvertiserSupport() {
 
         {/* Navigation Tabs */}
         <div className="d-flex justify-content-center mb-4">
-          <div className="d-flex gap-2" style={{
+          <div className="d-flex gap-2 flex-wrap justify-content-center" style={{
             background: palette.cardBg,
             padding: '8px',
             borderRadius: '12px',

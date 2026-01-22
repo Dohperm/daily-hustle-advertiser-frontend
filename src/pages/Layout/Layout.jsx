@@ -27,7 +27,7 @@ export default function Layout() {
       sidebarBg: isDark ? "#2d2d2d" : "#ffffff",
       red: "#e53e3e",
     }),
-    [isDark]
+    [isDark],
   );
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function Layout() {
         padding: "12px 16px",
         borderRadius: "10px",
         gap: "10px",
-        color: isActive ? "#fff" : (isDark ? "#fff" : "#6c757d"),
+        color: isActive ? "#fff" : isDark ? "#fff" : "#6c757d",
         textDecoration: "none",
         transition: "all 0.2s",
         fontWeight: isActive ? "600" : "500",
@@ -79,9 +79,9 @@ export default function Layout() {
       {/* MOBILE TOPBAR */}
       {!isDesktop && (
         <header
-          className="app-topbar mobile d-flex align-items-center"
+          className="app-topbar mobile d-flex align-items-center glass-effect"
           style={{
-            background: palette.cardBg,
+            // background: palette.cardBg, // Handled by CSS glass-effect
             borderBottom: `1px solid ${palette.border}`,
             padding: "12px 16px",
             gap: "12px",
@@ -89,8 +89,8 @@ export default function Layout() {
         >
           <button
             className="hamburger-btn"
-            onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-            aria-label={mobileSidebarOpen ? "Close sidebar" : "Open sidebar"}
+            onClick={() => setMobileSidebarOpen(true)}
+            aria-label="Open sidebar"
             style={{
               color: palette.red,
               background: "none",
@@ -101,7 +101,10 @@ export default function Layout() {
           >
             <i className="bi bi-list"></i>
           </button>
-          <div className="logo-topbar d-flex gap-2 align-items-center" style={{ flex: 1, justifyContent: "center" }}>
+          <div
+            className="logo-topbar d-flex gap-2 align-items-center"
+            style={{ flex: 1, justifyContent: "center" }}
+          >
             <img
               src={Logo}
               alt="logo"
@@ -115,7 +118,6 @@ export default function Layout() {
               DailyHustle
             </span>
           </div>
-
         </header>
       )}
 
@@ -146,10 +148,10 @@ export default function Layout() {
           <Link
             to="/"
             className="logo mb-4 d-flex justify-content-center align-items-center gap-2"
-            style={{ 
+            style={{
               opacity: sidebarOpen ? 1 : 0,
               textDecoration: "none",
-              cursor: "pointer"
+              cursor: "pointer",
             }}
             onClick={() => {
               localStorage.clear();
@@ -184,12 +186,14 @@ export default function Layout() {
             {menu.map(renderNavLink)}
           </nav>
           {sidebarOpen && (
-            <div style={{ 
-              marginTop: "auto",
-              paddingTop: "20px",
-              paddingBottom: "20px",
-              borderTop: `1px solid ${isDark ? "#333" : "#e9ecef"}`
-            }}>
+            <div
+              style={{
+                marginTop: "auto",
+                paddingTop: "20px",
+                paddingBottom: "20px",
+                borderTop: `1px solid ${isDark ? "#333" : "#e9ecef"}`,
+              }}
+            >
               <div
                 style={{
                   display: "flex",
@@ -199,7 +203,9 @@ export default function Layout() {
                   color: isDark ? "#fff" : "#2c3e50",
                 }}
               >
-                <span style={{ fontSize: "1rem", fontWeight: "500" }}>Theme</span>
+                <span style={{ fontSize: "1rem", fontWeight: "500" }}>
+                  Theme
+                </span>
                 <button
                   onClick={() => setTheme(theme === "light" ? "dark" : "light")}
                   style={{
@@ -259,51 +265,53 @@ export default function Layout() {
         </aside>
       )}
 
-      {/* MOBILE SIDEBAR */}
-      {!isDesktop && mobileSidebarOpen && (
+      {/* MOBILE SIDEBAR - Persist in DOM for animation */}
+      {!isDesktop && (
         <>
           <aside
+            className={`app-sidebar mobile ${mobileSidebarOpen ? "open" : ""}`}
             style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              height: "100vh",
-              width: "80vw",
-              maxWidth: "320px",
+              // Most styles moved to CSS for performance & media queries
               background: palette.sidebarBg,
-              color: "#fff",
-              zIndex: 2000,
-              padding: "25px 20px",
-              boxShadow: "2px 0 16px 0 rgba(0,0,0,0.15)",
-              transition: "left 0.25s",
-              overflowY: "auto",
-              display: "flex",
-              flexDirection: "column",
             }}
           >
-            <Link
-              to="/"
-              className="logo mb-4 d-flex justify-content-center align-items-center gap-2"
+            <div
               style={{
-                textDecoration: "none",
-                cursor: "pointer"
-              }}
-              onClick={() => {
-                localStorage.clear();
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: "20px",
               }}
             >
-              <img
-                src={Logo}
-                alt="logo"
-                height={54}
-                style={{ borderRadius: 12 }}
-              />
-              <span
-                style={{ fontWeight: "bold", fontSize: "1rem", color: "#fff" }}
+              <Link
+                to="/"
+                className="logo d-flex justify-content-center align-items-center gap-2"
+                style={{
+                  textDecoration: "none",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setMobileSidebarOpen(false);
+                  // localStorage.clear(); // Removing accidental clear on logo click?
+                }}
               >
-                DailyHustle
-              </span>
-            </Link>
+                <img
+                  src={Logo}
+                  alt="logo"
+                  height={54}
+                  style={{ borderRadius: 12 }}
+                />
+                <span
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "1rem",
+                    color: isDark ? "#fff" : "#2c3e50",
+                  }}
+                >
+                  DailyHustle
+                </span>
+              </Link>
+            </div>
+
             <nav
               className="nav-links mobile-nav-scroll mt-2"
               style={{
@@ -314,13 +322,19 @@ export default function Layout() {
             >
               {menu.map(renderNavLink)}
             </nav>
-            <div style={{ marginTop: "auto", paddingTop: "20px", borderTop: `1px solid ${isDark ? "#333" : "#555"}` }}>
+            <div
+              style={{
+                marginTop: "auto",
+                paddingTop: "20px",
+                borderTop: `1px solid ${isDark ? "#333" : "#555"}`,
+              }}
+            >
               <button
                 onClick={() => setTheme(theme === "light" ? "dark" : "light")}
                 className="theme-toggle"
                 aria-label="Toggle theme"
                 style={{
-                  color: "#fff",
+                  color: isDark ? "#fff" : "#2c3e50",
                   background: `${palette.red}20`,
                   border: `1px solid ${palette.red}40`,
                   padding: "8px 12px",
@@ -364,15 +378,14 @@ export default function Layout() {
               </NavLink>
             </div>
           </aside>
+
+          {/* Backdrop */}
           <div
             className="sidebar-backdrop"
             onClick={() => setMobileSidebarOpen(false)}
             style={{
-              position: "fixed",
-              inset: 0,
-              background: "rgba(0,0,0,0.38)",
-              zIndex: 1999,
-              transition: "opacity 0.2s",
+              opacity: mobileSidebarOpen ? 1 : 0,
+              pointerEvents: mobileSidebarOpen ? "auto" : "none",
             }}
           />
         </>
@@ -390,7 +403,7 @@ export default function Layout() {
       >
         <Outlet />
       </main>
-      
+
       {/* Live Chat Component */}
       <LiveChat />
     </div>

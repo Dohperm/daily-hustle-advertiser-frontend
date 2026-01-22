@@ -949,8 +949,8 @@ export default function NewCampaign() {
         background: palette.bg,
         color: palette.text,
         minHeight: "100vh",
-        padding: "40px 20px",
       }}
+      className="py-4 px-3 py-md-5"
     >
       <div className="container" style={{ maxWidth: "900px" }}>
         {/* Back Button */}
@@ -1005,7 +1005,7 @@ export default function NewCampaign() {
             marginBottom: "40px",
           }}
         >
-          <Card.Body style={{ padding: "40px" }}>
+          <Card.Body className="p-3 p-md-5">
             <Form onSubmit={handleSubmit}>
               {/* ====== Step 1 ====== */}
               {step === 1 && (
@@ -2298,12 +2298,7 @@ export default function NewCampaign() {
                   {/* Buttons */}
                   <Col md={12}>
                     <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginTop: "24px",
-                        gap: "12px",
-                      }}
+                      className="d-flex flex-column flex-md-row justify-content-between gap-3 mt-4"
                     >
                       <Button
                         style={{
@@ -2313,13 +2308,16 @@ export default function NewCampaign() {
                           padding: "10px 24px",
                           fontWeight: "600",
                           borderRadius: "8px",
+                          width: "100%", // Full width on mobile, overridden by flex behavior if needed or stays full if stacked
+                          maxWidth: "150px" // Limit width on large screens if desired, but flex-md-row handles it
                         }}
+                        className="w-100 w-md-auto" // Bootstrap class for responsive width
                         onClick={prevStep}
                       >
                         <ChevronLeft size={18} style={{ marginRight: "8px" }} />
                         Back
                       </Button>
-                      <div style={{ display: "flex", gap: "12px" }}>
+                      <div className="d-flex flex-column flex-md-row gap-3 w-100 w-md-auto">
                         <Button
                           style={{
                             background: palette.input,
@@ -2330,6 +2328,7 @@ export default function NewCampaign() {
                             borderRadius: "8px",
                             cursor: "pointer",
                           }}
+                          className="w-100 w-md-auto"
                           onClick={() => setShowPreview(true)}
                         >
                           Preview
@@ -2350,6 +2349,7 @@ export default function NewCampaign() {
                             opacity:
                               submitting || form.uploadingImage ? 0.6 : 1,
                           }}
+                          className="w-100 w-md-auto"
                           disabled={submitting || form.uploadingImage}
                         >
                           {submitting || form.uploadingImage ? (

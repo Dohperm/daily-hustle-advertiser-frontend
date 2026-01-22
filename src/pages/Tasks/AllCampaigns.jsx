@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { useTheme } from "../../context/ThemeContext";
@@ -331,48 +332,86 @@ export default function AllCampaigns() {
             </p>
           </div>
 
-          {/* Search Field */}
+          {/* Search Field & Actions */}
           <div className="row justify-content-center mb-5">
             <div className="col-12 col-md-8 col-lg-6">
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  background: palette.cardBg,
-                  border: `2px solid ${palette.border}`,
-                  borderRadius: "12px",
-                  padding: "12px 16px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  transition: "all 0.2s",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.borderColor = palette.red;
-                  e.currentTarget.style.boxShadow = `0 2px 12px ${palette.red}20`;
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.borderColor = palette.border;
-                  e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
-                }}
-              >
-                <i
-                  className="bi bi-search"
-                  style={{ color: palette.red, fontSize: "1.1rem" }}
-                ></i>
-                <input
-                  type="text"
-                  placeholder="Search categories..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+              <div className="d-flex flex-column flex-md-row gap-3">
+                 <Link
+                  to="/jobss/new"
+                  className="btn btn-primary d-md-none mb-3"
                   style={{
-                    background: "transparent",
-                    color: palette.text,
+                    background: palette.red,
                     border: "none",
-                    outline: "none",
-                    width: "100%",
-                    fontSize: "1rem",
+                    borderRadius: "12px",
+                    padding: "12px",
+                    fontWeight: "bold",
+                    color: "#fff",
+                    textAlign: "center"
                   }}
-                />
+                >
+                  <i className="bi bi-plus-circle me-2"></i>
+                  Create New Campaign
+                </Link>
+              
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    background: palette.cardBg,
+                    border: `2px solid ${palette.border}`,
+                    borderRadius: "12px",
+                    padding: "12px 16px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                    transition: "all 0.2s",
+                    flex: 1
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.borderColor = palette.red;
+                    e.currentTarget.style.boxShadow = `0 2px 12px ${palette.red}20`;
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.borderColor = palette.border;
+                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
+                  }}
+                >
+                  <i
+                    className="bi bi-search"
+                    style={{ color: palette.red, fontSize: "1.1rem" }}
+                  ></i>
+                  <input
+                    type="text"
+                    placeholder="Search categories..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    style={{
+                      background: "transparent",
+                      color: palette.text,
+                      border: "none",
+                      outline: "none",
+                      width: "100%",
+                      fontSize: "1rem",
+                      minWidth: 0
+                    }}
+                  />
+                </div>
+                
+                <Link
+                  to="/jobss/new"
+                  className="btn btn-primary d-none d-md-flex align-items-center"
+                  style={{
+                    background: palette.red,
+                    border: "none",
+                    borderRadius: "12px",
+                    padding: "0 24px",
+                    fontWeight: "bold",
+                    color: "#fff",
+                    whiteSpace: "nowrap"
+                  }}
+                >
+                  <i className="bi bi-plus-circle me-2"></i>
+                  New Campaign
+                </Link>
               </div>
             </div>
           </div>

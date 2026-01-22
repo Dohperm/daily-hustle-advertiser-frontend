@@ -397,8 +397,9 @@ export default function AdvertiserWallet() {
             </div>
           ) : (
             <div className="table-responsive" style={{ backgroundColor: palette.cardBg }}>
+              {/* Desktop Table View */}
               <table
-                className="table mb-0"
+                className="table mb-0 d-none d-md-table"
                 style={{ color: palette.text, backgroundColor: palette.cardBg, '--bs-table-bg': palette.cardBg }}
               >
                 <thead style={{ borderColor: palette.border, backgroundColor: isDark ? '#2a2a2a' : '#f8f9fa' }}>
@@ -490,6 +491,8 @@ export default function AdvertiserWallet() {
                               year: "numeric",
                               month: "short",
                               day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
                             })}
                           </div>
                         </td>
@@ -510,6 +513,81 @@ export default function AdvertiserWallet() {
                   })}
                 </tbody>
               </table>
+
+              {/* Mobile List View */}
+              <div className="d-md-none">
+                {transactions.map((txn, index) => {
+                  const isCredit = txn.type?.toLowerCase() === 'credit';
+                  return (
+                    <div
+                      key={txn._id || index}
+                      style={{
+                        padding: "16px",
+                        borderBottom: `1px solid ${palette.border}`,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                      }}
+                    >
+                      {/* Icon */}
+                      <div
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          borderRadius: "8px",
+                          minWidth: "40px",
+                          background: isCredit
+                            ? `${palette.success}20`
+                            : `${palette.danger}20`,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: isCredit
+                            ? palette.success
+                            : palette.danger,
+                        }}
+                      >
+                        {isCredit ? (
+                          <ArrowDownLeft size={18} />
+                        ) : (
+                          <ArrowUpRight size={18} />
+                        )}
+                      </div>
+
+                      {/* Text Content */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div 
+                          className="fw-semibold mb-1 text-truncate" 
+                          style={{ fontSize: "0.95rem" }}
+                        >
+                           {txn.description || txn.type || 'Transaction'}
+                        </div>
+                        <div style={{ color: palette.label, fontSize: "0.8rem" }}>
+                          {new Date(txn.createdAt || txn.date).toLocaleDateString("en-NG", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Amount */}
+                      <div
+                        className="fw-bold"
+                        style={{
+                          color: isCredit ? palette.success : palette.danger,
+                          fontSize: "0.95rem",
+                          whiteSpace: "nowrap"
+                        }}
+                      >
+                         {isCredit ? "+" : "-"}₦{txn.amount.toLocaleString()}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
           

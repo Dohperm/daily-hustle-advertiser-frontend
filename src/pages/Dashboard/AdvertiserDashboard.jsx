@@ -190,15 +190,17 @@ export default function AdvertiserDashboard() {
           <Button
             as={Link}
             to="/jobs/new"
+            className="shadow-sm"
             style={{
               background: palette.red,
               border: "none",
               padding: "10px 20px",
               fontWeight: "600",
-              borderRadius: "8px",
+              borderRadius: "50px", // More rounded for modern feel
               display: "flex",
               alignItems: "center",
               gap: "8px",
+              fontSize: "0.95rem"
             }}
           >
             <PlusCircle size={18} />
@@ -220,31 +222,31 @@ export default function AdvertiserDashboard() {
             {/* Stats Cards */}
             <Row className="g-4 mb-4">
               {statCards.map((stat, idx) => (
-                <Col md={6} lg={3} key={idx}>
+                <Col xs={12} sm={6} lg={3} key={idx}>
                   <div
+                    className="stat-card-hover"
                     style={{
                       background: palette.cardBg,
-                      borderRadius: "14px",
-                      padding: "24px",
+                      borderRadius: "16px",
+                      padding: "20px",
                       border: `1px solid ${palette.border}`,
                       boxShadow: isDark
-                        ? "0 2px 8px rgba(0,0,0,0.3)"
-                        : "0 2px 8px rgba(0,0,0,0.1)",
+                        ? "0 4px 20px rgba(0,0,0,0.2)"
+                        : "0 4px 20px rgba(0,0,0,0.05)",
                       textAlign: "center",
                       transition: "all 0.25s ease",
                       cursor: "pointer",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center"
                     }}
                     onMouseOver={(e) => {
                       e.currentTarget.style.transform = "translateY(-4px)";
-                      e.currentTarget.style.boxShadow = isDark
-                        ? `0 8px 16px rgba(0,0,0,0.4), 0 0 0 3px ${stat.color}20`
-                        : `0 8px 16px rgba(0,0,0,0.15), 0 0 0 3px ${stat.color}20`;
                     }}
                     onMouseOut={(e) => {
                       e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.boxShadow = isDark
-                        ? "0 2px 8px rgba(0,0,0,0.3)"
-                        : "0 2px 8px rgba(0,0,0,0.1)";
                     }}
                   >
                     <stat.icon
@@ -282,7 +284,7 @@ export default function AdvertiserDashboard() {
             {/* Latest Campaigns & Recent Activity */}
             <Row className="g-4">
               {/* Latest Campaigns */}
-              <Col lg={7} md={12}>
+              <Col lg={7} md={12} xs={12} className="mb-4 mb-lg-0">
                 <div
                   style={{
                     background: palette.cardBg,
@@ -371,7 +373,7 @@ export default function AdvertiserDashboard() {
                             style={{
                               background: palette.bg,
                               padding: "16px",
-                              borderRadius: "10px",
+                              borderRadius: "12px",
                               border: `1px solid ${palette.border}`,
                               display: "flex",
                               justifyContent: "space-between",

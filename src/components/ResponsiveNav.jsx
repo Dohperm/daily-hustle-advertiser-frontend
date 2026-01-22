@@ -4,9 +4,9 @@ import { useTheme } from "../context/ThemeContext";
 import ThemeToggleButton from "./ThemeToggleButton";
 
 const jobssMenu = [
-  { to: "/jobss/allcampaigns", label: "Campaigns", icon: "bi-bullseye" },
-  { to: "/jobss/my-campaigns", label: "My Campaigns", icon: "bi-list-jobs" },
   { to: "/jobss/new", label: "New Campaign", icon: "bi-plus-circle" },
+  { to: "/jobss/allcampaigns", label: "All Campaigns", icon: "bi-bullseye" },
+  { to: "/jobss/my-campaigns", label: "My Campaigns", icon: "bi-list-jobs" },
   {
     to: "/jobss/submissions",
     label: "Review Submissions",

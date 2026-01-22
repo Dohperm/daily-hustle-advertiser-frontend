@@ -115,13 +115,13 @@ export default function LiveChat() {
       {isOpen && (
         <Card style={{
           position: 'fixed',
-          bottom: '90px',
-          right: '20px',
-          width: '350px',
-          height: '500px',
+          bottom: window.innerWidth < 768 ? '0' : '90px',
+          right: window.innerWidth < 768 ? '0' : '20px',
+          width: window.innerWidth < 768 ? '100%' : '350px',
+          height: window.innerWidth < 768 ? '90vh' : '500px',
           background: palette.cardBg,
           border: `1px solid ${palette.border}`,
-          borderRadius: '16px',
+          borderRadius: window.innerWidth < 768 ? '16px 16px 0 0' : '16px',
           boxShadow: '0 8px 25px rgba(0,0,0,0.3)',
           zIndex: 1049,
           display: 'flex',

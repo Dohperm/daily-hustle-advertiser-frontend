@@ -277,7 +277,12 @@ export default function QuickSignup() {
       >
         <Link
           to="/"
-          className="position-absolute top-0 start-0 m-4 btn btn-outline-secondary rounded-pill px-4 py-2"
+          className="position-absolute top-0 start-0 btn btn-outline-secondary rounded-pill px-3 py-2"
+          style={{
+            margin: window.innerWidth < 768 ? "15px" : "24px",
+            fontSize: window.innerWidth < 768 ? "0.85rem" : "1rem",
+            zIndex: 10
+          }}
         >
           <i className="bi bi-arrow-left me-2"></i>
           Back to Home
