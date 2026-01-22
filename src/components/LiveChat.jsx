@@ -92,6 +92,7 @@ export default function LiveChat() {
       {/* Chat Button */}
       <Button
         onClick={() => setIsOpen(!isOpen)}
+        className={isOpen ? "d-none d-md-flex" : "d-flex"}
         style={{
           position: 'fixed',
           bottom: '20px',
@@ -103,7 +104,6 @@ export default function LiveChat() {
           border: 'none',
           boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
           zIndex: 1050,
-          display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
         }}
@@ -147,10 +147,18 @@ export default function LiveChat() {
               }}>
                 <i className="bi bi-robot" style={{ fontSize: '20px', color: palette.red }}></i>
               </div>
-              <div>
+              <div className="flex-grow-1">
                 <h6 style={{ margin: 0, fontWeight: 'bold' }}>Mr. Daily Hustler</h6>
                 <small style={{ opacity: 0.9 }}>AI Assistant</small>
               </div>
+              <Button
+                variant="link"
+                onClick={() => setIsOpen(false)}
+                style={{ color: '#fff', textDecoration: 'none', padding: 0 }}
+                className="d-md-none"
+              >
+                <i className="bi bi-x-lg" style={{ fontSize: '20px' }}></i>
+              </Button>
             </div>
           </Card.Header>
 
